@@ -713,6 +713,35 @@
     },
     "title": "資料備份"
   },
+  "brainstorm": {
+    "add_role": "[to be translated]:Add Role",
+    "continue": "[to be translated]:Continue",
+    "final_decision": "[to be translated]:Final Decision",
+    "is_decision_maker": "[to be translated]:Decision Maker",
+    "message_type": {
+      "analysis": "[to be translated]:Analysis",
+      "decision": "[to be translated]:Decision",
+      "question": "[to be translated]:Question",
+      "suggestion": "[to be translated]:Suggestion"
+    },
+    "new_session": "[to be translated]:New Session",
+    "participants": "[to be translated]:Participants",
+    "pause": "[to be translated]:Pause",
+    "problem_placeholder": "[to be translated]:Describe the problem you want to discuss...",
+    "role_name": "[to be translated]:Role Name",
+    "round": "[to be translated]:Round {{round}}",
+    "start_discussion": "[to be translated]:Start Discussion",
+    "status": {
+      "decided": "[to be translated]:Completed",
+      "discussing": "[to be translated]:Discussing",
+      "idle": "[to be translated]:Idle",
+      "paused": "[to be translated]:Paused"
+    },
+    "stop": "[to be translated]:Stop",
+    "system_prompt": "[to be translated]:System Prompt",
+    "title": "[to be translated]:Brainstorm",
+    "title_placeholder": "[to be translated]:Name this session"
+  },
   "button": {
     "add": "新增",
     "added": "已新增",

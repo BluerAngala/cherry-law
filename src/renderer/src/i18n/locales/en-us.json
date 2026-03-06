@@ -713,6 +713,35 @@
     },
     "title": "Data Backup"
   },
+  "brainstorm": {
+    "add_role": "Add Role",
+    "continue": "Continue",
+    "final_decision": "Final Decision",
+    "is_decision_maker": "Decision Maker",
+    "message_type": {
+      "analysis": "Analysis",
+      "decision": "Decision",
+      "question": "Question",
+      "suggestion": "Suggestion"
+    },
+    "new_session": "New Session",
+    "participants": "Participants",
+    "pause": "Pause",
+    "problem_placeholder": "Describe the problem you want to discuss...",
+    "role_name": "Role Name",
+    "round": "Round {{round}}",
+    "start_discussion": "Start Discussion",
+    "status": {
+      "decided": "Completed",
+      "discussing": "Discussing",
+      "idle": "Idle",
+      "paused": "Paused"
+    },
+    "stop": "Stop",
+    "system_prompt": "System Prompt",
+    "title": "Brainstorm",
+    "title_placeholder": "Name this session"
+  },
   "button": {
     "add": "Add",
     "added": "Added",

@@ -7,6 +7,7 @@ import { HashRouter, Route, Routes } from 'react-router-dom'
 import Sidebar from './components/app/Sidebar'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import TabsContainer from './components/Tab/TabContainer'
+import { BrainstormPage, BrainstormProvider } from './features/brainstorm'
 import NavigationHandler from './handler/NavigationHandler'
 import { useNavbarPosition } from './hooks/useSettings'
 import CodeToolsPage from './pages/code/CodeToolsPage'
@@ -29,21 +30,24 @@ const Router: FC = () => {
   const routes = useMemo(() => {
     return (
       <ErrorBoundary>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/store" element={<AssistantPresetsPage />} />
-          <Route path="/paintings/*" element={<PaintingsRoutePage />} />
-          <Route path="/translate" element={<TranslatePage />} />
-          <Route path="/files" element={<FilesPage />} />
-          <Route path="/notes" element={<NotesPage />} />
-          <Route path="/knowledge" element={<KnowledgePage />} />
-          <Route path="/apps/:appId" element={<MinAppPage />} />
-          <Route path="/apps" element={<MinAppsPage />} />
-          <Route path="/code" element={<CodeToolsPage />} />
-          <Route path="/openclaw" element={<OpenClawPage />} />
-          <Route path="/settings/*" element={<SettingsPage />} />
-          <Route path="/launchpad" element={<LaunchpadPage />} />
-        </Routes>
+        <BrainstormProvider>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/store" element={<AssistantPresetsPage />} />
+            <Route path="/paintings/*" element={<PaintingsRoutePage />} />
+            <Route path="/translate" element={<TranslatePage />} />
+            <Route path="/files" element={<FilesPage />} />
+            <Route path="/notes" element={<NotesPage />} />
+            <Route path="/knowledge" element={<KnowledgePage />} />
+            <Route path="/apps/:appId" element={<MinAppPage />} />
+            <Route path="/apps" element={<MinAppsPage />} />
+            <Route path="/code" element={<CodeToolsPage />} />
+            <Route path="/openclaw" element={<OpenClawPage />} />
+            <Route path="/brainstorm" element={<BrainstormPage />} />
+            <Route path="/settings/*" element={<SettingsPage />} />
+            <Route path="/launchpad" element={<LaunchpadPage />} />
+          </Routes>
+        </BrainstormProvider>
       </ErrorBoundary>
     )
   }, [])

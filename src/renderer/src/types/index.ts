@@ -663,6 +663,7 @@ export type SidebarIcon =
   | 'code_tools'
   | 'notes'
   | 'openclaw'
+  | 'brainstorm'
 
 export type ExternalToolResult = {
   mcpTools?: MCPTool[]

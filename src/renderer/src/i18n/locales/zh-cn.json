@@ -713,6 +713,35 @@
     },
     "title": "数据备份"
   },
+  "brainstorm": {
+    "add_role": "添加角色",
+    "continue": "继续",
+    "final_decision": "最终决策",
+    "is_decision_maker": "决策者",
+    "message_type": {
+      "analysis": "分析",
+      "decision": "决策",
+      "question": "疑问",
+      "suggestion": "建议"
+    },
+    "new_session": "新建会话",
+    "participants": "参与角色",
+    "pause": "暂停",
+    "problem_placeholder": "描述你想要讨论的问题...",
+    "role_name": "角色名称",
+    "round": "第 {{round}} 轮",
+    "start_discussion": "开始讨论",
+    "status": {
+      "decided": "已完成",
+      "discussing": "讨论中",
+      "idle": "待开始",
+      "paused": "已暂停"
+    },
+    "stop": "停止",
+    "system_prompt": "系统提示词",
+    "title": "头脑风暴",
+    "title_placeholder": "给这个会话起个名字"
+  },
   "button": {
     "add": "添加",
     "added": "已添加",

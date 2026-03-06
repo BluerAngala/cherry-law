@@ -319,7 +319,9 @@ export default class ModernAiProvider {
 
     // 创建带有中间件的执行器
     if (config.onChunk) {
-      const accumulate = this.model!.supported_text_delta !== false // true and undefined
+      // 除非模型明确不支持 delta，否则我们默认不累积（发送 delta 块）
+      // 这保持了与 legacy AiProvider 一致的行为，即 onChunk 接收的是 delta 文本
+      const accumulate = this.model!.supported_text_delta === false
       const adapter = new AiSdkToChunkAdapter(config.onChunk, config.mcpTools, accumulate, config.enableWebSearch)
 
       const streamResult = await executor.streamText({

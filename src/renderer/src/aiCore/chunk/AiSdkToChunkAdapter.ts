@@ -74,6 +74,14 @@ export class AiSdkToChunkAdapter {
       // 使用 streamResult.text 获取最终结果
       return await aiSdkResult.text
     } catch (error: any) {
+      // 如果已经有内容（如思考过程或工具调用），但最终没有文本输出，
+      // AI SDK 会抛出 NoOutputGeneratedError。在这种情况下，我们不应该抛出错误，
+      // 而是返回空字符串，让调用方根据已接收到的 chunks 进行处理。
+      if (AISDKError.isInstance(error) && error.name === 'AI_NoOutputGeneratedError' && this.hasTextContent) {
+        logger.warn('No text output generated, but stream had content. Ignoring NoOutputGeneratedError.')
+        return ''
+      }
+
       // abort 时，AI SDK 通常会先通过流发送 'abort' chunk（在 readFullStream 中 convertAndEmitChunk
       // 转为 ERROR chunk 发出）。随后 aiSdkResult.text 会抛出 AbortError
       // 这里捕获它以避免 transformMessagesAndFetch 的 catch 再次发送重复的 ERROR chunk
@@ -233,6 +241,7 @@ export class AiSdkToChunkAdapter {
         // }
         break
       case 'reasoning-delta':
+        this.hasTextContent = true
         final.reasoningContent += chunk.text || ''
         if (chunk.text) {
           this.markFirstTokenIfNeeded()
@@ -249,24 +258,30 @@ export class AiSdkToChunkAdapter {
       // === 工具调用相关事件（原始 AI SDK 事件，如果没有被中间件处理） ===
 
       case 'tool-input-start':
+        this.hasTextContent = true
         this.toolCallHandler.handleToolInputStart(chunk)
         break
       case 'tool-input-delta':
+        this.hasTextContent = true
         this.toolCallHandler.handleToolInputDelta(chunk)
         break
       case 'tool-input-end':
+        this.hasTextContent = true
         this.toolCallHandler.handleToolInputEnd(chunk)
         break
 
       case 'tool-call':
+        this.hasTextContent = true
         this.toolCallHandler.handleToolCall(chunk)
         break
 
       case 'tool-error':
+        this.hasTextContent = true
         this.toolCallHandler.handleToolError(chunk)
         break
 
       case 'tool-result':
+        this.hasTextContent = true
         this.toolCallHandler.handleToolResult(chunk)
         break
 
