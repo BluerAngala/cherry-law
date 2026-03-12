@@ -123,6 +123,20 @@ const store = configureStore({
 
 export type RootState = ReturnType<typeof rootReducer>
 export type AppDispatch = typeof store.dispatch
+window.store = store
+
+let reduxStoreReadyNotified = false
+
+const notifyReduxStoreReady = () => {
+  if (reduxStoreReadyNotified) {
+    return
+  }
+  reduxStoreReadyNotified = true
+  window.electron?.ipcRenderer?.invoke(IpcChannel.ReduxStoreReady)
+  logger.info('Redux store ready, notified main process')
+}
+
+notifyReduxStoreReady()
 
 export const persistor = persistStore(store, undefined, () => {
   // Initialize notes path after rehydration if empty
@@ -140,15 +154,12 @@ export const persistor = persistStore(store, undefined, () => {
     }, 0)
   }
 
-  // Notify main process that Redux store is ready
-  window.electron?.ipcRenderer?.invoke(IpcChannel.ReduxStoreReady)
-  logger.info('Redux store ready, notified main process')
+  notifyReduxStoreReady()
 })
 
 export const useAppDispatch = useDispatch.withTypes<AppDispatch>()
 export const useAppSelector = useSelector.withTypes<RootState>()
 export const useAppStore = useStore.withTypes<typeof store>()
-window.store = store
 
 export async function handleSaveData() {
   logger.info('Flushing redux persistor data')

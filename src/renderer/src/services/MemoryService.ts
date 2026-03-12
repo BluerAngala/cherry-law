@@ -209,12 +209,23 @@ class MemoryService {
 
       const memoryConfig = selectMemoryConfig(store.getState())
       const embeddingModel = memoryConfig.embeddingModel
+      const matchedEmbeddingModel = embeddingModel ? getModel(embeddingModel.id, embeddingModel.provider) : undefined
+
+      if (!matchedEmbeddingModel) {
+        if (embeddingModel) {
+          logger.warn('Embedding model not found in providers, syncing config without embedding client')
+        }
+        return window.api.memory.setConfig({
+          ...memoryConfig,
+          embeddingApiClient: undefined
+        })
+      }
 
       // Get knowledge base params for memory
       const { embedApiClient: embeddingApiClient } = getKnowledgeBaseParams({
         id: 'memory',
         name: 'Memory',
-        model: getModel(embeddingModel?.id, embeddingModel?.provider),
+        model: matchedEmbeddingModel,
         dimensions: memoryConfig.embeddingDimensions,
         items: [],
         created_at: now(),
