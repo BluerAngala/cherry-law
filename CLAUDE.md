@@ -270,6 +270,13 @@ logger.error("message", error);
 - Services, hooks, utilities: `camelCase.ts`
 - Test files: `*.test.ts` or `*.spec.ts` alongside source or in `__tests__/` subdirectory
 
+### Styling
+
+- **styled-components only** — TailwindCSS is NOT used in components
+- Use transient props (`$color`, `$hoverColor`) for props that shouldn't pass to DOM
+- Layout primitives available: `Box`, `HStack`, `VStack`, `Center` from `@renderer/components/Layout`
+- Ant Design 5 is the primary UI library — use antd components as base, extend with styled-components
+
 ### i18n
 
 - All user-visible strings must use `i18next` — never hardcode UI strings
@@ -292,7 +299,16 @@ Several dependencies have patches in `patches/` — be careful when upgrading:
 - aiCore tests: separate `packages/aiCore/vitest.config.ts`
 - All tests run without CI dependency (fully local)
 - Coverage via v8 provider (`pnpm test:coverage`)
+- Test files: `__tests__/` alongside source, or `*.test.ts`
 - **Features without tests are not considered complete**
+
+## Component Conventions
+
+- Use Ant Design components as base; extend with styled-components
+- Never use `useSelector`/`useDispatch` directly — use custom hooks from `@renderer/hooks/`
+- Global notifications: `window.toast?.success()` / `window.toast?.error()`
+- Bilingual JSDoc (Chinese/English) for complex logic
+- Performance: Use `memo()`, `useMemo()`, `useCallback()` for complex components
 
 ## Important Notes
 
@@ -308,6 +324,12 @@ Files marked with the following header are **blocked for feature changes**:
  */
 ```
 
+**46 files affected:**
+- Redux store: all slices in `src/renderer/src/store/`
+- Main services: `ConfigManager.ts`, `StoreSyncService.ts`, `ShortcutService.ts`, `BackupManager.ts`
+- Renderer hooks: `useStore.ts`, `useSettings.ts`, `useShortcuts.ts`
+- Databases: `src/renderer/src/databases/` (Dexie schema)
+
 Do not introduce new features to these files. Bug fixes only.
 
 ### Security
@@ -317,3 +339,13 @@ Do not introduce new features to these files. Bug fixes only.
 - URL sanitization via `strict-url-sanitise`
 - IP validation via `ipaddr.js` (API server)
 - `express-validator` for API server request validation
+
+## Hierarchical Documentation
+
+This project uses hierarchical AGENTS.md files for complex subsystems:
+
+| Path | Scope |
+|------|-------|
+| `./AGENTS.md` | Root (this file) |
+| `./packages/aiCore/AGENTS.md` | @cherrystudio/ai-core package |
+| `./src/main/services/AGENTS.md` | Main process services |
