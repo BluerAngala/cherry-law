@@ -2,7 +2,9 @@ import { loggerService } from '@logger'
 import { useRuntime } from '@renderer/hooks/useRuntime'
 import { useAppDispatch } from '@renderer/store'
 import { setActiveSessionIdAction, setActiveTopicOrSessionAction } from '@renderer/store/runtime'
+import type { CreateSessionForm } from '@renderer/types'
 import { useCallback, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { useAgentClient } from './useAgentClient'
 
@@ -18,6 +20,7 @@ export const useAgentSessionInitializer = () => {
   const client = useAgentClient()
   const { chat } = useRuntime()
   const { activeAgentId, activeSessionIdMap } = chat
+  const { t } = useTranslation()
 
   /**
    * Initialize session for the given agent by loading its sessions
@@ -48,9 +51,24 @@ export const useAgentSessionInitializer = () => {
           dispatch(setActiveSessionIdAction({ agentId, sessionId: latestSession.id }))
           dispatch(setActiveTopicOrSessionAction('session'))
         } else {
-          // No sessions exist, we might want to create one
-          // But for now, just switch to session view and let the Sessions component handle it
-          dispatch(setActiveTopicOrSessionAction('session'))
+          // No sessions exist, create a default one
+          logger.info('No sessions found, creating default session', { agentId })
+
+          // We need agent data to create a session
+          const agent = await client.getAgent(agentId)
+
+          const sessionForm = {
+            ...agent,
+            id: undefined,
+            name: t('common.unnamed')
+          } satisfies CreateSessionForm
+
+          const created = await client.createSession(agentId, sessionForm)
+
+          if (created) {
+            dispatch(setActiveSessionIdAction({ agentId, sessionId: created.id }))
+            dispatch(setActiveTopicOrSessionAction('session'))
+          }
         }
       } catch (error) {
         logger.error('Failed to initialize agent session:', error as Error)
@@ -58,7 +76,7 @@ export const useAgentSessionInitializer = () => {
         dispatch(setActiveTopicOrSessionAction('session'))
       }
     },
-    [client, dispatch, activeSessionIdMap]
+    [client, dispatch, activeSessionIdMap, t]
   )
 
   /**
