@@ -3,8 +3,10 @@ import { McpLogo } from '@renderer/components/Icons'
 import Scrollbar from '@renderer/components/Scrollbar'
 import ModelSettings from '@renderer/pages/settings/ModelSettings/ModelSettings'
 import { Divider as AntDivider } from 'antd'
+import { motion } from 'framer-motion'
 import {
   Brain,
+  ChevronDown,
   Cloud,
   Command,
   FileCode,
@@ -20,8 +22,9 @@ import {
   Zap
 } from 'lucide-react'
 import type { FC } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, Route, Routes, useLocation } from 'react-router-dom'
+import { Link, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 
 import AboutSettings from './AboutSettings'
@@ -42,6 +45,26 @@ import WebSearchSettings from './WebSearchSettings'
 const SettingsPage: FC = () => {
   const { pathname } = useLocation()
   const { t } = useTranslation()
+
+  const advancedRoutes = useMemo(
+    () => [
+      '/settings/mcp',
+      '/settings/websearch',
+      '/settings/memory',
+      '/settings/api-server',
+      '/settings/docprocess',
+      '/settings/quickphrase',
+      '/settings/shortcut'
+    ],
+    []
+  )
+
+  const isAdvancedActive = useMemo(
+    () => advancedRoutes.some((route) => pathname.startsWith(route)),
+    [pathname, advancedRoutes]
+  )
+
+  const [isAdvancedExpanded, setIsAdvancedExpanded] = useState(isAdvancedActive)
 
   const isRoute = (path: string): string => (pathname.startsWith(path) ? 'active' : '')
 
@@ -84,48 +107,66 @@ const SettingsPage: FC = () => {
             </MenuItem>
           </MenuItemLink>
           <Divider />
-          <MenuItemLink to="/settings/mcp">
-            <MenuItem className={isRoute('/settings/mcp')}>
-              <McpLogo width={18} height={18} style={{ opacity: 0.8 }} />
-              {t('settings.mcp.title')}
-            </MenuItem>
-          </MenuItemLink>
-          <MenuItemLink to="/settings/websearch">
-            <MenuItem className={isRoute('/settings/websearch')}>
-              <Search size={18} />
-              {t('settings.tool.websearch.title')}
-            </MenuItem>
-          </MenuItemLink>
-          <MenuItemLink to="/settings/memory">
-            <MenuItem className={isRoute('/settings/memory')}>
-              <Brain size={18} />
-              {t('memory.title')}
-            </MenuItem>
-          </MenuItemLink>
-          <MenuItemLink to="/settings/api-server">
-            <MenuItem className={isRoute('/settings/api-server')}>
-              <Server size={18} />
-              {t('apiServer.title')}
-            </MenuItem>
-          </MenuItemLink>
-          <MenuItemLink to="/settings/docprocess">
-            <MenuItem className={isRoute('/settings/docprocess')}>
-              <FileCode size={18} />
-              {t('settings.tool.preprocess.title')}
-            </MenuItem>
-          </MenuItemLink>
-          <MenuItemLink to="/settings/quickphrase">
-            <MenuItem className={isRoute('/settings/quickphrase')}>
-              <Zap size={18} />
-              {t('settings.quickPhrase.title')}
-            </MenuItem>
-          </MenuItemLink>
-          <MenuItemLink to="/settings/shortcut">
-            <MenuItem className={isRoute('/settings/shortcut')}>
-              <Command size={18} />
-              {t('settings.shortcuts.title')}
-            </MenuItem>
-          </MenuItemLink>
+
+          {/* 高级配置 开始 */}
+          <AdvancedHeader onClick={() => setIsAdvancedExpanded(!isAdvancedExpanded)}>
+            <div className="title">
+              {t('common.advanced_settings')}
+              {isAdvancedActive && !isAdvancedExpanded && <ActiveDot />}
+            </div>
+            <motion.div animate={{ rotate: isAdvancedExpanded ? 0 : -90 }} transition={{ duration: 0.2 }}>
+              <ChevronDown size={14} />
+            </motion.div>
+          </AdvancedHeader>
+
+          {isAdvancedExpanded && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+              <MenuItemLink to="/settings/mcp">
+                <MenuItem className={isRoute('/settings/mcp')}>
+                  <McpLogo width={18} height={18} style={{ opacity: 0.8 }} />
+                  {t('settings.mcp.title')}
+                </MenuItem>
+              </MenuItemLink>
+              <MenuItemLink to="/settings/websearch">
+                <MenuItem className={isRoute('/settings/websearch')}>
+                  <Search size={18} />
+                  {t('settings.tool.websearch.title')}
+                </MenuItem>
+              </MenuItemLink>
+              <MenuItemLink to="/settings/memory">
+                <MenuItem className={isRoute('/settings/memory')}>
+                  <Brain size={18} />
+                  {t('memory.title')}
+                </MenuItem>
+              </MenuItemLink>
+              <MenuItemLink to="/settings/api-server">
+                <MenuItem className={isRoute('/settings/api-server')}>
+                  <Server size={18} />
+                  {t('apiServer.title')}
+                </MenuItem>
+              </MenuItemLink>
+              <MenuItemLink to="/settings/docprocess">
+                <MenuItem className={isRoute('/settings/docprocess')}>
+                  <FileCode size={18} />
+                  {t('settings.tool.preprocess.title')}
+                </MenuItem>
+              </MenuItemLink>
+              <MenuItemLink to="/settings/quickphrase">
+                <MenuItem className={isRoute('/settings/quickphrase')}>
+                  <Zap size={18} />
+                  {t('settings.quickPhrase.title')}
+                </MenuItem>
+              </MenuItemLink>
+              <MenuItemLink to="/settings/shortcut">
+                <MenuItem className={isRoute('/settings/shortcut')}>
+                  <Command size={18} />
+                  {t('settings.shortcuts.title')}
+                </MenuItem>
+              </MenuItemLink>
+            </div>
+          )}
+          {/* 高级配置结束 */}
+
           <Divider />
           <MenuItemLink to="/settings/quickAssistant">
             <MenuItem className={isRoute('/settings/quickAssistant')}>
@@ -149,6 +190,7 @@ const SettingsPage: FC = () => {
         </SettingMenus>
         <SettingContent>
           <Routes>
+            <Route index element={<Navigate to="provider" replace />} />
             <Route path="provider" element={<ProviderList />} />
             <Route path="model" element={<ModelSettings />} />
             <Route path="websearch/*" element={<WebSearchSettings />} />
@@ -200,7 +242,7 @@ const MenuItemLink = styled(Link)`
   color: var(--color-text-1);
 `
 
-const MenuItem = styled.li`
+const MenuItem = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -223,6 +265,37 @@ const MenuItem = styled.li`
     background: var(--color-background-soft);
     border: 0.5px solid var(--color-border);
   }
+`
+
+const AdvancedHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 10px 5px;
+  cursor: pointer;
+  color: var(--color-text-3);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: color 0.2s;
+
+  .title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  &:hover {
+    color: var(--color-text-1);
+  }
+`
+
+const ActiveDot = styled.div`
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
 `
 
 const SettingContent = styled.div`
