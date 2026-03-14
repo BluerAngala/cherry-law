@@ -116,8 +116,9 @@ class LoggerService {
   private processLog(level: LogLevel, message: string, data: any[]): void {
     let windowSource = this.window
     if (!this.window) {
-      console.error('[LoggerService] window source not initialized, please initialize window source first')
-      windowSource = 'UNKNOWN'
+      // Window source not initialized yet, use a default value
+      // This happens when modules import logger at the top level before entryPoint.tsx runs
+      windowSource = 'PENDING'
     }
 
     const currentLevel = LEVEL_MAP[level]

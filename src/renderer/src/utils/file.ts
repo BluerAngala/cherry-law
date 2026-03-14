@@ -1,7 +1,80 @@
 import type { FileMetadata, FileType } from '@renderer/types'
 import { FILE_TYPE } from '@renderer/types'
 import { audioExts, documentExts, GB, imageExts, KB, MB, textExts, videoExts } from '@shared/config/constant'
-import mime from 'mime-types'
+
+// Simple MIME type to extension mapping for browser environment
+// This replaces the mime-types library which requires Node.js path module
+const mimeToExtMap: Record<string, string> = {
+  // Text
+  'text/plain': 'txt',
+  'text/html': 'html',
+  'text/css': 'css',
+  'text/javascript': 'js',
+  'text/typescript': 'ts',
+  'text/markdown': 'md',
+  'text/csv': 'csv',
+  'text/xml': 'xml',
+  'text/yaml': 'yaml',
+  'text/json': 'json',
+  // Images
+  'image/jpeg': 'jpg',
+  'image/jpg': 'jpg',
+  'image/png': 'png',
+  'image/gif': 'gif',
+  'image/bmp': 'bmp',
+  'image/webp': 'webp',
+  'image/svg+xml': 'svg',
+  'image/tiff': 'tiff',
+  'image/x-icon': 'ico',
+  // Videos
+  'video/mp4': 'mp4',
+  'video/avi': 'avi',
+  'video/quicktime': 'mov',
+  'video/x-ms-wmv': 'wmv',
+  'video/x-flv': 'flv',
+  'video/x-matroska': 'mkv',
+  'video/webm': 'webm',
+  'video/mpeg': 'mpeg',
+  // Audio
+  'audio/mpeg': 'mp3',
+  'audio/wav': 'wav',
+  'audio/ogg': 'ogg',
+  'audio/flac': 'flac',
+  'audio/aac': 'aac',
+  'audio/m4a': 'm4a',
+  'audio/x-m4a': 'm4a',
+  // Documents
+  'application/pdf': 'pdf',
+  'application/msword': 'doc',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx',
+  'application/vnd.ms-powerpoint': 'ppt',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation': 'pptx',
+  'application/vnd.ms-excel': 'xls',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
+  'application/vnd.oasis.opendocument.text': 'odt',
+  'application/vnd.oasis.opendocument.presentation': 'odp',
+  'application/vnd.oasis.opendocument.spreadsheet': 'ods',
+  // Archives
+  'application/zip': 'zip',
+  'application/x-rar-compressed': 'rar',
+  'application/x-7z-compressed': '7z',
+  'application/gzip': 'gz',
+  'application/x-tar': 'tar',
+  // Code
+  'application/json': 'json',
+  'application/xml': 'xml',
+  'application/javascript': 'js',
+  'application/typescript': 'ts'
+}
+
+/**
+ * Get file extension from MIME type
+ * @param mimeType - MIME type string
+ * @returns Extension without dot, or null if not found
+ */
+function getExtensionFromMime(mimeType: string): string | null {
+  return mimeToExtMap[mimeType.toLowerCase()] || null
+}
 
 /**
  * 从文件路径中提取目录路径。
@@ -118,17 +191,18 @@ export async function filterSupportedFiles(files: FileMetadata[], supportExts: s
 
 export const mime2type = (mimeStr: string): FileType => {
   const mimeType = mimeStr.toLowerCase()
-  const ext = mime.extension(mimeType)
+  const ext = getExtensionFromMime(mimeType)
   if (ext) {
-    if (textExts.includes(ext)) {
+    const extWithDot = '.' + ext
+    if (textExts.includes(extWithDot)) {
       return FILE_TYPE.TEXT
-    } else if (imageExts.includes(ext)) {
+    } else if (imageExts.includes(extWithDot)) {
       return FILE_TYPE.IMAGE
-    } else if (documentExts.includes(ext)) {
+    } else if (documentExts.includes(extWithDot)) {
       return FILE_TYPE.DOCUMENT
-    } else if (audioExts.includes(ext)) {
+    } else if (audioExts.includes(extWithDot)) {
       return FILE_TYPE.AUDIO
-    } else if (videoExts.includes(ext)) {
+    } else if (videoExts.includes(extWithDot)) {
       return FILE_TYPE.VIDEO
     }
   }

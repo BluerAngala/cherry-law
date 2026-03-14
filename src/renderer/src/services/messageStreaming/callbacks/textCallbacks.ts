@@ -29,10 +29,14 @@ export const createTextCallbacks = (deps: TextCallbacksDependencies) => {
 
   // 内部维护的状态
   let mainTextBlockId: string | null = null
+  // 累积的文本内容
+  let accumulatedContent: string = ''
 
   return {
     getCurrentMainTextBlockId: () => mainTextBlockId,
     onTextStart: async () => {
+      // 重置累积内容
+      accumulatedContent = ''
       if (blockManager.hasInitialPlaceholder) {
         const changes = {
           type: MessageBlockType.MAIN_TEXT,
@@ -56,8 +60,10 @@ export const createTextCallbacks = (deps: TextCallbacksDependencies) => {
         ? (getState().messageBlocks.entities[citationBlockId] as CitationMessageBlock).response?.source
         : WEB_SEARCH_SOURCE.WEBSEARCH
       if (text) {
+        // 累积文本内容，而不是直接覆盖
+        accumulatedContent += text
         const blockChanges: Partial<MessageBlock> = {
-          content: text,
+          content: accumulatedContent,
           status: MessageBlockStatus.STREAMING,
           citationReferences: citationBlockId ? [{ citationBlockId, citationBlockSource }] : []
         }
@@ -67,15 +73,20 @@ export const createTextCallbacks = (deps: TextCallbacksDependencies) => {
 
     onTextComplete: async (finalText: string) => {
       if (mainTextBlockId) {
+        // 优先使用累积的内容，因为 TEXT_COMPLETE 传递的 finalText 可能不正确
+        // 只有在累积内容为空时才使用 finalText 作为备选
+        const finalContent = accumulatedContent || finalText
         const changes = {
-          content: finalText,
+          content: finalContent,
           status: MessageBlockStatus.SUCCESS
         }
         blockManager.smartBlockUpdate(mainTextBlockId, changes, MessageBlockType.MAIN_TEXT, true)
         if (handleCompactTextComplete) {
-          await handleCompactTextComplete(finalText, mainTextBlockId)
+          await handleCompactTextComplete(finalContent, mainTextBlockId)
         }
+        // 重置状态
         mainTextBlockId = null
+        accumulatedContent = ''
       } else {
         logger.warn(
           `[onTextComplete] Received text.complete but last block was not MAIN_TEXT (was ${blockManager.lastBlockType}) or lastBlockId is null.`

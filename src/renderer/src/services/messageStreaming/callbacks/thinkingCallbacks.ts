@@ -17,6 +17,8 @@ export const createThinkingCallbacks = (deps: ThinkingCallbacksDependencies) => 
   // 内部维护的状态
   let thinkingBlockId: string | null = null
   let thinking_millsec_now: number = 0
+  // 累积的思考内容
+  let accumulatedThinkingContent: string = ''
 
   return {
     // 获取当前思考时间（用于停止回复时保留思考时间）
@@ -26,6 +28,8 @@ export const createThinkingCallbacks = (deps: ThinkingCallbacksDependencies) => 
     }),
 
     onThinkingStart: async () => {
+      // 重置累积内容
+      accumulatedThinkingContent = ''
       if (blockManager.hasInitialPlaceholder) {
         const changes: Partial<MessageBlock> = {
           type: MessageBlockType.THINKING,
@@ -48,8 +52,10 @@ export const createThinkingCallbacks = (deps: ThinkingCallbacksDependencies) => 
 
     onThinkingChunk: async (text: string) => {
       if (thinkingBlockId) {
+        // 累积思考内容，而不是直接覆盖
+        accumulatedThinkingContent += text
         const blockChanges: Partial<MessageBlock> = {
-          content: text,
+          content: accumulatedThinkingContent,
           status: MessageBlockStatus.STREAMING
           // thinking_millsec: performance.now() - thinking_millsec_now
         }
@@ -60,14 +66,19 @@ export const createThinkingCallbacks = (deps: ThinkingCallbacksDependencies) => 
     onThinkingComplete: (finalText: string) => {
       if (thinkingBlockId) {
         const now = performance.now()
+        // 优先使用累积的内容，因为 THINKING_COMPLETE 传递的 finalText 可能不正确
+        // 只有在累积内容为空时才使用 finalText 作为备选
+        const finalContent = accumulatedThinkingContent || finalText
         const changes: Partial<MessageBlock> = {
-          content: finalText,
+          content: finalContent,
           status: MessageBlockStatus.SUCCESS,
           thinking_millsec: now - thinking_millsec_now
         }
         blockManager.smartBlockUpdate(thinkingBlockId, changes, MessageBlockType.THINKING, true)
+        // 重置状态
         thinkingBlockId = null
         thinking_millsec_now = 0
+        accumulatedThinkingContent = ''
       } else {
         logger.warn(
           `[onThinkingComplete] Received thinking.complete but last block was not THINKING (was ${blockManager.lastBlockType}) or lastBlockId is null.`
