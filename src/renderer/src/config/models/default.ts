@@ -7,23 +7,16 @@ export const qwen38bModel: Model = {
   group: 'Qwen'
 }
 
-export const qwen3Next80BModel: Model = {
-  id: 'Qwen/Qwen3-Next-80B-A3B-Instruct',
-  name: 'Qwen3-Next-80B',
-  provider: 'cherryai',
-  group: 'Qwen'
-}
-
 export const SYSTEM_MODELS: Record<SystemProviderId | 'defaultModel', Model[]> = {
   defaultModel: [
     // Default assistant model
-    qwen3Next80BModel,
+    qwen38bModel,
     // Default topic naming model
     qwen38bModel,
     // Default translation model
-    qwen3Next80BModel,
+    qwen38bModel,
     // Default quick assistant model
-    qwen3Next80BModel
+    qwen38bModel
   ],
   cherryin: [],
   vertexai: [],

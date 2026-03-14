@@ -28,10 +28,6 @@ export const FreeTrialModelTag: FC<Props> = ({ model, showLabel = true }) => {
     providerId = 'cherryin'
   }
 
-  if (model.id === 'Qwen/Qwen3-Next-80B-A3B-Instruct') {
-    providerId = 'cherryin'
-  }
-
   const onSelectProvider = () => {
     NavigationService.navigate!(`/settings/provider?id=${providerId}`)
   }
