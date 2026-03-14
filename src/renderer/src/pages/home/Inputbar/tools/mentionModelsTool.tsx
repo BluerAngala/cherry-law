@@ -1,4 +1,5 @@
 import { defineTool, registerTool, TopicType } from '@renderer/pages/home/Inputbar/types'
+import type { MentionedAssistant } from '@renderer/types/newMessage'
 import type React from 'react'
 
 import MentionModelsButton from './components/MentionModelsButton'
@@ -29,8 +30,8 @@ const mentionModelsTool = defineTool({
       <MentionModelsButton
         quickPanel={quickPanel}
         quickPanelController={quickPanelController}
-        mentionedAssistants={mentionedAssistants}
-        setMentionedAssistants={setMentionedAssistants}
+        mentionedAssistants={mentionedAssistants as MentionedAssistant[]}
+        setMentionedAssistants={setMentionedAssistants as React.Dispatch<React.SetStateAction<MentionedAssistant[]>>}
         setText={onTextChange as React.Dispatch<React.SetStateAction<string>>}
       />
     )

@@ -9,7 +9,7 @@ import { messageBlocksSelectors, removeManyBlocks } from '@renderer/store/messag
 import { selectMessagesForTopic } from '@renderer/store/newMessage'
 import type { Assistant, FileMetadata, Model, Topic, Usage } from '@renderer/types'
 import { FILE_TYPE } from '@renderer/types'
-import type { Message, MessageBlock } from '@renderer/types/newMessage'
+import type { MentionedAssistant, Message, MessageBlock } from '@renderer/types/newMessage'
 import { AssistantMessageStatus, MessageBlockStatus, MessageBlockType } from '@renderer/types/newMessage'
 import { uuid } from '@renderer/utils'
 import { getTitleFromString } from '@renderer/utils/export'
@@ -104,6 +104,7 @@ export function getUserMessage({
   files,
   // Keep other potential params if needed by createMessage
   mentions,
+  mentionedAssistants,
   usage
 }: {
   assistant: Assistant
@@ -113,6 +114,7 @@ export function getUserMessage({
   files?: FileMetadata[]
   knowledgeBaseIds?: string[]
   mentions?: Model[]
+  mentionedAssistants?: MentionedAssistant[]
   usage?: Usage
 }): { message: Message; blocks: MessageBlock[] } {
   const defaultModel = getDefaultModel()
@@ -156,6 +158,7 @@ export function getUserMessage({
       blocks: blockIds,
       // 移除knowledgeBaseIds
       mentions,
+      mentionedAssistants,
       // 移除mcp
       type,
       usage

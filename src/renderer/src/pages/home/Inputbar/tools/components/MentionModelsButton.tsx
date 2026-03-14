@@ -1,6 +1,6 @@
 import { ActionIconButton } from '@renderer/components/Buttons'
 import type { ToolQuickPanelApi, ToolQuickPanelController } from '@renderer/pages/home/Inputbar/types'
-import type { Assistant } from '@renderer/types'
+import type { MentionedAssistant } from '@renderer/types/newMessage'
 import { Tooltip } from 'antd'
 import { AtSign } from 'lucide-react'
 import type { FC } from 'react'
@@ -13,8 +13,8 @@ import { useMentionModelsPanel } from './useMentionModelsPanel'
 interface Props {
   quickPanel: ToolQuickPanelApi
   quickPanelController: ToolQuickPanelController
-  mentionedAssistants: Assistant[]
-  setMentionedAssistants: React.Dispatch<React.SetStateAction<Assistant[]>>
+  mentionedAssistants: MentionedAssistant[]
+  setMentionedAssistants: React.Dispatch<React.SetStateAction<MentionedAssistant[]>>
   setText: React.Dispatch<React.SetStateAction<string>>
 }
 

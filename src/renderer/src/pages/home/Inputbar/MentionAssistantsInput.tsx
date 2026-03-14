@@ -1,13 +1,13 @@
 import HorizontalScrollContainer from '@renderer/components/HorizontalScrollContainer'
 import CustomTag from '@renderer/components/Tags/CustomTag'
-import type { Assistant } from '@renderer/types'
+import type { MentionedAssistant } from '@renderer/types/newMessage'
 import { first } from 'lodash'
 import type { FC } from 'react'
 import styled from 'styled-components'
 
 const MentionAssistantsInput: FC<{
-  selectedAssistants: Assistant[]
-  onRemoveAssistant: (assistant: Assistant) => void
+  selectedAssistants: MentionedAssistant[]
+  onRemoveAssistant: (assistant: MentionedAssistant) => void
 }> = ({ selectedAssistants, onRemoveAssistant }) => {
   return (
     <Container>

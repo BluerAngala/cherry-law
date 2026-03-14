@@ -1,6 +1,7 @@
 import type { QuickPanelListItem, QuickPanelReservedSymbol } from '@renderer/components/QuickPanel'
-import type { Assistant, FileMetadata, KnowledgeBase, Model } from '@renderer/types'
+import type { FileMetadata, KnowledgeBase, Model } from '@renderer/types'
 import { FILE_TYPE } from '@renderer/types'
+import type { MentionedAssistant } from '@renderer/types/newMessage'
 import React, { createContext, use, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 type QuickPanelTriggerHandler = (payload?: unknown) => void
@@ -15,7 +16,7 @@ export interface InputbarToolsState {
   /** Models mentioned in the input */
   mentionedModels: Model[]
   /** Assistants mentioned in the input */
-  mentionedAssistants: Assistant[]
+  mentionedAssistants: MentionedAssistant[]
   /** Selected knowledge base items */
   selectedKnowledgeBases: KnowledgeBase[]
   /** Whether the inputbar is expanded */
@@ -79,7 +80,7 @@ export interface InputbarToolsDispatch {
   /** State setters */
   setFiles: React.Dispatch<React.SetStateAction<FileMetadata[]>>
   setMentionedModels: React.Dispatch<React.SetStateAction<Model[]>>
-  setMentionedAssistants: React.Dispatch<React.SetStateAction<Assistant[]>>
+  setMentionedAssistants: React.Dispatch<React.SetStateAction<MentionedAssistant[]>>
   setSelectedKnowledgeBases: React.Dispatch<React.SetStateAction<KnowledgeBase[]>>
   setIsExpanded: React.Dispatch<React.SetStateAction<boolean>>
 
@@ -148,7 +149,7 @@ interface InputbarToolsProviderProps {
   initialState?: Partial<{
     files: FileMetadata[]
     mentionedModels: Model[]
-    mentionedAssistants: Assistant[]
+    mentionedAssistants: MentionedAssistant[]
     selectedKnowledgeBases: KnowledgeBase[]
     isExpanded: boolean
     couldAddImageFile: boolean
@@ -168,7 +169,9 @@ export const InputbarToolsProvider: React.FC<InputbarToolsProviderProps> = ({ ch
   // Core state
   const [files, setFiles] = useState<FileMetadata[]>(initialState?.files || [])
   const [mentionedModels, setMentionedModels] = useState<Model[]>(initialState?.mentionedModels || [])
-  const [mentionedAssistants, setMentionedAssistants] = useState<Assistant[]>(initialState?.mentionedAssistants || [])
+  const [mentionedAssistants, setMentionedAssistants] = useState<MentionedAssistant[]>(
+    (initialState?.mentionedAssistants as MentionedAssistant[]) || []
+  )
   const [selectedKnowledgeBases, setSelectedKnowledgeBases] = useState<KnowledgeBase[]>(
     initialState?.selectedKnowledgeBases || []
   )

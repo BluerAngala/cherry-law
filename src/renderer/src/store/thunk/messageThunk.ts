@@ -959,9 +959,34 @@ export const sendMessage =
         })
       } else {
         const mentionedModels = userMessage.mentions
+        const mentionedAssistants = userMessage.mentionedAssistants
 
         if (mentionedModels && mentionedModels.length > 0) {
           await dispatchMultiModelResponses(dispatch, getState, topicId, userMessage, assistant, mentionedModels)
+        } else if (mentionedAssistants && mentionedAssistants.length > 0) {
+          // 使用@的助手来回复，支持临时切换助手
+          const targetMentionedAssistant = mentionedAssistants[0]
+          // 创建临时助手配置，使用@助手的prompt和model，但保持原始助手的其他配置
+          const tempAssistant: Assistant = {
+            ...assistant,
+            id: targetMentionedAssistant.id,
+            name: targetMentionedAssistant.name,
+            prompt: targetMentionedAssistant.prompt || assistant.prompt,
+            model: targetMentionedAssistant.model || assistant.model,
+            emoji: targetMentionedAssistant.emoji
+          }
+          const assistantMessage = createAssistantMessage(tempAssistant.id, topicId, {
+            askId: userMessage.id,
+            model: tempAssistant.model,
+            traceId: userMessage.traceId,
+            mentionedAssistants: [targetMentionedAssistant]
+          })
+          await saveMessageAndBlocksToDB(topicId, assistantMessage, [])
+          dispatch(newMessagesActions.addMessage({ topicId, message: assistantMessage }))
+
+          queue.add(async () => {
+            await fetchAndProcessAssistantResponseImpl(dispatch, getState, topicId, tempAssistant, assistantMessage)
+          })
         } else {
           const assistantMessage = createAssistantMessage(assistant.id, topicId, {
             askId: userMessage.id,

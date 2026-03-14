@@ -19,6 +19,18 @@ import type {
 } from '.'
 import type { SerializedError } from './error'
 
+/**
+ * 简化的助手信息，用于@助手功能
+ * 避免与 Assistant 类型产生循环引用
+ */
+export interface MentionedAssistant {
+  id: string
+  name: string
+  emoji?: string
+  prompt?: string
+  model?: Model
+}
+
 // MessageBlock 类型枚举 - 根据实际API返回特性优化
 export enum MessageBlockType {
   UNKNOWN = 'unknown', // 未知类型，用于返回之前
@@ -197,6 +209,7 @@ export type Message = {
   useful?: boolean
   askId?: string // 关联的问题消息ID
   mentions?: Model[]
+  mentionedAssistants?: MentionedAssistant[] // @助手功能，临时切换助手
   /**
    * @deprecated
    */
@@ -244,6 +257,7 @@ export interface MessageInputBaseParams {
   files?: FileMetadata[]
   knowledgeBaseIds?: string[]
   mentions?: Model[]
+  mentionedAssistants?: MentionedAssistant[]
   /**
    * @deprecated
    */

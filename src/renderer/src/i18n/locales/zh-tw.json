@@ -814,6 +814,8 @@
       }
     },
     "assistant": {
+      "reply_end": "回覆結束",
+      "reply_start": "指定助手回覆",
       "search": {
         "placeholder": "搜尋"
       }

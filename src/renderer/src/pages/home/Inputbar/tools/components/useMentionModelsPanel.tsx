@@ -3,6 +3,7 @@ import { QuickPanelReservedSymbol } from '@renderer/components/QuickPanel'
 import { useAssistants } from '@renderer/hooks/useAssistant'
 import type { ToolQuickPanelApi, ToolQuickPanelController } from '@renderer/pages/home/Inputbar/types'
 import type { Assistant } from '@renderer/types'
+import type { MentionedAssistant } from '@renderer/types/newMessage'
 import { Avatar } from 'antd'
 import { first, sortBy } from 'lodash'
 import { AtSign, CircleX, Plus } from 'lucide-react'
@@ -20,8 +21,8 @@ export type MentionTriggerInfo = {
 interface Params {
   quickPanel: ToolQuickPanelApi
   quickPanelController: ToolQuickPanelController
-  mentionedAssistants: Assistant[]
-  setMentionedAssistants: React.Dispatch<React.SetStateAction<Assistant[]>>
+  mentionedAssistants: MentionedAssistant[]
+  setMentionedAssistants: React.Dispatch<React.SetStateAction<MentionedAssistant[]>>
   setText: React.Dispatch<React.SetStateAction<string>>
 }
 
@@ -87,11 +88,31 @@ export const useMentionModelsPanel = (params: Params, role: 'button' | 'manager'
     (assistant: Assistant) => {
       setMentionedAssistants((prev) => {
         const exists = prev.some((a) => a.id === assistant.id)
-        return exists ? prev.filter((a) => a.id !== assistant.id) : [...prev, assistant]
+        if (exists) {
+          return prev.filter((a) => a.id !== assistant.id)
+        }
+        // 转换为 MentionedAssistant 类型
+        const mentionedAssistant: MentionedAssistant = {
+          id: assistant.id,
+          name: assistant.name,
+          emoji: assistant.emoji,
+          prompt: assistant.prompt,
+          model: assistant.model
+        }
+        return [...prev, mentionedAssistant]
       })
       hasAssistantActionRef.current = true
+
+      // 如果是从输入框触发的，清除 @ 符号及其后面的文本
+      if (triggerInfoRef.current?.type === 'input') {
+        setText((currentText) => {
+          const textArea = document.querySelector('.inputbar textarea') as HTMLTextAreaElement | null
+          const caret = textArea ? (textArea.selectionStart ?? currentText.length) : currentText.length
+          return removeAtSymbolAndText(currentText, caret, undefined, triggerInfoRef.current?.position)
+        })
+      }
     },
-    [setMentionedAssistants]
+    [setMentionedAssistants, setText, removeAtSymbolAndText]
   )
 
   const onClearMentionAssistants = useCallback(() => {

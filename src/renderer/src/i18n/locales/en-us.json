@@ -814,6 +814,8 @@
       }
     },
     "assistant": {
+      "reply_end": "End of reply",
+      "reply_start": "Replying as",
       "search": {
         "placeholder": "Search"
       }

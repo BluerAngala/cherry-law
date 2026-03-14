@@ -814,6 +814,8 @@
       }
     },
     "assistant": {
+      "reply_end": "回复结束",
+      "reply_start": "指定助手回复",
       "search": {
         "placeholder": "搜索"
       }

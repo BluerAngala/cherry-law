@@ -40,7 +40,7 @@ import {
   type Topic,
   TopicType
 } from '@renderer/types'
-import type { MessageInputBaseParams } from '@renderer/types/newMessage'
+import type { MentionedAssistant, MessageInputBaseParams } from '@renderer/types/newMessage'
 import { delay } from '@renderer/utils'
 import { getSendMessageShortcutLabel } from '@renderer/utils/input'
 import { documentExts, imageExts, textExts } from '@shared/config/constant'
@@ -266,6 +266,9 @@ const InputbarInner: FC<InputbarInnerProps> = ({ assistant: initialAssistant, se
       if (mentionedModels.length) {
         baseUserMessage.mentions = mentionedModels
       }
+      if (mentionedAssistants.length) {
+        baseUserMessage.mentionedAssistants = mentionedAssistants
+      }
 
       baseUserMessage.usage = await estimateUserPromptUsage(baseUserMessage)
 
@@ -276,6 +279,7 @@ const InputbarInner: FC<InputbarInnerProps> = ({ assistant: initialAssistant, se
 
       setText('')
       setFiles([])
+      setMentionedAssistants([]) // 发送后清除@的助手
       setTimeoutTimer('sendMessage_1', () => setText(''), 500)
       setTimeoutTimer('sendMessage_2', () => resizeTextArea(), 0)
       // Restore focus to textarea after sending to maintain IME state (fcitx5 issue)
@@ -289,10 +293,12 @@ const InputbarInner: FC<InputbarInnerProps> = ({ assistant: initialAssistant, se
     topic,
     text,
     mentionedModels,
+    mentionedAssistants,
     files,
     dispatch,
     setText,
     setFiles,
+    setMentionedAssistants,
     setTimeoutTimer,
     resizeTextArea,
     focusTextarea
@@ -355,7 +361,7 @@ const InputbarInner: FC<InputbarInnerProps> = ({ assistant: initialAssistant, se
   )
 
   const handleRemoveAssistant = useCallback(
-    (assistantToRemove: Assistant) => {
+    (assistantToRemove: MentionedAssistant) => {
       setMentionedAssistants(mentionedAssistants.filter((current) => current.id !== assistantToRemove.id))
     },
     [mentionedAssistants, setMentionedAssistants]

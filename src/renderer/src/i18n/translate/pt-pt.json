@@ -814,6 +814,8 @@
       }
     },
     "assistant": {
+      "reply_end": "[to be translated]:End of reply",
+      "reply_start": "[to be translated]:Replying as",
       "search": {
         "placeholder": "Pesquisar"
       }
