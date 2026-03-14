@@ -1,0 +1,8 @@
+# 继承基础依赖
+-r requirements.txt
+
+# CUDA 版本 PyTorch (需要根据 CUDA 版本调整)
+# CUDA 11.8
+--extra-index-url https://download.pytorch.org/whl/cu118
+torch>=2.0.0
+torchaudio>=2.0.0

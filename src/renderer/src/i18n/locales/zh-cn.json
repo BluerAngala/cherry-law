@@ -5211,6 +5211,7 @@
       "selection_assistant_toggle": "开关划词助手",
       "show_app": "显示 / 隐藏应用",
       "show_settings": "打开设置",
+      "speech_toggle": "语音输入开关",
       "title": "快捷键",
       "toggle_new_context": "清除上下文",
       "toggle_show_assistants": "切换助手显示",
@@ -5218,6 +5219,9 @@
       "zoom_in": "放大界面",
       "zoom_out": "缩小界面",
       "zoom_reset": "重置缩放"
+    },
+    "speech": {
+      "title": "语音助手"
     },
     "theme": {
       "color_primary": "主题颜色",
@@ -5446,6 +5450,47 @@
       "reset": "重置",
       "title": "缩放"
     }
+  },
+  "speech": {
+    "about": {
+      "features": "功能特点",
+      "features_description": "支持中文、英文、粤语、日语、韩语等多种语言",
+      "model": "SenseVoice Small",
+      "technology": "技术",
+      "technology_description": "基于阿里巴巴达摩院 SenseVoice Small 模型",
+      "title": "关于"
+    },
+    "description": "使用 SenseVoice 模型配置本地语音识别服务，实现语音转文字功能",
+    "error": {
+      "title": "语音识别错误"
+    },
+    "general": {
+      "enable": "启用语音识别",
+      "enable_description": "开启语音输入功能",
+      "server_url": "服务器地址",
+      "server_url_description": "SenseVoice 服务地址，默认 http://127.0.0.1:8000",
+      "title": "通用设置"
+    },
+    "shortcuts": {
+      "configure_in_shortcuts": "请在键盘快捷键设置中配置",
+      "title": "快捷键",
+      "toggle_recording": "切换录音",
+      "toggle_recording_description": "开始或停止语音录音"
+    },
+    "status": {
+      "check_connection": "检查连接",
+      "connected": "已连接",
+      "disconnected": "未连接",
+      "idle": "空闲",
+      "processing": "识别中",
+      "recording": "录音中",
+      "recording_description": "当前录音和识别状态",
+      "recording_status": "录音状态",
+      "server_connection": "服务器连接",
+      "server_description": "语音服务连接状态",
+      "title": "服务状态"
+    },
+    "title": "语音助手"
   },
   "title": {
     "apps": "小程序",

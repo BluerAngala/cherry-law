@@ -305,7 +305,10 @@ const HomeWindow: FC<{ draggable?: boolean }> = ({ draggable = true }) => {
                   thinkingStartTime = performance.now()
                   if (thinkingBlockId) {
                     store.dispatch(
-                      updateOneBlock({ id: thinkingBlockId, changes: { status: MessageBlockStatus.STREAMING } })
+                      updateOneBlock({
+                        id: thinkingBlockId,
+                        changes: { status: MessageBlockStatus.STREAMING }
+                      })
                     )
                   } else {
                     const block = createThinkingBlock(assistantMessage.id, '', {
@@ -346,7 +349,10 @@ const HomeWindow: FC<{ draggable?: boolean }> = ({ draggable = true }) => {
                     store.dispatch(
                       updateOneBlock({
                         id: thinkingBlockId,
-                        changes: { status: MessageBlockStatus.SUCCESS, thinking_millsec: thinkingDuration }
+                        changes: {
+                          status: MessageBlockStatus.SUCCESS,
+                          thinking_millsec: thinkingDuration
+                        }
                       })
                     )
                   }
@@ -358,7 +364,12 @@ const HomeWindow: FC<{ draggable?: boolean }> = ({ draggable = true }) => {
                 {
                   setIsOutputted(true)
                   if (blockId) {
-                    store.dispatch(updateOneBlock({ id: blockId, changes: { status: MessageBlockStatus.STREAMING } }))
+                    store.dispatch(
+                      updateOneBlock({
+                        id: blockId,
+                        changes: { status: MessageBlockStatus.STREAMING }
+                      })
+                    )
                   } else {
                     const block = createMainTextBlock(assistantMessage.id, '', {
                       status: MessageBlockStatus.STREAMING
@@ -391,7 +402,10 @@ const HomeWindow: FC<{ draggable?: boolean }> = ({ draggable = true }) => {
                     store.dispatch(
                       updateOneBlock({
                         id: blockId,
-                        changes: { content: chunk.text, status: MessageBlockStatus.SUCCESS }
+                        changes: {
+                          content: chunk.text,
+                          status: MessageBlockStatus.SUCCESS
+                        }
                       })
                     )
                   }
@@ -546,6 +560,7 @@ const HomeWindow: FC<{ draggable?: boolean }> = ({ draggable = true }) => {
                 loading={isLoading}
                 handleKeyDown={handleKeyDown}
                 handleChange={handleChange}
+                onVoiceResult={(text) => setUserInputText((prev) => prev + text)}
                 ref={inputBarRef}
               />
               <Divider style={{ margin: '10px 0' }} />
@@ -590,6 +605,7 @@ const HomeWindow: FC<{ draggable?: boolean }> = ({ draggable = true }) => {
             loading={isLoading}
             handleKeyDown={handleKeyDown}
             handleChange={handleChange}
+            onVoiceResult={(text) => setUserInputText((prev) => prev + text)}
             ref={inputBarRef}
           />
           <Divider style={{ margin: '10px 0' }} />

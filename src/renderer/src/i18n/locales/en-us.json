@@ -5211,6 +5211,7 @@
       "selection_assistant_toggle": "Toggle Selection Assistant",
       "show_app": "Show/Hide App",
       "show_settings": "Open Settings",
+      "speech_toggle": "Toggle Voice Input",
       "title": "Keyboard Shortcuts",
       "toggle_new_context": "Clear Context",
       "toggle_show_assistants": "Toggle Assistants",
@@ -5218,6 +5219,9 @@
       "zoom_in": "Zoom In",
       "zoom_out": "Zoom Out",
       "zoom_reset": "Reset Zoom"
+    },
+    "speech": {
+      "title": "Speech Assistant"
     },
     "theme": {
       "color_primary": "Primary Color",
@@ -5446,6 +5450,47 @@
       "reset": "Reset",
       "title": "Page Zoom"
     }
+  },
+  "speech": {
+    "about": {
+      "features": "Features",
+      "features_description": "Supports Chinese, English, Cantonese, Japanese, Korean and other languages",
+      "model": "SenseVoice Small",
+      "technology": "Technology",
+      "technology_description": "Based on Alibaba DAMO Academy's SenseVoice Small model",
+      "title": "About"
+    },
+    "description": "Configure local speech recognition service using SenseVoice model for voice-to-text conversion",
+    "error": {
+      "title": "Speech Recognition Error"
+    },
+    "general": {
+      "enable": "Enable Speech Recognition",
+      "enable_description": "Enable voice input functionality",
+      "server_url": "Server URL",
+      "server_url_description": "SenseVoice service URL, default http://127.0.0.1:8000",
+      "title": "General Settings"
+    },
+    "shortcuts": {
+      "configure_in_shortcuts": "Please configure in keyboard shortcuts settings",
+      "title": "Shortcuts",
+      "toggle_recording": "Toggle Recording",
+      "toggle_recording_description": "Start or stop voice recording"
+    },
+    "status": {
+      "check_connection": "Check Connection",
+      "connected": "Connected",
+      "disconnected": "Disconnected",
+      "idle": "Idle",
+      "processing": "Processing",
+      "recording": "Recording",
+      "recording_description": "Current recording and recognition status",
+      "recording_status": "Recording Status",
+      "server_connection": "Server Connection",
+      "server_description": "Speech service connection status",
+      "title": "Service Status"
+    },
+    "title": "Speech Assistant"
   },
   "title": {
     "apps": "Apps",

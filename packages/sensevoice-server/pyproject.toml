@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sensevoice-server"
+version = "1.0.0"
+description = "SenseVoice 语音识别服务"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+    {name = "Cherry Studio Team"}
+]
+dependencies = [
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "python-multipart>=0.0.6",
+    "funasr>=1.0.0",
+    "modelscope>=1.10.0",
+    "librosa>=0.10.0",
+    "soundfile>=0.12.0",
+    "numpy>=1.24.0",
+    "torch>=2.0.0",
+    "torchaudio>=2.0.0",
+    "pydantic>=2.0.0",
+    "psutil>=5.9.0",
+]
+
+[project.scripts]
+sensevoice-server = "sensevoice_server.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["sensevoice_server*"]

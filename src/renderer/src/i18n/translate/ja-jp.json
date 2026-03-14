@@ -5211,6 +5211,7 @@
       "selection_assistant_toggle": "選択アシスタントを切り替え",
       "show_app": "アプリを表示/非表示",
       "show_settings": "設定を開く",
+      "speech_toggle": "[to be translated]:Toggle Voice Input",
       "title": "ショートカット",
       "toggle_new_context": "コンテキストをクリア",
       "toggle_show_assistants": "アシスタントの表示を切り替え",
@@ -5218,6 +5219,9 @@
       "zoom_in": "ズームイン",
       "zoom_out": "ズームアウト",
       "zoom_reset": "ズームをリセット"
+    },
+    "speech": {
+      "title": "[to be translated]:Speech Assistant"
     },
     "theme": {
       "color_primary": "テーマ色",
@@ -5446,6 +5450,47 @@
       "reset": "リセット",
       "title": "ページズーム"
     }
+  },
+  "speech": {
+    "about": {
+      "features": "[to be translated]:Features",
+      "features_description": "[to be translated]:Supports Chinese, English, Cantonese, Japanese, Korean and other languages",
+      "model": "[to be translated]:SenseVoice Small",
+      "technology": "[to be translated]:Technology",
+      "technology_description": "[to be translated]:Based on Alibaba DAMO Academy's SenseVoice Small model",
+      "title": "[to be translated]:About"
+    },
+    "description": "[to be translated]:Configure local speech recognition service using SenseVoice model for voice-to-text conversion",
+    "error": {
+      "title": "[to be translated]:Speech Recognition Error"
+    },
+    "general": {
+      "enable": "[to be translated]:Enable Speech Recognition",
+      "enable_description": "[to be translated]:Enable voice input functionality",
+      "server_url": "[to be translated]:Server URL",
+      "server_url_description": "[to be translated]:SenseVoice service URL, default http://127.0.0.1:8000",
+      "title": "[to be translated]:General Settings"
+    },
+    "shortcuts": {
+      "configure_in_shortcuts": "[to be translated]:Please configure in keyboard shortcuts settings",
+      "title": "[to be translated]:Shortcuts",
+      "toggle_recording": "[to be translated]:Toggle Recording",
+      "toggle_recording_description": "[to be translated]:Start or stop voice recording"
+    },
+    "status": {
+      "check_connection": "[to be translated]:Check Connection",
+      "connected": "[to be translated]:Connected",
+      "disconnected": "[to be translated]:Disconnected",
+      "idle": "[to be translated]:Idle",
+      "processing": "[to be translated]:Processing",
+      "recording": "[to be translated]:Recording",
+      "recording_description": "[to be translated]:Current recording and recognition status",
+      "recording_status": "[to be translated]:Recording Status",
+      "server_connection": "[to be translated]:Server Connection",
+      "server_description": "[to be translated]:Speech service connection status",
+      "title": "[to be translated]:Service Status"
+    },
+    "title": "[to be translated]:Speech Assistant"
   },
   "title": {
     "apps": "アプリ",

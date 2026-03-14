@@ -1,4 +1,5 @@
 import ModelAvatar from '@renderer/components/Avatar/ModelAvatar'
+import { VoiceInputButton } from '@renderer/components/VoiceInput'
 import { useTimer } from '@renderer/hooks/useTimer'
 import type { Assistant } from '@renderer/types'
 import { Input as AntdInput } from 'antd'
@@ -14,6 +15,7 @@ interface InputBarProps {
   loading: boolean
   handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onVoiceResult?: (text: string) => void
 }
 
 const InputBar = ({
@@ -23,7 +25,8 @@ const InputBar = ({
   placeholder,
   loading,
   handleKeyDown,
-  handleChange
+  handleChange,
+  onVoiceResult
 }: InputBarProps & { ref?: React.RefObject<HTMLDivElement | null> }) => {
   const inputRef = useRef<InputRef>(null)
   const { setTimeoutTimer } = useTimer()
@@ -42,6 +45,7 @@ const InputBar = ({
         onChange={handleChange}
         ref={inputRef}
       />
+      <VoiceInputButton onResult={onVoiceResult} disabled={loading} size="middle" />
     </InputWrapper>
   )
 }

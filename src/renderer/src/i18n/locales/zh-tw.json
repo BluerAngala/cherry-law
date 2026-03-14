@@ -5211,6 +5211,7 @@
       "selection_assistant_toggle": "開關劃詞助手",
       "show_app": "顯示 / 隱藏應用程式",
       "show_settings": "開啟設定",
+      "speech_toggle": "[to be translated]:Toggle Voice Input",
       "title": "快捷鍵",
       "toggle_new_context": "清除上下文",
       "toggle_show_assistants": "切換助手顯示",
@@ -5218,6 +5219,9 @@
       "zoom_in": "放大介面",
       "zoom_out": "縮小介面",
       "zoom_reset": "重設縮放"
+    },
+    "speech": {
+      "title": "語音助手"
     },
     "theme": {
       "color_primary": "主題顏色",
@@ -5446,6 +5450,47 @@
       "reset": "重設",
       "title": "縮放"
     }
+  },
+  "speech": {
+    "about": {
+      "features": "功能特點",
+      "features_description": "支援中文、英文、粵語、日語、韓語等多種語言",
+      "model": "SenseVoice Small",
+      "technology": "技術",
+      "technology_description": "基於阿里巴巴達摩院 SenseVoice Small 模型",
+      "title": "關於"
+    },
+    "description": "使用 SenseVoice 模型配置本地語音識別服務，實現語音轉文字功能",
+    "error": {
+      "title": "語音識別錯誤"
+    },
+    "general": {
+      "enable": "啟用語音識別",
+      "enable_description": "開啟語音輸入功能",
+      "server_url": "伺服器地址",
+      "server_url_description": "SenseVoice 服務地址，預設 http://127.0.0.1:8000",
+      "title": "通用設置"
+    },
+    "shortcuts": {
+      "configure_in_shortcuts": "請在鍵盤快捷鍵設置中配置",
+      "title": "快捷鍵",
+      "toggle_recording": "切換錄音",
+      "toggle_recording_description": "開始或停止語音錄音"
+    },
+    "status": {
+      "check_connection": "檢查連接",
+      "connected": "已連接",
+      "disconnected": "未連接",
+      "idle": "空閒",
+      "processing": "識別中",
+      "recording": "錄音中",
+      "recording_description": "當前錄音和識別狀態",
+      "recording_status": "錄音狀態",
+      "server_connection": "伺服器連接",
+      "server_description": "語音服務連接狀態",
+      "title": "服務狀態"
+    },
+    "title": "語音助手"
   },
   "title": {
     "apps": "小程式",

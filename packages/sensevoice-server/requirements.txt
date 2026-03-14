@@ -1,0 +1,21 @@
+# Web 框架
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+python-multipart>=0.0.6
+
+# ASR 核心
+funasr>=1.0.0
+modelscope>=1.10.0
+
+# 音频处理
+librosa>=0.10.0
+soundfile>=0.12.0
+numpy>=1.24.0
+
+# PyTorch (CPU 版本，CUDA 版本见 requirements-cuda.txt)
+torch>=2.0.0
+torchaudio>=2.0.0
+
+# 工具
+pydantic>=2.0.0
+psutil>=5.9.0

@@ -12,6 +12,7 @@ import {
   FileCode,
   HardDrive,
   Info,
+  Mic,
   MonitorCog,
   Package,
   PictureInPicture2,
@@ -39,6 +40,7 @@ import QuickAssistantSettings from './QuickAssistantSettings'
 import QuickPhraseSettings from './QuickPhraseSettings'
 import SelectionAssistantSettings from './SelectionAssistantSettings/SelectionAssistantSettings'
 import ShortcutSettings from './ShortcutSettings'
+import SpeechSettings from './SpeechSettings'
 import { ApiServerSettings } from './ToolSettings/ApiServerSettings'
 import WebSearchSettings from './WebSearchSettings'
 
@@ -168,6 +170,12 @@ const SettingsPage: FC = () => {
           {/* 高级配置结束 */}
 
           <Divider />
+          <MenuItemLink to="/settings/speech">
+            <MenuItem className={isRoute('/settings/speech')}>
+              <Mic size={18} />
+              {t('settings.speech.title')}
+            </MenuItem>
+          </MenuItemLink>
           <MenuItemLink to="/settings/quickAssistant">
             <MenuItem className={isRoute('/settings/quickAssistant')}>
               <PictureInPicture2 size={18} />
@@ -205,6 +213,7 @@ const SettingsPage: FC = () => {
             <Route path="quickAssistant" element={<QuickAssistantSettings />} />
             <Route path="selectionAssistant" element={<SelectionAssistantSettings />} />
             <Route path="data" element={<DataSettings />} />
+            <Route path="speech" element={<SpeechSettings />} />
             <Route path="about" element={<AboutSettings />} />
           </Routes>
         </SettingContent>

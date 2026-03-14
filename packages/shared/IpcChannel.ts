@@ -428,5 +428,20 @@ export enum IpcChannel {
   OpenClaw_GetChannels = 'openclaw:get-channels',
 
   // Analytics
-  Analytics_TrackTokenUsage = 'analytics:track-token-usage'
+  Analytics_TrackTokenUsage = 'analytics:track-token-usage',
+
+  // Speech Recognition
+  Speech_GetStatus = 'speech:get-status',
+  Speech_StatusChanged = 'speech:status-changed',
+  Speech_StartRecording = 'speech:start-recording',
+  Speech_StopRecording = 'speech:stop-recording',
+  Speech_ToggleRecording = 'speech:toggle-recording',
+  Speech_RecordingStateChanged = 'speech:recording-state-changed',
+  Speech_RecognitionResult = 'speech:recognition-result',
+  Speech_RecognitionError = 'speech:recognition-error',
+  Speech_UpdateConfig = 'speech:update-config',
+  Speech_GetConfig = 'speech:get-config',
+  Speech_StartServer = 'speech:start-server',
+  Speech_StopServer = 'speech:stop-server',
+  Speech_CheckServerHealth = 'speech:check-server-health'
 }

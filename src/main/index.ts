@@ -40,6 +40,7 @@ import { windowService } from './services/WindowService'
 import { initWebviewHotkeys } from './services/WebviewService'
 import { runAsyncFunction } from './utils'
 import { isOvmsSupported } from './services/OvmsManager'
+import { speechService } from './services/speech'
 
 const logger = loggerService.withContext('MainEntry')
 
@@ -170,6 +171,10 @@ if (!app.requestSingleInstanceLock()) {
 
     registerShortcuts(mainWindow)
 
+    // Initialize speech service
+    speechService.setMainWindow(mainWindow)
+    await speechService.initialize()
+
     await registerIpc(mainWindow, app)
     localTransferService.startDiscovery({ resetList: true })
 
@@ -274,6 +279,7 @@ if (!app.requestSingleInstanceLock()) {
       await openClawService.stopGateway()
       await mcpService.cleanup()
       await apiServerService.stop()
+      speechService.destroy()
     } catch (error) {
       logger.warn('Error cleaning up services:', error as Error)
     }

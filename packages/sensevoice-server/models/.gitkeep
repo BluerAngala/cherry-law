@@ -1,0 +1,8 @@
+# 模型存放目录
+
+此目录用于存放 SenseVoice Small 模型文件。
+
+模型将在首次启动时自动下载，或手动运行:
+```bash
+python scripts/download_model.py
+```

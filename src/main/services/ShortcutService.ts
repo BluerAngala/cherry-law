@@ -22,6 +22,7 @@ import { globalShortcut } from 'electron'
 
 import { configManager } from './ConfigManager'
 import selectionService from './SelectionService'
+import { speechService } from './speech'
 import { windowService } from './WindowService'
 
 const logger = loggerService.withContext('ShortcutService')
@@ -30,6 +31,7 @@ let showAppAccelerator: string | null = null
 let showMiniWindowAccelerator: string | null = null
 let selectionAssistantToggleAccelerator: string | null = null
 let selectionAssistantSelectTextAccelerator: string | null = null
+let speechToggleAccelerator: string | null = null
 
 //indicate if the shortcuts are registered on app boot time
 let isRegisterOnBoot = true
@@ -73,6 +75,13 @@ function getShortcutHandler(shortcut: Shortcut) {
         if (selectionService) {
           selectionService.processSelectTextByShortcut()
         }
+      }
+    case 'speech_toggle':
+      return () => {
+        logger.info('语音快捷键触发')
+        speechService.toggleRecording().catch((error) => {
+          logger.error('语音切换失败:', error)
+        })
       }
     default:
       return null
@@ -197,9 +206,13 @@ export function registerShortcuts(window: BrowserWindow) {
         // only register universal shortcuts when needed
         if (
           onlyUniversalShortcuts &&
-          !['show_app', 'mini_window', 'selection_assistant_toggle', 'selection_assistant_select_text'].includes(
-            shortcut.key
-          )
+          ![
+            'show_app',
+            'mini_window',
+            'selection_assistant_toggle',
+            'selection_assistant_select_text',
+            'speech_toggle'
+          ].includes(shortcut.key)
         ) {
           return
         }
@@ -227,6 +240,10 @@ export function registerShortcuts(window: BrowserWindow) {
 
           case 'selection_assistant_select_text':
             selectionAssistantSelectTextAccelerator = formatShortcutKey(shortcut.shortcut)
+            break
+
+          case 'speech_toggle':
+            speechToggleAccelerator = formatShortcutKey(shortcut.shortcut)
             break
 
           //the following ZOOMs will register shortcuts separately, so will return
@@ -283,6 +300,12 @@ export function registerShortcuts(window: BrowserWindow) {
         const accelerator = convertShortcutFormat(selectionAssistantSelectTextAccelerator)
         handler && globalShortcut.register(accelerator, () => handler(window))
       }
+
+      if (speechToggleAccelerator) {
+        const handler = getShortcutHandler({ key: 'speech_toggle' } as Shortcut)
+        const accelerator = convertShortcutFormat(speechToggleAccelerator)
+        handler && globalShortcut.register(accelerator, () => handler(window))
+      }
     } catch (error) {
       logger.warn('Failed to unregister shortcuts')
     }
@@ -310,6 +333,7 @@ export function unregisterAllShortcuts() {
     showMiniWindowAccelerator = null
     selectionAssistantToggleAccelerator = null
     selectionAssistantSelectTextAccelerator = null
+    speechToggleAccelerator = null
     windowOnHandlers.forEach((handlers, window) => {
       window.off('focus', handlers.onFocusHandler)
       window.off('blur', handlers.onBlurHandler)
