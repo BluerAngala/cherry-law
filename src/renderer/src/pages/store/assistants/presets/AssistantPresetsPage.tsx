@@ -28,7 +28,7 @@ import ManageAssistantPresetsPopup from './components/ManageAssistantPresetsPopu
 const AssistantPresetsPage: FC = () => {
   const [search, setSearch] = useState('')
   const [searchInput, setSearchInput] = useState('')
-  const [activeGroup, setActiveGroup] = useState('我的')
+  const [activeGroup, setActiveGroup] = useState('精选')
   const [agentGroups, setAgentGroups] = useState<Record<string, AssistantPreset[]>>({})
   const [isSearchExpanded, setIsSearchExpanded] = useState(false)
   const systemPresets = useSystemAssistantPresets()
@@ -37,10 +37,40 @@ const AssistantPresetsPage: FC = () => {
 
   useEffect(() => {
     const systemAgentsGroupList = groupByCategories(systemPresets)
+
+    // 提取每种标签的前两个助手
+    const featuredAgents: AssistantPreset[] = []
+    const featuredSet = new Set<string>() // 用于去重
+
+    // 首先添加原本就标记为“精选”的助手（如果存在）
+    if (systemAgentsGroupList['精选']) {
+      systemAgentsGroupList['精选'].forEach((agent) => {
+        if (!featuredSet.has(agent.id)) {
+          featuredAgents.push(agent)
+          featuredSet.add(agent.id)
+        }
+      })
+    }
+
+    Object.entries(systemAgentsGroupList).forEach(([group, agents]) => {
+      // 排除“我的”和“精选”本身的分组逻辑
+      if (group === '我的' || group === '精选') return
+
+      const firstTwo = agents.slice(0, 2)
+      firstTwo.forEach((agent) => {
+        if (!featuredSet.has(agent.id)) {
+          featuredAgents.push(agent)
+          featuredSet.add(agent.id)
+        }
+      })
+    })
+
     const agentsGroupList = {
       我的: userPresets,
-      精选: [],
-      ...systemAgentsGroupList
+      精选: featuredAgents,
+      通用: systemAgentsGroupList['通用'] || [],
+      法律: systemAgentsGroupList['法律'] || [],
+      ...omit(systemAgentsGroupList, ['精选', '通用', '法律'])
     } as Record<string, AssistantPreset[]>
     setAgentGroups(agentsGroupList)
   }, [systemPresets, userPresets])
@@ -115,7 +145,7 @@ const AssistantPresetsPage: FC = () => {
   const handleSearch = () => {
     if (searchInput.trim() === '') {
       setSearch('')
-      setActiveGroup('我的')
+      setActiveGroup('精选')
     } else {
       setActiveGroup('')
       setSearch(searchInput)
@@ -125,7 +155,7 @@ const AssistantPresetsPage: FC = () => {
   const handleSearchClear = () => {
     setSearch('')
     setSearchInput('')
-    setActiveGroup('我的')
+    setActiveGroup('精选')
     setIsSearchExpanded(false)
   }
 
@@ -144,7 +174,7 @@ const AssistantPresetsPage: FC = () => {
     if (value.trim() === '') {
       setIsSearchExpanded(false)
       setSearch('')
-      setActiveGroup('我的')
+      setActiveGroup('精选')
     }
   }
 
@@ -187,7 +217,12 @@ const AssistantPresetsPage: FC = () => {
           <Input
             placeholder={t('common.search')}
             className="nodrag"
-            style={{ width: '30%', height: 28, borderRadius: 15, paddingLeft: 12 }}
+            style={{
+              width: '30%',
+              height: 28,
+              borderRadius: 15,
+              paddingLeft: 12
+            }}
             size="small"
             variant="filled"
             allowClear
@@ -255,7 +290,12 @@ const AssistantPresetsPage: FC = () => {
                 <Input
                   placeholder={t('common.search')}
                   className="nodrag"
-                  style={{ width: 200, height: 28, borderRadius: 15, paddingLeft: 12 }}
+                  style={{
+                    width: 200,
+                    height: 28,
+                    borderRadius: 15,
+                    paddingLeft: 12
+                  }}
                   size="small"
                   variant="filled"
                   allowClear
