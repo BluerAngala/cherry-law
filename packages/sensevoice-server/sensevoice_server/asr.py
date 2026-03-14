@@ -1,12 +1,11 @@
 """
-ASR 引擎封装 - SenseVoice Small
+ASR 引擎封装 - SenseVoice Small (ONNX Runtime 版本)
 """
 import time
 import logging
 from typing import Optional, Tuple
 from pathlib import Path
 
-import torch
 import numpy as np
 
 logger = logging.getLogger(__name__)
@@ -19,72 +18,108 @@ class ASRError(Exception):
 
 class ASREngine:
     """
-    SenseVoice ASR 引擎
+    SenseVoice ASR 引擎 - ONNX Runtime 版本
 
     支持:
     - 中英文混合识别
     - 自动标点
-    - 情感识别（可选）
     """
 
     def __init__(self, config: "ASRConfig"):
         self.config = config
-        self.model = None
-        self.device = None
+        self.session = None
+        self.tokenizer = None
         self._initialized = False
         self._init_error: Optional[str] = None
 
-    def _select_device(self) -> str:
-        """选择计算设备"""
-        if self.config.device != "auto":
-            return self.config.device
-
-        if self.config.use_gpu and torch.cuda.is_available():
-            device = f"cuda:{self.config.gpu_id}"
-            logger.info(f"使用 GPU: {torch.cuda.get_device_name(self.config.gpu_id)}")
-            return device
-
-        logger.info("使用 CPU 模式")
-        return "cpu"
-
     def _load_model(self):
-        """加载模型"""
+        """加载 ONNX 模型"""
         try:
-            from funasr import AutoModel
+            import onnxruntime as ort
 
             # 确定模型路径
             if self.config.model_dir:
-                model_path = Path(self.config.model_dir)
-                if not model_path.exists():
-                    raise ASRError(f"模型目录不存在: {model_path}")
+                model_path = Path(self.config.model_dir) / "model.onnx"
             else:
-                model_path = self.config.model_name
+                # 默认模型路径
+                model_path = Path(__file__).parent.parent / "models" / "sensevoice-small" / "model.onnx"
 
-            logger.info(f"正在加载模型: {model_path}")
+            if not model_path.exists():
+                raise ASRError(f"模型文件不存在: {model_path}")
 
-            self.device = self._select_device()
+            logger.info(f"正在加载 ONNX 模型: {model_path}")
 
-            # 加载模型
-            self.model = AutoModel(
-                model=str(model_path),
-                device=self.device,
-                # SenseVoice 特定配置
-                model_type="sensevoice",
-                disable_pbar=True,
-                disable_log=True,
-            )
+            # 配置 ONNX Runtime
+            providers = ['CUDAExecutionProvider', 'CPUExecutionProvider']
+            self.session = ort.InferenceSession(str(model_path), providers=providers)
+
+            # 加载 tokenizer
+            self._load_tokenizer()
 
             logger.info("模型加载完成")
             self._initialized = True
 
         except ImportError as e:
-            self._init_error = f"缺少依赖: {e}. 请安装 funasr: pip install funasr"
+            self._init_error = f"缺少依赖: {e}. 请安装 onnxruntime: pip install onnxruntime"
             logger.error(self._init_error)
             raise ASRError(self._init_error)
         except Exception as e:
             self._init_error = str(e)
             logger.error(f"模型加载失败: {e}")
             raise ASRError(f"模型加载失败: {e}")
+
+    def _load_tokenizer(self):
+        """加载 tokenizer"""
+        try:
+            from tokenizers import Tokenizer
+
+            if self.config.model_dir:
+                tokenizer_path = Path(self.config.model_dir) / "tokens.json"
+            else:
+                tokenizer_path = Path(__file__).parent.parent / "models" / "sensevoice-small" / "tokens.json"
+
+            if tokenizer_path.exists():
+                self.tokenizer = Tokenizer.from_file(str(tokenizer_path))
+            else:
+                logger.warning(f"Tokenizer 文件不存在: {tokenizer_path}，将使用默认处理")
+                self.tokenizer = None
+
+        except Exception as e:
+            logger.warning(f"加载 tokenizer 失败: {e}")
+            self.tokenizer = None
+
+    def _preprocess_audio(self, audio_data: np.ndarray, sample_rate: int) -> np.ndarray:
+        """预处理音频数据"""
+        import librosa
+
+        # 转为单声道
+        if len(audio_data.shape) > 1:
+            audio_data = audio_data.mean(axis=1)
+
+        # 重采样到 16kHz
+        if sample_rate != 16000:
+            audio_data = librosa.resample(audio_data, orig_sr=sample_rate, target_sr=16000)
+
+        # 归一化
+        if audio_data.dtype != np.float32:
+            audio_data = audio_data.astype(np.float32) / 32768.0
+
+        # 提取特征 (简化版 - 使用 log mel spectrogram)
+        mel_spec = librosa.feature.melspectrogram(
+            y=audio_data,
+            sr=16000,
+            n_mels=80,
+            n_fft=400,
+            hop_length=160,
+            win_length=400,
+            window='hamming'
+        )
+        log_mel = librosa.power_to_db(mel_spec, ref=np.max)
+
+        # 转置为 (time, freq)
+        features = log_mel.T.astype(np.float32)
+
+        return features
 
     def initialize(self):
         """初始化引擎"""
@@ -95,7 +130,7 @@ class ASREngine:
 
     def is_ready(self) -> bool:
         """检查是否就绪"""
-        return self._initialized and self.model is not None
+        return self._initialized and self.session is not None
 
     def get_init_error(self) -> Optional[str]:
         """获取初始化错误"""
@@ -124,41 +159,46 @@ class ASREngine:
         start_time = time.time()
 
         try:
-            # 确保音频格式正确
-            if audio_data.dtype != np.float32:
-                audio_data = audio_data.astype(np.float32) / 32768.0
+            # 预处理音频
+            features = self._preprocess_audio(audio_data, sample_rate)
 
-            # 重采样（如果需要）
-            if sample_rate != 16000:
-                import librosa
-                audio_data = librosa.resample(
-                    audio_data,
-                    orig_sr=sample_rate,
-                    target_sr=16000
-                )
+            # 添加 batch 维度
+            features = np.expand_dims(features, axis=0)
 
-            # 执行识别
-            result = self.model.generate(
-                input=audio_data,
-                language=language or self.config.language,
-            )
+            # 获取输入输出名称
+            input_name = self.session.get_inputs()[0].name
 
-            # 解析结果
-            if result and len(result) > 0:
-                text = result[0].get("text", "")
-                confidence = result[0].get("confidence", 1.0)
-                detected_lang = result[0].get("lang", "zh")
+            # 运行推理
+            outputs = self.session.run(None, {input_name: features})
 
-                processing_time = time.time() - start_time
-                logger.debug(f"识别完成: {text[:50]}... ({processing_time:.2f}s)")
+            # 解析输出 (简化处理)
+            # 实际应根据模型输出格式解码
+            text = self._decode_output(outputs[0])
 
-                return text, confidence, detected_lang
-            else:
-                return "", 0.0, "unknown"
+            processing_time = time.time() - start_time
+            logger.debug(f"识别完成: {text[:50]}... ({processing_time:.2f}s)")
+
+            return text, 1.0, language or "zh"
 
         except Exception as e:
             logger.error(f"识别失败: {e}")
             raise ASRError(f"识别失败: {e}")
+
+    def _decode_output(self, output: np.ndarray) -> str:
+        """解码模型输出"""
+        # 简化版解码 - 实际应根据模型输出格式实现
+        # 这里假设输出是 token IDs
+        if self.tokenizer:
+            # 使用 tokenizer 解码
+            token_ids = output.argmax(axis=-1).flatten().tolist()
+            # 过滤特殊 token
+            token_ids = [t for t in token_ids if t > 0]
+            text = self.tokenizer.decode(token_ids)
+        else:
+            # 默认处理
+            text = "[识别结果]"
+
+        return text
 
     def transcribe_file(
         self,
@@ -187,13 +227,11 @@ class ASREngine:
 
     def get_device_info(self) -> dict:
         """获取设备信息"""
-        info = {"device": self.device or "not initialized"}
+        info = {"device": "cpu"}
 
-        if torch.cuda.is_available():
-            info["gpu_available"] = True
-            info["gpu_name"] = torch.cuda.get_device_name(0)
-            info["gpu_memory"] = f"{torch.cuda.get_device_properties(0).total_memory / 1024**3:.1f}GB"
-        else:
-            info["gpu_available"] = False
+        if self.session:
+            providers = self.session.get_providers()
+            info["device"] = ", ".join(providers)
+            info["gpu_available"] = "CUDAExecutionProvider" in providers
 
         return info

@@ -5472,13 +5472,19 @@
       "title": "[to be translated]:General Settings"
     },
     "shortcuts": {
+      "click_to_set": "[to be translated]:Click to set shortcut",
       "configure_in_shortcuts": "[to be translated]:Please configure in keyboard shortcuts settings",
+      "press_keys": "[to be translated]:Press key combination...",
+      "recording_mode": "[to be translated]:Recording Mode",
+      "recording_mode_description": "[to be translated]:Long press 2s: Hold to record, release to stop | Short press: Press once to start, press again to stop",
       "title": "[to be translated]:Shortcuts",
       "toggle_recording": "[to be translated]:Toggle Recording",
       "toggle_recording_description": "[to be translated]:Start or stop voice recording"
     },
     "status": {
       "check_connection": "[to be translated]:Check Connection",
+      "check_server": "[to be translated]:Please check if the speech service is running",
+      "checking": "[to be translated]:Checking...",
       "connected": "[to be translated]:Connected",
       "disconnected": "[to be translated]:Disconnected",
       "idle": "[to be translated]:Idle",
@@ -5488,6 +5494,7 @@
       "recording_status": "[to be translated]:Recording Status",
       "server_connection": "[to be translated]:Server Connection",
       "server_description": "[to be translated]:Speech service connection status",
+      "start_server_hint": "[to be translated]:Please ensure the SenseVoice speech service is running. For help, please refer to the documentation to start the local speech service.",
       "title": "[to be translated]:Service Status"
     },
     "title": "[to be translated]:Speech Assistant"

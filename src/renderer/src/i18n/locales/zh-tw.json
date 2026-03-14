@@ -5472,13 +5472,19 @@
       "title": "通用設置"
     },
     "shortcuts": {
+      "click_to_set": "[to be translated]:Click to set shortcut",
       "configure_in_shortcuts": "請在鍵盤快捷鍵設置中配置",
+      "press_keys": "[to be translated]:Press key combination...",
+      "recording_mode": "錄音模式",
+      "recording_mode_description": "長按2秒：按住錄音，鬆開結束 | 短按：按一下開始，再按一下結束",
       "title": "快捷鍵",
       "toggle_recording": "切換錄音",
       "toggle_recording_description": "開始或停止語音錄音"
     },
     "status": {
       "check_connection": "檢查連接",
+      "check_server": "[to be translated]:Please check if the speech service is running",
+      "checking": "[to be translated]:Checking...",
       "connected": "已連接",
       "disconnected": "未連接",
       "idle": "空閒",
@@ -5488,6 +5494,7 @@
       "recording_status": "錄音狀態",
       "server_connection": "伺服器連接",
       "server_description": "語音服務連接狀態",
+      "start_server_hint": "[to be translated]:Please ensure the SenseVoice speech service is running. For help, please refer to the documentation to start the local speech service.",
       "title": "服務狀態"
     },
     "title": "語音助手"

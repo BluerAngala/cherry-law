@@ -5472,22 +5472,29 @@
       "title": "General Settings"
     },
     "shortcuts": {
+      "click_to_set": "Click to set shortcut",
       "configure_in_shortcuts": "Please configure in keyboard shortcuts settings",
+      "press_keys": "Press key combination...",
+      "recording_mode": "Recording Mode",
+      "recording_mode_description": "Long press 2s: Hold to record, release to stop | Short press: Press once to start, press again to stop",
       "title": "Shortcuts",
       "toggle_recording": "Toggle Recording",
       "toggle_recording_description": "Start or stop voice recording"
     },
     "status": {
       "check_connection": "Check Connection",
-      "connected": "Connected",
-      "disconnected": "Disconnected",
+      "check_server": "Please check if the speech service is running",
+      "checking": "Checking...",
+      "connected": "Service Connected",
+      "disconnected": "Service Disconnected",
       "idle": "Idle",
       "processing": "Processing",
       "recording": "Recording",
       "recording_description": "Current recording and recognition status",
       "recording_status": "Recording Status",
-      "server_connection": "Server Connection",
-      "server_description": "Speech service connection status",
+      "server_connection": "Service Connection",
+      "server_description": "Speech service is running normally",
+      "start_server_hint": "Please ensure the SenseVoice speech service is running. For help, please refer to the documentation to start the local speech service.",
       "title": "Service Status"
     },
     "title": "Speech Assistant"

@@ -150,9 +150,9 @@ const initialState: ShortcutsState = {
     },
     {
       key: 'speech_toggle',
-      shortcut: ['CommandOrControl', 'R'],
+      shortcut: ['AltRight'],
       editable: true,
-      enabled: false,
+      enabled: true,
       system: true
     }
   ]

@@ -39,6 +39,47 @@ let isRegisterOnBoot = true
 // store the focus and blur handlers for each window to unregister them later
 const windowOnHandlers = new Map<BrowserWindow, { onFocusHandler: () => void; onBlurHandler: () => void }>()
 
+// 防止误触：连续三次按下视为无效
+const TRIPLE_PRESS_WINDOW = 500 // 500ms 内连续三次按下视为无效
+let speechTogglePressCount = 0
+let speechToggleLastPressTime = 0
+let speechToggleResetTimer: NodeJS.Timeout | null = null
+
+function isTriplePress(): boolean {
+  const now = Date.now()
+
+  // 重置计数器（如果超过时间窗口）
+  if (now - speechToggleLastPressTime > TRIPLE_PRESS_WINDOW) {
+    speechTogglePressCount = 0
+  }
+
+  speechTogglePressCount++
+  speechToggleLastPressTime = now
+
+  // 清除之前的定时器
+  if (speechToggleResetTimer) {
+    clearTimeout(speechToggleResetTimer)
+  }
+
+  // 设置新的定时器，在时间窗口后重置计数
+  speechToggleResetTimer = setTimeout(() => {
+    speechTogglePressCount = 0
+  }, TRIPLE_PRESS_WINDOW)
+
+  // 如果连续三次按下，视为无效
+  if (speechTogglePressCount >= 3) {
+    logger.warn('检测到连续三次按下语音快捷键，视为误触，已忽略')
+    speechTogglePressCount = 0
+    if (speechToggleResetTimer) {
+      clearTimeout(speechToggleResetTimer)
+      speechToggleResetTimer = null
+    }
+    return true
+  }
+
+  return false
+}
+
 function getShortcutHandler(shortcut: Shortcut) {
   switch (shortcut.key) {
     case 'zoom_in':
@@ -78,6 +119,10 @@ function getShortcutHandler(shortcut: Shortcut) {
       }
     case 'speech_toggle':
       return () => {
+        // 检测连续三次按下（防误触）
+        if (isTriplePress()) {
+          return
+        }
         logger.info('语音快捷键触发')
         speechService.toggleRecording().catch((error) => {
           logger.error('语音切换失败:', error)

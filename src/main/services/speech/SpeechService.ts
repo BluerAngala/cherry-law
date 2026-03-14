@@ -217,6 +217,11 @@ export class SpeechService {
       this.stopHealthCheck()
     }
 
+    // 同步更新 state 中的 enabled 状态
+    if (config.enabled !== undefined) {
+      this.updateState({ enabled: config.enabled })
+    }
+
     logger.info('配置已更新', config)
   }
 

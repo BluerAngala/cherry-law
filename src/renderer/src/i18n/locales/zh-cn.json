@@ -5472,22 +5472,29 @@
       "title": "通用设置"
     },
     "shortcuts": {
+      "click_to_set": "点击设置快捷键",
       "configure_in_shortcuts": "请在键盘快捷键设置中配置",
+      "press_keys": "请按下快捷键组合...",
+      "recording_mode": "录音模式",
+      "recording_mode_description": "长按2秒：按住录音，松开结束 | 短按：按一下开始，再按一下结束",
       "title": "快捷键",
       "toggle_recording": "切换录音",
       "toggle_recording_description": "开始或停止语音录音"
     },
     "status": {
       "check_connection": "检查连接",
-      "connected": "已连接",
-      "disconnected": "未连接",
+      "check_server": "请检查语音服务是否已启动",
+      "checking": "检测中...",
+      "connected": "服务已连接",
+      "disconnected": "服务未连接",
       "idle": "空闲",
       "processing": "识别中",
       "recording": "录音中",
       "recording_description": "当前录音和识别状态",
       "recording_status": "录音状态",
-      "server_connection": "服务器连接",
-      "server_description": "语音服务连接状态",
+      "server_connection": "服务连接",
+      "server_description": "语音服务运行正常",
+      "start_server_hint": "请确保 SenseVoice 语音服务已启动。如需帮助，请参考文档启动本地语音服务。",
       "title": "服务状态"
     },
     "title": "语音助手"
