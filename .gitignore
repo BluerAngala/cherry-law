@@ -72,6 +72,10 @@ vitest.config.*.timestamp-*
 playwright-report
 test-results
 
+# Model files
+packages/sensevoice-server/models/**/*.onnx
+*.onnx
+
 YOUR_MEMORY_FILE_PATH
 
 .sessions/
