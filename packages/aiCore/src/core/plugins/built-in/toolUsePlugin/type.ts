@@ -19,10 +19,19 @@ export interface BaseToolUsePluginConfig {
 
 export interface PromptToolUseConfig extends BaseToolUsePluginConfig {
   // 自定义系统提示符构建函数（可选，有默认实现）
-  buildSystemPrompt?: (userSystemPrompt: string, tools: ToolSet) => string
+  buildSystemPrompt?: (
+    userSystemPrompt: string,
+    tools: ToolSet,
+    mcpMode?: string,
+    modelName?: string,
+    providerId?: string
+  ) => string
   // 自定义工具解析函数（可选，有默认实现）
   parseToolUse?: (content: string, tools: ToolSet) => { results: ToolUseResult[]; content: string }
   mcpMode?: string
+  // 模型信息，用于选择提示词语言
+  modelName?: string
+  providerId?: string
 }
 
 /**

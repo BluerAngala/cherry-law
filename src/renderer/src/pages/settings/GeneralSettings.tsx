@@ -10,6 +10,7 @@ import i18n from '@renderer/i18n'
 import type { RootState } from '@renderer/store'
 import { useAppDispatch } from '@renderer/store'
 import {
+  setEnableAutoQualityReview,
   setEnableDataCollection,
   setEnableSpellCheck,
   setLanguage,
@@ -32,7 +33,11 @@ import { useSelector } from 'react-redux'
 
 import { SettingContainer, SettingDivider, SettingGroup, SettingRow, SettingRowTitle, SettingTitle } from '.'
 
-type SpellCheckOption = { readonly value: string; readonly label: string; readonly flag: string }
+type SpellCheckOption = {
+  readonly value: string
+  readonly label: string
+  readonly flag: string
+}
 
 // Define available spell check languages with display names (only commonly supported languages)
 const spellCheckLanguageOptions: readonly SpellCheckOption[] = [
@@ -64,7 +69,8 @@ const GeneralSettings: FC = () => {
     enableDataCollection,
     enableSpellCheck,
     disableHardwareAcceleration,
-    setDisableHardwareAcceleration
+    setDisableHardwareAcceleration,
+    enableAutoQualityReview
   } = useSettings()
   const [proxyUrl, setProxyUrl] = useState<string | undefined>(storeProxyUrl)
   const [proxyBypassRules, setProxyBypassRules] = useState<string | undefined>(storeProxyBypassRules)
@@ -128,7 +134,10 @@ const GeneralSettings: FC = () => {
     dispatch(_setProxyBypassRules(proxyBypassRules))
   }
 
-  const proxyModeOptions: { value: 'system' | 'custom' | 'none'; label: string }[] = [
+  const proxyModeOptions: {
+    value: 'system' | 'custom' | 'none'
+    label: string
+  }[] = [
     { value: 'system', label: t('settings.proxy.mode.system') },
     { value: 'custom', label: t('settings.proxy.mode.custom') },
     { value: 'none', label: t('settings.proxy.mode.none') }
@@ -138,7 +147,11 @@ const GeneralSettings: FC = () => {
     dispatch(setProxyMode(mode))
   }
 
-  const languagesOptions: { value: LanguageVarious; label: string; flag: string }[] = [
+  const languagesOptions: {
+    value: LanguageVarious
+    label: string
+    flag: string
+  }[] = [
     { value: 'zh-CN', label: '中文', flag: '🇨🇳' },
     { value: 'zh-TW', label: '中文（繁体）', flag: '🇭🇰' },
     { value: 'en-US', label: 'English', flag: '🇺🇸' },
@@ -162,6 +175,10 @@ const GeneralSettings: FC = () => {
   const handleSpellCheckLanguagesChange = (selectedLanguages: string[]) => {
     dispatch(setSpellCheckLanguages(selectedLanguages))
     window.api.setSpellCheckLanguages(selectedLanguages)
+  }
+
+  const handleAutoQualityReviewChange = (checked: boolean) => {
+    dispatch(setEnableAutoQualityReview(checked))
   }
 
   const handleHardwareAccelerationChange = (checked: boolean) => {
@@ -289,6 +306,16 @@ const GeneralSettings: FC = () => {
         <SettingRow>
           <SettingRowTitle>{t('settings.hardware_acceleration.title')}</SettingRowTitle>
           <Switch checked={disableHardwareAcceleration} onChange={handleHardwareAccelerationChange} />
+        </SettingRow>
+        <SettingDivider />
+        <SettingRow>
+          <SettingRowTitle style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <span>自动质量审查</span>
+            <Tooltip title="AI 回答完成后自动进行质量审查" placement="right">
+              <InfoCircleOutlined style={{ cursor: 'pointer' }} />
+            </Tooltip>
+          </SettingRowTitle>
+          <Switch checked={enableAutoQualityReview} onChange={handleAutoQualityReviewChange} />
         </SettingRow>
       </SettingGroup>
       <SettingGroup theme={theme}>

@@ -187,6 +187,11 @@ export type AssistantSettings = {
   reasoning_effort_cache?: ReasoningEffortOption
   qwenThinkMode?: boolean
   toolUseMode: 'function' | 'prompt'
+  /**
+   * 质量审查模型配置
+   * 如果不设置，默认使用全局快速模型
+   */
+  reviewModel?: Model
 }
 
 export type AssistantPreset = Omit<Assistant, 'model'> & {

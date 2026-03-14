@@ -18,6 +18,7 @@ import FileBlock from './FileBlock'
 import ImageBlock from './ImageBlock'
 import MainTextBlock from './MainTextBlock'
 import PlaceholderBlock from './PlaceholderBlock'
+import ReviewBlock from './ReviewBlock'
 import ThinkingBlock from './ThinkingBlock'
 import ToolBlock from './ToolBlock'
 import ToolBlockGroup from './ToolBlockGroup'
@@ -237,6 +238,9 @@ const MessageBlockRenderer: React.FC<Props> = ({ blocks, message }) => {
             break
           case MessageBlockType.COMPACT:
             blockComponent = <CompactBlock key={block.id} block={block} />
+            break
+          case MessageBlockType.REVIEW:
+            blockComponent = <ReviewBlock key={block.id} block={block} message={message} />
             break
           default:
             logger.warn('Unsupported block type in MessageBlockRenderer:', (block as any).type, block)

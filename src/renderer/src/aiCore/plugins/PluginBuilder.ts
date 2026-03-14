@@ -127,7 +127,9 @@ export function buildPlugins({ provider, model, config }: BuildPluginsContext): 
     plugins.push(
       createPromptToolUsePlugin({
         enabled: true,
-        mcpMode: config.mcpMode
+        mcpMode: config.mcpMode,
+        modelName: model.name,
+        providerId: provider.id
       })
     )
   }

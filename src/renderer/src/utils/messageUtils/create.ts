@@ -12,6 +12,7 @@ import type {
   ImageMessageBlock,
   MainTextMessageBlock,
   Message,
+  ReviewMessageBlock,
   ThinkingMessageBlock,
   ToolMessageBlock,
   TranslationMessageBlock,
@@ -311,6 +312,30 @@ export function createCompactBlock(
     ...baseBlock,
     content,
     compactedContent
+  }
+}
+
+/**
+ * Creates a Review Message Block for AI response quality review.
+ * @param messageId - The ID of the parent message.
+ * @param reviewResult - The review result data.
+ * @param overrides - Optional properties to override the defaults.
+ * @returns A ReviewMessageBlock object.
+ */
+export function createReviewBlock(
+  messageId: string,
+  reviewResult: ReviewMessageBlock['reviewResult'],
+  overrides: Partial<Omit<ReviewMessageBlock, 'id' | 'messageId' | 'type' | 'reviewResult'>> = {}
+): ReviewMessageBlock {
+  const baseBlock = createBaseMessageBlock(messageId, MessageBlockType.REVIEW, {
+    status: MessageBlockStatus.SUCCESS,
+    ...overrides
+  })
+  return {
+    ...baseBlock,
+    reviewResult,
+    userFeedback: overrides.userFeedback,
+    isRegenerating: overrides.isRegenerating
   }
 }
 

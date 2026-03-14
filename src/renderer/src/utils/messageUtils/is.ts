@@ -11,6 +11,7 @@ import {
   type MessageBlock,
   MessageBlockType,
   type PlaceholderMessageBlock,
+  type ReviewMessageBlock,
   type ThinkingMessageBlock,
   type ToolMessageBlock,
   type TranslationMessageBlock,
@@ -159,6 +160,16 @@ export function isPlaceholderBlock(block: MessageBlock): block is PlaceholderMes
  */
 export function isCompactBlock(block: MessageBlock): block is CompactMessageBlock {
   return block.type === MessageBlockType.COMPACT
+}
+
+/**
+ * Checks if a message block is a Review block.
+ * Acts as a TypeScript type guard.
+ * @param block - The message block to check.
+ * @returns True if the block is a ReviewMessageBlock, false otherwise.
+ */
+export function isReviewBlock(block: MessageBlock): block is ReviewMessageBlock {
+  return block.type === MessageBlockType.REVIEW
 }
 
 export function isMessageProcessing(message: Message): boolean {

@@ -201,6 +201,8 @@ export interface SettingsState {
   enableQuickPanelTriggers: boolean
   // 硬件加速设置
   disableHardwareAcceleration: boolean
+  // 质量审查设置
+  enableAutoQualityReview: boolean
   // 使用系统标题栏 (仅Linux)
   useSystemTitleBar: boolean
   exportMenuOptions: {
@@ -389,6 +391,8 @@ export const initialState: SettingsState = {
   confirmRegenerateMessage: true,
   // 硬件加速设置
   disableHardwareAcceleration: false,
+  // 质量审查设置
+  enableAutoQualityReview: true,
   // 使用系统标题栏 (仅Linux)
   useSystemTitleBar: false,
   exportMenuOptions: {
@@ -829,6 +833,9 @@ const settingsSlice = createSlice({
     setDisableHardwareAcceleration: (state, action: PayloadAction<boolean>) => {
       state.disableHardwareAcceleration = action.payload
     },
+    setEnableAutoQualityReview: (state, action: PayloadAction<boolean>) => {
+      state.enableAutoQualityReview = action.payload
+    },
     setUseSystemTitleBar: (state, action: PayloadAction<boolean>) => {
       state.useSystemTitleBar = action.payload
     },
@@ -1013,6 +1020,7 @@ export const {
   setConfirmDeleteMessage,
   setConfirmRegenerateMessage,
   setDisableHardwareAcceleration,
+  setEnableAutoQualityReview,
   setUseSystemTitleBar,
   setOpenAISummaryText,
   setOpenAIVerbosity,

@@ -44,7 +44,8 @@ export enum MessageBlockType {
   ERROR = 'error', // 错误信息
   CITATION = 'citation', // 引用类型 (Now includes web search, grounding, etc.)
   VIDEO = 'video', // 视频内容
-  COMPACT = 'compact' // Compact command response
+  COMPACT = 'compact', // Compact command response
+  REVIEW = 'review' // AI 回答质量审查结果
 }
 
 // 块状态定义
@@ -165,6 +166,27 @@ export interface CompactMessageBlock extends BaseMessageBlock {
   compactedContent: string // 从 <local-command-stdout> 提取的内容
 }
 
+// 审查结果块 - 用于显示 AI 回答质量审查结果
+export interface ReviewMessageBlock extends BaseMessageBlock {
+  type: MessageBlockType.REVIEW
+  reviewResult?: {
+    overallScore: number
+    formatScore: number
+    completenessScore: number
+    coherenceScore: number
+    comment: string
+    passed: boolean
+    suggestions: string[]
+    reviewModel?: string
+    reviewTime?: number
+  }
+  userFeedback?: string // 用户反馈内容
+  isRegenerating?: boolean // 是否正在重新生成
+  isFolded?: boolean // 是否折叠
+  likedSuggestions?: number[] // 用户认可的改进建议索引
+  isReviewing?: boolean // 是否正在审查中
+}
+
 // MessageBlock 联合类型
 export type MessageBlock =
   | PlaceholderMessageBlock
@@ -176,6 +198,7 @@ export type MessageBlock =
   | ToolMessageBlock
   | FileMessageBlock
   | ErrorMessageBlock
+  | ReviewMessageBlock
   | CitationMessageBlock
   | VideoMessageBlock
   | CompactMessageBlock

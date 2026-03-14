@@ -2,6 +2,7 @@ import { loggerService } from '@logger'
 import { autoRenameTopic } from '@renderer/hooks/useTopic'
 import i18n from '@renderer/i18n'
 import { EVENT_NAMES, EventEmitter } from '@renderer/services/EventService'
+import { triggerMessageReview } from '@renderer/services/messageReview/ReviewTriggerService'
 import { NotificationService } from '@renderer/services/NotificationService'
 import { estimateMessagesUsage } from '@renderer/services/TokenService'
 import { updateOneBlock } from '@renderer/store/messageBlock'
@@ -232,6 +233,18 @@ export const createBaseCallbacks = (deps: BaseCallbacksDependencies) => {
         ) {
           const usage = await estimateMessagesUsage({ assistant, messages: finalContextWithAssistant })
           response.usage = usage
+        }
+
+        // 触发 AI 回答质量审查
+        // 获取用户问题
+        const userMessage = userMsgId ? orderedMsgs.find((m) => m.id === userMsgId) : null
+        const userQuery = userMessage ? getMainTextContent(userMessage) : ''
+
+        // 异步触发审查，不阻塞主流程
+        if (userQuery) {
+          triggerMessageReview(finalAssistantMsg, assistant, userQuery).catch((error) => {
+            logger.error('Failed to trigger message review:', error)
+          })
         }
       }
 
