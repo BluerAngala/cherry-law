@@ -6,6 +6,8 @@ import { message, Modal } from 'antd'
 import type { PropsWithChildren } from 'react'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 
+import { GlobalSpeechNotification } from '../GlobalSpeechNotification'
+import { GlobalSpeechRecorder } from '../GlobalSpeechRecorder'
 import { Box } from '../Layout'
 import { getToastUtilities, initMessageApi } from './toast'
 
@@ -102,6 +104,8 @@ const TopViewContainer: React.FC<Props> = ({ children }) => {
       {messageContextHolder}
       {modalContextHolder}
       <TopViewMinappContainer />
+      <GlobalSpeechRecorder />
+      <GlobalSpeechNotification />
       {elements.map(({ element: Element, id }) => (
         <FullScreenContainer key={`TOPVIEW_${id}`}>
           {typeof Element === 'function' ? <Element /> : Element}

@@ -4,7 +4,8 @@ import {
   CloseCircleOutlined,
   InfoCircleOutlined,
   LoadingOutlined,
-  SoundOutlined
+  SoundOutlined,
+  ToolOutlined
 } from '@ant-design/icons'
 import { isMac, isWin } from '@renderer/config/constant'
 import { useShortcuts } from '@renderer/hooks/useShortcuts'
@@ -482,6 +483,16 @@ const SpeechSettings: React.FC = () => {
 
   return (
     <Container>
+      {/* 开发中提示 */}
+      <Alert
+        message="语音助手功能开发中"
+        description="当前功能尚未完善，可能存在不稳定情况。建议关注后续更新。"
+        type="warning"
+        showIcon
+        icon={<ToolOutlined />}
+        style={{ marginBottom: 12 }}
+      />
+
       {error && (
         <Alert
           message={t('speech.error.title')}

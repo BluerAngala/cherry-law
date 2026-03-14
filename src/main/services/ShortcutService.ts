@@ -123,8 +123,8 @@ function getShortcutHandler(shortcut: Shortcut) {
         if (isTriplePress()) {
           return
         }
-        logger.info('语音快捷键触发')
-        speechService.toggleRecording().catch((error) => {
+        logger.info('语音快捷键触发 - 全局录音模式')
+        speechService.toggleRecordingGlobal().catch((error) => {
           logger.error('语音切换失败:', error)
         })
       }

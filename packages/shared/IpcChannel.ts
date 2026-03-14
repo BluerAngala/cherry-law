@@ -443,5 +443,18 @@ export enum IpcChannel {
   Speech_GetConfig = 'speech:get-config',
   Speech_StartServer = 'speech:start-server',
   Speech_StopServer = 'speech:stop-server',
-  Speech_CheckServerHealth = 'speech:check-server-health'
+  Speech_CheckServerHealth = 'speech:check-server-health',
+
+  // Speech History
+  SpeechHistory_GetList = 'speech-history:get-list',
+  SpeechHistory_GetItem = 'speech-history:get-item',
+  SpeechHistory_DeleteItem = 'speech-history:delete-item',
+  SpeechHistory_ClearAll = 'speech-history:clear-all',
+  SpeechHistory_ItemChanged = 'speech-history:item-changed',
+
+  // Global Speech Recording
+  SpeechGlobal_ShowRecordingUI = 'speech-global:show-recording-ui',
+  SpeechGlobal_HideRecordingUI = 'speech-global:hide-recording-ui',
+  SpeechGlobal_DeliverText = 'speech-global:deliver-text',
+  SpeechGlobal_DeliveryResult = 'speech-global:delivery-result'
 }

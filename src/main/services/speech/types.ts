@@ -78,3 +78,18 @@ export interface TranscribeResponse {
   language: string
   processing_time: number
 }
+
+/**
+ * 录音历史记录项
+ */
+export interface SpeechHistoryItem {
+  id: string
+  text: string
+  audioPath?: string
+  duration: number
+  timestamp: number
+  language: string
+  confidence: number
+  delivered: boolean
+  targetInput?: string
+}

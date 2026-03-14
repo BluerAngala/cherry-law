@@ -49,6 +49,32 @@ export enum SpeechErrorType {
   GPU_NOT_AVAILABLE = 'GPU_NOT_AVAILABLE'
 }
 
+/**
+ * 录音历史记录项
+ */
+export interface SpeechHistoryItem {
+  id: string
+  text: string
+  audioPath?: string
+  duration: number
+  timestamp: number
+  language: string
+  confidence: number
+  delivered: boolean
+  targetInput?: string
+}
+
+/**
+ * 语音投递结果
+ */
+export interface SpeechDeliveryResult {
+  success: boolean
+  text: string
+  delivered: boolean
+  error?: string
+  historyItem: SpeechHistoryItem
+}
+
 export class SpeechError extends Error {
   constructor(
     public type: SpeechErrorType,

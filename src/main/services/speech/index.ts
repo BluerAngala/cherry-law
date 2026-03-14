@@ -1,4 +1,5 @@
 export { AudioCaptureService } from './AudioCaptureService'
 export { SenseVoiceClient } from './SenseVoiceClient'
+export { SpeechHistoryService, speechHistoryService } from './SpeechHistoryService'
 export { SpeechService, speechService } from './SpeechService'
 export * from './types'
