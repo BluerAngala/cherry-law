@@ -8,7 +8,8 @@ import {
 } from '@ant-design/icons'
 import { SYSTEM_MODELS } from '@renderer/config/models'
 import { useAppDispatch } from '@renderer/store'
-import { setDefaultModel, updateProvider } from '@renderer/store/llm'
+import { setModel } from '@renderer/store/assistants'
+import { setDefaultModel, setQuickModel, setTranslateModel, updateProvider } from '@renderer/store/llm'
 import { Button, Divider, Input, Space, Typography } from 'antd'
 import { motion } from 'framer-motion'
 import type { FC } from 'react'
@@ -144,7 +145,12 @@ const ModelGuidePage: FC = () => {
       // 设置默认模型为 SiliconFlow 的 DeepSeek 模型
       const siliconModels = SYSTEM_MODELS.silicon
       if (siliconModels && siliconModels.length > 0) {
-        dispatch(setDefaultModel({ model: siliconModels[0] }))
+        const siliconModel = siliconModels[0]
+        dispatch(setDefaultModel({ model: siliconModel }))
+        dispatch(setQuickModel({ model: siliconModel }))
+        dispatch(setTranslateModel({ model: siliconModel }))
+        // 同时更新默认助手的模型，确保引导完成后即刻生效
+        dispatch(setModel({ assistantId: 'default', model: siliconModel }))
       }
 
       // 标记已引导
@@ -308,7 +314,7 @@ const ModelGuidePage: FC = () => {
                     icon={<GlobalOutlined />}
                     onClick={(e) => {
                       e.stopPropagation()
-                      window.open('https://cloud.siliconflow.cn/account/ak', '_blank')
+                      window.open('https://cloud.siliconflow.cn/i/WFoChvZf', '_blank')
                     }}
                     style={{ padding: 0, fontSize: 14, color: '#64748b' }}>
                     {t('agent.guide.get_api_key')}

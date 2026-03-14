@@ -896,7 +896,7 @@ export const PROVIDER_URLS: Record<SystemProviderId, ProviderUrls> = {
     },
     websites: {
       official: 'https://www.siliconflow.cn',
-      apiKey: 'https://cloud.siliconflow.cn/i/d1nTBKXU',
+      apiKey: 'https://cloud.siliconflow.cn/i/WFoChvZf',
       docs: 'https://docs.siliconflow.cn/',
       models: 'https://cloud.siliconflow.cn/models'
     }
