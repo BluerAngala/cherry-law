@@ -282,17 +282,21 @@ const ReviewBlock: React.FC<ReviewBlockProps> = ({ block, message }) => {
 
         <DetailScores>
           <ScoreItem>
-            <ScoreLabel>格式</ScoreLabel>
+            <ScoreLabel>
+              <Tooltip title="回答是否符合助手系统提示词的角色设定和输出要求">符合提示词</Tooltip>
+            </ScoreLabel>
             <Progress
-              percent={formatScore}
+              percent={coherenceScore}
               size="small"
-              strokeColor={getScoreLevel(formatScore).color}
+              strokeColor={getScoreLevel(coherenceScore).color}
               showInfo={false}
             />
-            <ScoreValue>{formatScore}</ScoreValue>
+            <ScoreValue>{coherenceScore}</ScoreValue>
           </ScoreItem>
           <ScoreItem>
-            <ScoreLabel>完整性</ScoreLabel>
+            <ScoreLabel>
+              <Tooltip title="是否完整回答了问题，有无遗漏关键信息">内容完整性</Tooltip>
+            </ScoreLabel>
             <Progress
               percent={completenessScore}
               size="small"
@@ -302,14 +306,16 @@ const ReviewBlock: React.FC<ReviewBlockProps> = ({ block, message }) => {
             <ScoreValue>{completenessScore}</ScoreValue>
           </ScoreItem>
           <ScoreItem>
-            <ScoreLabel>连贯性</ScoreLabel>
+            <ScoreLabel>
+              <Tooltip title="格式是否规范，小错误不影响">格式规范</Tooltip>
+            </ScoreLabel>
             <Progress
-              percent={coherenceScore}
+              percent={formatScore}
               size="small"
-              strokeColor={getScoreLevel(coherenceScore).color}
+              strokeColor={getScoreLevel(formatScore).color}
               showInfo={false}
             />
-            <ScoreValue>{coherenceScore}</ScoreValue>
+            <ScoreValue>{formatScore}</ScoreValue>
           </ScoreItem>
         </DetailScores>
       </ScoreSection>
