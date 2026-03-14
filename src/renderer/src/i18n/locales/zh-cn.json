@@ -69,6 +69,20 @@
       "success": "成功检测到 Git Bash！",
       "tooltip": "在 Windows 上运行智能体需要 Git Bash。如果未安装，请从 git-scm.com 下载安装。"
     },
+    "guide": {
+      "api_key_placeholder": "请输入您的 SiliconFlow API Key",
+      "api_key_required": "请输入 API Key",
+      "config_failed": "配置失败，请重试",
+      "config_success": "配置成功！",
+      "confirm_config": "确认配置",
+      "get_api_key": "获取 API Key",
+      "go_to_settings": "配置其他模型",
+      "no_model_desc": "开启您的 AI 智能法律助手体验",
+      "or": "或者",
+      "recommend_desc": "提供极速稳定的 DeepSeek、Qwen 等大模型，注册即送免费额度。",
+      "recommend_title": "快速配置：硅基流动 (SiliconFlow)",
+      "welcome_title": "欢迎使用 Cherry Studio"
+    },
     "input": {
       "placeholder": "在这里输入消息，按 {{key}} 发送 - @ 选择路径， / 选择命令"
     },
@@ -1603,6 +1617,9 @@
       "title": "保持活跃时间"
     },
     "title": "GPUStack"
+  },
+  "guide": {
+    "no_model_desc": "[to be translated]:"
   },
   "history": {
     "continue_chat": "继续聊天",

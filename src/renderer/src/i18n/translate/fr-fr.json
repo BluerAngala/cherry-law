@@ -69,6 +69,20 @@
       "success": "Git Bash détecté avec succès !",
       "tooltip": "Git Bash est nécessaire pour exécuter des agents sur Windows. Installez-le depuis git-scm.com s'il n'est pas disponible."
     },
+    "guide": {
+      "api_key_placeholder": "[to be translated]:Please enter your SiliconFlow API Key",
+      "api_key_required": "[to be translated]:Please enter API Key",
+      "config_failed": "[to be translated]:Configuration failed, please try again",
+      "config_success": "[to be translated]:Configuration successful!",
+      "confirm_config": "[to be translated]:Confirm Config",
+      "get_api_key": "[to be translated]:Get API Key",
+      "go_to_settings": "[to be translated]:Configure Models Now",
+      "no_model_desc": "[to be translated]:We noticed that you haven't configured any AI models yet, or the current model is unavailable. To get the best experience, please configure your models first.",
+      "or": "[to be translated]:OR",
+      "recommend_desc": "[to be translated]:SiliconFlow provides fast and stable AI services with popular models like Qwen and DeepSeek, including free trial credits upon registration.",
+      "recommend_title": "[to be translated]:Recommended: SiliconFlow",
+      "welcome_title": "[to be translated]:Welcome to your AI Journey"
+    },
     "input": {
       "placeholder": "Entrez votre message ici, envoyez avec {{key}} - @ sélectionner le chemin, / sélectionner la commande"
     },
@@ -1603,6 +1617,9 @@
       "title": "Temps de maintien actif"
     },
     "title": "GPUStack"
+  },
+  "guide": {
+    "no_model_desc": "[to be translated]:"
   },
   "history": {
     "continue_chat": "Continuer la conversation",

@@ -69,6 +69,20 @@
       "success": "Git Bash detected successfully!",
       "tooltip": "Git Bash is required to run agents on Windows. Install from git-scm.com if not available."
     },
+    "guide": {
+      "api_key_placeholder": "Please enter your SiliconFlow API Key",
+      "api_key_required": "Please enter API Key",
+      "config_failed": "Configuration failed, please try again",
+      "config_success": "Configuration successful!",
+      "confirm_config": "Confirm Config",
+      "get_api_key": "Get API Key",
+      "go_to_settings": "Configure Other Models",
+      "no_model_desc": "Start your AI intelligent legal assistant experience",
+      "or": "OR",
+      "recommend_desc": "Provides fast and stable DeepSeek, Qwen and other large models, with free credits upon registration.",
+      "recommend_title": "Quick Config: SiliconFlow",
+      "welcome_title": "Welcome to Cherry Studio"
+    },
     "input": {
       "placeholder": "Enter your message here, send with {{key}} - @ select path, / select command"
     },
@@ -1603,6 +1617,9 @@
       "title": "Keep Alive Time"
     },
     "title": "GPUStack"
+  },
+  "guide": {
+    "no_model_desc": ""
   },
   "history": {
     "continue_chat": "Continue Chatting",

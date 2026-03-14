@@ -473,12 +473,12 @@ export async function prepareSpecialProviderConfig(
     }
     case 'cherryai': {
       config.options.fetch = async (url, options) => {
-        // 在这里对最终参数进行签名
+        // 在这里对最终参数进行签名，必须使用原始 body 字符串以确保签名一致性
         const signature = await window.api.cherryai.generateSignature({
           method: 'POST',
           path: '/chat/completions',
           query: '',
-          body: JSON.parse(options.body)
+          body: options.body // 传入原始字符串
         })
         return fetch(url, {
           ...options,

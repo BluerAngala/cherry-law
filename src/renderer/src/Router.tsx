@@ -2,13 +2,16 @@ import '@renderer/databases'
 
 import type { FC } from 'react'
 import { useMemo } from 'react'
+import { useEffect, useState } from 'react'
 import { HashRouter, Route, Routes } from 'react-router-dom'
 
 import Sidebar from './components/app/Sidebar'
 import { ErrorBoundary } from './components/ErrorBoundary'
+import ModelGuidePage from './components/Guide/ModelGuidePage'
 import TabsContainer from './components/Tab/TabContainer'
 import { BrainstormPage, BrainstormProvider } from './features/brainstorm'
 import NavigationHandler from './handler/NavigationHandler'
+import { useModelAvailability } from './hooks/useModelAvailability'
 import { useNavbarPosition } from './hooks/useSettings'
 import CodeToolsPage from './pages/code/CodeToolsPage'
 import FilesPage from './pages/files/FilesPage'
@@ -26,8 +29,31 @@ import TranslatePage from './pages/translate/TranslatePage'
 
 const Router: FC = () => {
   const { navbarPosition } = useNavbarPosition()
+  const { isModelAvailable } = useModelAvailability()
+  const [isOnboarded, setIsOnboarded] = useState<boolean>(() => {
+    return localStorage.getItem('cherry_studio_onboarded') === 'true'
+  })
+
+  // 如果模型不可用，且不在设置页面，则强制显示引导页
+  const showGuide = !isOnboarded || !isModelAvailable
+
+  useEffect(() => {
+    if (isModelAvailable && !isOnboarded) {
+      localStorage.setItem('cherry_studio_onboarded', 'true')
+      setIsOnboarded(true)
+    }
+  }, [isModelAvailable, isOnboarded])
 
   const routes = useMemo(() => {
+    if (showGuide) {
+      return (
+        <Routes>
+          <Route path="/settings/*" element={<SettingsPage />} />
+          <Route path="*" element={<ModelGuidePage />} />
+        </Routes>
+      )
+    }
+
     return (
       <ErrorBoundary>
         <BrainstormProvider>
@@ -50,7 +76,7 @@ const Router: FC = () => {
         </BrainstormProvider>
       </ErrorBoundary>
     )
-  }, [])
+  }, [showGuide])
 
   if (navbarPosition === 'left') {
     return (

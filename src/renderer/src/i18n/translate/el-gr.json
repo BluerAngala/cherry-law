@@ -69,6 +69,20 @@
       "success": "Το Git Bash εντοπίστηκε με επιτυχία!",
       "tooltip": "Το Git Bash απαιτείται για την εκτέλεση πρακτόρων στα Windows. Εγκαταστήστε το από το git-scm.com εάν δεν είναι διαθέσιμο."
     },
+    "guide": {
+      "api_key_placeholder": "[to be translated]:Please enter your SiliconFlow API Key",
+      "api_key_required": "[to be translated]:Please enter API Key",
+      "config_failed": "[to be translated]:Configuration failed, please try again",
+      "config_success": "[to be translated]:Configuration successful!",
+      "confirm_config": "[to be translated]:Confirm Config",
+      "get_api_key": "[to be translated]:Get API Key",
+      "go_to_settings": "[to be translated]:Configure Models Now",
+      "no_model_desc": "[to be translated]:We noticed that you haven't configured any AI models yet, or the current model is unavailable. To get the best experience, please configure your models first.",
+      "or": "[to be translated]:OR",
+      "recommend_desc": "[to be translated]:SiliconFlow provides fast and stable AI services with popular models like Qwen and DeepSeek, including free trial credits upon registration.",
+      "recommend_title": "[to be translated]:Recommended: SiliconFlow",
+      "welcome_title": "[to be translated]:Welcome to your AI Journey"
+    },
     "input": {
       "placeholder": "Εισάγετε το μήνυμά σας εδώ, στείλτε με {{key}} - @ επιλέξτε διαδρομή, / επιλέξτε εντολή"
     },
@@ -1603,6 +1617,9 @@
       "title": "Χρόνος διατήρησης ενεργοποίησης"
     },
     "title": "GPUStack"
+  },
+  "guide": {
+    "no_model_desc": "[to be translated]:"
   },
   "history": {
     "continue_chat": "Συνεχίστε το συνομιλημένο",

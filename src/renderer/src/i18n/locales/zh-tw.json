@@ -69,6 +69,20 @@
       "success": "成功偵測到 Git Bash！",
       "tooltip": "在 Windows 上執行 Agent 需要 Git Bash。如未安裝，請從 git-scm.com 下載安裝。"
     },
+    "guide": {
+      "api_key_placeholder": "[to be translated]:Please enter your SiliconFlow API Key",
+      "api_key_required": "[to be translated]:Please enter API Key",
+      "config_failed": "[to be translated]:Configuration failed, please try again",
+      "config_success": "[to be translated]:Configuration successful!",
+      "confirm_config": "[to be translated]:Confirm Config",
+      "get_api_key": "[to be translated]:Get API Key",
+      "go_to_settings": "[to be translated]:Configure Models Now",
+      "no_model_desc": "[to be translated]:We noticed that you haven't configured any AI models yet, or the current model is unavailable. To get the best experience, please configure your models first.",
+      "or": "[to be translated]:OR",
+      "recommend_desc": "[to be translated]:SiliconFlow provides fast and stable AI services with popular models like Qwen and DeepSeek, including free trial credits upon registration.",
+      "recommend_title": "[to be translated]:Recommended: SiliconFlow",
+      "welcome_title": "[to be translated]:Welcome to your AI Journey"
+    },
     "input": {
       "placeholder": "在這裡輸入您的訊息，使用 {{key}} 傳送 - @ 選擇路徑，/ 選擇命令"
     },
@@ -1603,6 +1617,9 @@
       "title": "保持活躍時間"
     },
     "title": "GPUStack"
+  },
+  "guide": {
+    "no_model_desc": ""
   },
   "history": {
     "continue_chat": "繼續聊天",
