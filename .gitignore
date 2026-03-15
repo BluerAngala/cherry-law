@@ -76,6 +76,29 @@ test-results
 packages/sensevoice-server/models/**/*.onnx
 *.onnx
 
-YOUR_MEMORY_FILE_PATH
+# AI/ML Model files
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.gguf
+*.bin
+*.weights
+*.h5
+*.pb
+*.tflite
+*.mlmodel
+*.caffemodel
+
+# Large data files
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.rar
+*.7z
+*.iso
+
+# YOUR_MEMORY_FILE_PATH
 
 .sessions/
