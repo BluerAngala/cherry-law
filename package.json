@@ -1,12 +1,12 @@
 {
-  "name": "CherryStudio",
+  "name": "CherryLaw",
   "version": "1.0.0",
   "private": true,
   "description": "A powerful AI assistant for producer.",
-  "desktopName": "CherryStudio.desktop",
+  "desktopName": "CherryLaw.desktop",
   "main": "./out/main/index.js",
   "author": "support@cherry-ai.com",
-  "homepage": "https://github.com/CherryHQ/cherry-studio",
+  "homepage": "https://github.com/BluerAngala/cherry-law",
   "engines": {
     "node": ">=24.11.1"
   },
