@@ -70,8 +70,8 @@ Cherry Law 是基于 [Cherry Studio](https://github.com/CherryHQ/cherry-studio) 
 - [ ] **核心 Provider 迁移 (Phase 1: OpenAI)** ⏳ **部分完成**
   - [x] 新架构 Provider 定义（`packages/aiCore` 中基于 `@ai-sdk/openai`）
   - [x] 迁移 `models()` 与 `getEmbeddingDimensions()` 至主进程 IPC 服务
-  - [ ] 验证流式响应、工具调用与 Token 计费的一致性
-  - [ ] 完全废弃旧版 `OpenAIBaseClient`
+  - [x] 验证流式响应、工具调用与 Token 计费的一致性
+  - [ ] 完全废弃旧版 `OpenAIBaseClient`（需完成核心 completions 迁移）
 - [ ] **OpenCode Agent 架构重构**
   - [ ] 基于 `@opencode-ai/sdk` 统一 Agent 生命周期管理
   - [ ] 支持多 Agent 协作模式与能力动态扩展
