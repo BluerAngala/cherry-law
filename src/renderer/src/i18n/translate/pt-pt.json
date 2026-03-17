@@ -1721,6 +1721,8 @@
     "chunk_size_placeholder": "Valor padrão (não recomendado alterar)",
     "chunk_size_too_large": "O tamanho do bloco não pode exceder o limite de contexto do modelo ({{max_context}})",
     "chunk_size_tooltip": "Dividir o documento em blocos, o tamanho de cada bloco, que não pode exceder o limite de contexto do modelo",
+    "chunking_strategy": "[to be translated]:Chunking Strategy",
+    "chunking_strategy_tooltip": "[to be translated]:Algorithm for splitting documents. Structural is best for legal docs, Semantic for deep understanding.",
     "clear_selection": "Limpar seleção",
     "delete": "Excluir",
     "delete_confirm": "Tem certeza de que deseja excluir este repositório de conhecimento?",
@@ -1809,6 +1811,11 @@
     "status_preprocess_completed": "Pré-processamento concluído",
     "status_preprocess_failed": "Falha no pré-processamento",
     "status_processing": "Processando",
+    "strategy": {
+      "recursive": "[to be translated]:Recursive (Chonkie Optimized)",
+      "semantic": "[to be translated]:Semantic (Embedding Aware)",
+      "structural": "[to be translated]:Structural (Legal Optimized)"
+    },
     "subtitle_file": "arquivo de legenda",
     "threshold": "Limite de correspondência",
     "threshold_placeholder": "Não definido",

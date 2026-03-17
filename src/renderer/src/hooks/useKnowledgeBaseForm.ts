@@ -135,6 +135,10 @@ export const useKnowledgeBaseForm = (base?: KnowledgeBase) => {
     [setNewBase]
   )
 
+  const handleChunkingStrategyChange = useCallback((value: string) => {
+    setNewBase((prev) => ({ ...prev, chunkingStrategy: value as any }))
+  }, [])
+
   const handlers = {
     handleEmbeddingModelChange,
     handleRerankModelChange,
@@ -142,7 +146,8 @@ export const useKnowledgeBaseForm = (base?: KnowledgeBase) => {
     handleDocPreprocessChange,
     handleChunkSizeChange,
     handleChunkOverlapChange,
-    handleThresholdChange
+    handleThresholdChange,
+    handleChunkingStrategyChange
   }
 
   const providerData = {

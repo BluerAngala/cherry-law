@@ -1721,6 +1721,8 @@
     "chunk_size_placeholder": "Default (not recommended to change)",
     "chunk_size_too_large": "Chunk size cannot exceed model context limit ({{max_context}})",
     "chunk_size_tooltip": "Split documents into chunks, each chunk size, not exceeding model context limit",
+    "chunking_strategy": "Chunking Strategy",
+    "chunking_strategy_tooltip": "Algorithm for splitting documents. Structural is best for legal docs, Semantic for deep understanding.",
     "clear_selection": "Clear selection",
     "delete": "Delete",
     "delete_confirm": "Are you sure you want to delete this knowledge base?",
@@ -1809,6 +1811,11 @@
     "status_preprocess_completed": "Preprocessing Completed",
     "status_preprocess_failed": "Preprocessing Failed",
     "status_processing": "Processing",
+    "strategy": {
+      "recursive": "Recursive (Chonkie Optimized)",
+      "semantic": "Semantic (Embedding Aware)",
+      "structural": "Structural (Legal Optimized)"
+    },
     "subtitle_file": "subtitle file",
     "threshold": "Matching threshold",
     "threshold_placeholder": "Not set",

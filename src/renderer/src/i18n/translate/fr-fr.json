@@ -1721,6 +1721,8 @@
     "chunk_size_placeholder": "Valeur par défaut (ne pas modifier)",
     "chunk_size_too_large": "La taille de bloc ne peut pas dépasser la limite de contexte du modèle ({{max_context}})",
     "chunk_size_tooltip": "Taille des segments de document, ne doit pas dépasser la limite de contexte du modèle",
+    "chunking_strategy": "[to be translated]:Chunking Strategy",
+    "chunking_strategy_tooltip": "[to be translated]:Algorithm for splitting documents. Structural is best for legal docs, Semantic for deep understanding.",
     "clear_selection": "Effacer la sélection",
     "delete": "Supprimer",
     "delete_confirm": "Êtes-vous sûr de vouloir supprimer cette base de connaissances ?",
@@ -1809,6 +1811,11 @@
     "status_preprocess_completed": "Prétraitement terminé",
     "status_preprocess_failed": "Échec du prétraitement",
     "status_processing": "En cours de traitement",
+    "strategy": {
+      "recursive": "[to be translated]:Recursive (Chonkie Optimized)",
+      "semantic": "[to be translated]:Semantic (Embedding Aware)",
+      "structural": "[to be translated]:Structural (Legal Optimized)"
+    },
     "subtitle_file": "Fichier de sous-titres",
     "threshold": "Seuil de similarité",
     "threshold_placeholder": "Non défini",

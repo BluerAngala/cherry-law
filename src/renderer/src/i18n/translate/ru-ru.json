@@ -1721,6 +1721,8 @@
     "chunk_size_placeholder": "По умолчанию (не рекомендуется изменять)",
     "chunk_size_too_large": "Размер фрагмента не может превышать модель контекста ({{max_context}})",
     "chunk_size_tooltip": "Размер фрагмента, не превышающий модель контекста",
+    "chunking_strategy": "[to be translated]:Chunking Strategy",
+    "chunking_strategy_tooltip": "[to be translated]:Algorithm for splitting documents. Structural is best for legal docs, Semantic for deep understanding.",
     "clear_selection": "Очистить выбор",
     "delete": "Удалить",
     "delete_confirm": "Вы уверены, что хотите удалить эту базу знаний?",
@@ -1809,6 +1811,11 @@
     "status_preprocess_completed": "Предварительная обработка завершена",
     "status_preprocess_failed": "Предварительная обработка не удалась",
     "status_processing": "Обработка",
+    "strategy": {
+      "recursive": "[to be translated]:Recursive (Chonkie Optimized)",
+      "semantic": "[to be translated]:Semantic (Embedding Aware)",
+      "structural": "[to be translated]:Structural (Legal Optimized)"
+    },
     "subtitle_file": "Файл субтитров",
     "threshold": "Порог соответствия",
     "threshold_placeholder": "Не установлено",

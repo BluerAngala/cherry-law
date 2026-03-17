@@ -1,7 +1,8 @@
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters'
-import { loggerService } from '@logger'
 
-const logger = loggerService.withContext('SemanticLegalSplitter')
+import { logger as baseLogger } from '../logger'
+
+const logger = baseLogger.withContext('SemanticLegalSplitter')
 
 /**
  * 语义分块器 (Semantic Chunking)

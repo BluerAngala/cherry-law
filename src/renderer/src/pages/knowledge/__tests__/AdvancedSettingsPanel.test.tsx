@@ -24,6 +24,7 @@ const mocks = vi.hoisted(() => {
       handleChunkSizeChange: vi.fn(),
       handleChunkOverlapChange: vi.fn(),
       handleThresholdChange: vi.fn(),
+      handleChunkingStrategyChange: vi.fn(),
       handleDocPreprocessChange: vi.fn(),
       handleRerankModelChange: vi.fn()
     }

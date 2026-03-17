@@ -249,6 +249,8 @@ class KnowledgeService {
       embedApiClient,
       dimensions
     })
+    // @ts-ignore
+    base.embeddings = embeddings
     try {
       const dbPath = this.getDbPath(id)
       const libSqlDb = new LibSqlDb({ path: dbPath })

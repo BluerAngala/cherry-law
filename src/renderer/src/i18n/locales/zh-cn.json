@@ -1721,6 +1721,8 @@
     "chunk_size_placeholder": "默认值（不建议修改）",
     "chunk_size_too_large": "分段大小不能超过模型上下文限制（{{max_context}}）",
     "chunk_size_tooltip": "将文档切割分段，每段的大小，不能超过模型上下文限制",
+    "chunking_strategy": "分块策略",
+    "chunking_strategy_tooltip": "选择文档切分为小块的算法。结构化适合法律条文，语义适合长文理解。",
     "clear_selection": "清除选择",
     "delete": "删除",
     "delete_confirm": "确定要删除此知识库吗？",
@@ -1809,6 +1811,11 @@
     "status_preprocess_completed": "预处理完成",
     "status_preprocess_failed": "预处理失败",
     "status_processing": "处理中",
+    "strategy": {
+      "recursive": "递归分块 (Chonkie 优化)",
+      "semantic": "语义分块 (Embedding 感知)",
+      "structural": "结构化分块 (法律优化)"
+    },
     "subtitle_file": "字幕文件",
     "threshold": "匹配度阈值",
     "threshold_placeholder": "未设置",

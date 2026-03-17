@@ -1,3 +1,34 @@
+import Module from 'module'
+import * as path from 'path'
+
+// 1. 彻底修复：在所有导入之前拦截并模拟别名模块
+const originalResolveFilename = (Module as any)._resolveFilename
+;(Module as any)._resolveFilename = function (request: string, ..._args: any[]) {
+  if (request === '@logger') {
+    // 模拟一个极其简单的 loggerService
+    const mockLoggerPath = path.join(__dirname, 'mock-logger.js')
+    if (!require('fs').existsSync(mockLoggerPath)) {
+      require('fs').writeFileSync(
+        mockLoggerPath,
+        `
+        module.exports = {
+          loggerService: {
+            withContext: () => ({
+              info: console.log,
+              error: console.error,
+              warn: console.warn,
+              debug: console.log
+            })
+          }
+        };
+      `
+      )
+    }
+    return mockLoggerPath
+  }
+  return originalResolveFilename.apply(this, arguments)
+}
+
 import { MarkdownLegalLoader } from '../src/main/knowledge/embedjs/loader/markdownLegalLoader'
 import { LegalRecursiveCharacterTextSplitter } from '../src/main/knowledge/embedjs/splitter/LegalRecursiveCharacterTextSplitter'
 import { legalCleanString } from '../src/main/knowledge/utils/text'

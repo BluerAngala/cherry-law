@@ -1721,6 +1721,8 @@
     "chunk_size_placeholder": "デフォルト（変更しないでください）",
     "chunk_size_too_large": "チャンクサイズはモデルのコンテキスト制限を超えることはできません（{{max_context}}）",
     "chunk_size_tooltip": "ドキュメントを分割し、各チャンクのサイズ。モデルのコンテキスト制限を超えないようにしてください。",
+    "chunking_strategy": "[to be translated]:Chunking Strategy",
+    "chunking_strategy_tooltip": "[to be translated]:Algorithm for splitting documents. Structural is best for legal docs, Semantic for deep understanding.",
     "clear_selection": "選択をクリア",
     "delete": "削除",
     "delete_confirm": "このナレッジベースを削除してもよろしいですか？",
@@ -1809,6 +1811,11 @@
     "status_preprocess_completed": "前処理完了",
     "status_preprocess_failed": "前処理に失敗しました",
     "status_processing": "処理中",
+    "strategy": {
+      "recursive": "[to be translated]:Recursive (Chonkie Optimized)",
+      "semantic": "[to be translated]:Semantic (Embedding Aware)",
+      "structural": "[to be translated]:Structural (Legal Optimized)"
+    },
     "subtitle_file": "字幕ファイル",
     "threshold": "マッチング度閾値",
     "threshold_placeholder": "未設置",

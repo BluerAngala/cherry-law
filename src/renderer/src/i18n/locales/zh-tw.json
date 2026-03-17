@@ -1721,6 +1721,8 @@
     "chunk_size_placeholder": "預設值（不建議修改）",
     "chunk_size_too_large": "分段大小不能超過模型上下文限制（{{max_context}}）",
     "chunk_size_tooltip": "將檔案切割分段，每段大小不得超過模型的上下文上限",
+    "chunking_strategy": "[to be translated]:Chunking Strategy",
+    "chunking_strategy_tooltip": "[to be translated]:Algorithm for splitting documents. Structural is best for legal docs, Semantic for deep understanding.",
     "clear_selection": "清除選擇",
     "delete": "刪除",
     "delete_confirm": "確定要刪除此知識庫嗎？",
@@ -1809,6 +1811,11 @@
     "status_preprocess_completed": "預處理完成",
     "status_preprocess_failed": "預處理失敗",
     "status_processing": "處理中",
+    "strategy": {
+      "recursive": "[to be translated]:Recursive (Chonkie Optimized)",
+      "semantic": "[to be translated]:Semantic (Embedding Aware)",
+      "structural": "[to be translated]:Structural (Legal Optimized)"
+    },
     "subtitle_file": "字幕檔案",
     "threshold": "相符度門檻",
     "threshold_placeholder": "未設定",

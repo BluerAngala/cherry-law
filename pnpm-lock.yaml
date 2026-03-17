@@ -106,9 +106,6 @@ importers:
       '@paymoapp/electron-shutdown-handler':
         specifier: 1.1.2
         version: 1.1.2
-      chonkie:
-        specifier: ^0.3.0
-        version: 0.3.0(encoding@0.1.13)(ws@8.19.0)(zod@4.3.4)
       express:
         specifier: 5.1.0
         version: 5.1.0
@@ -145,9 +142,6 @@ importers:
       tesseract.js:
         specifier: 6.0.1
         version: 6.0.1(patch_hash=a131c9f36e950911e9fc548408131145a3e5e53977d67abe5196f6b23b32bb6e)(encoding@0.1.13)
-      tiktoken:
-        specifier: ^1.0.22
-        version: 1.0.22
       turndown:
         specifier: 7.2.0
         version: 7.2.0
@@ -352,7 +346,7 @@ importers:
         version: 0.1.3
       '@langchain/community':
         specifier: ^1.0.0
-        version: 1.1.1(e1974435f3d2f4a58ce0447c5c5a41d2)
+        version: 1.1.1(8783ccd167981b0da20b8ef426d4c87f)
       '@langchain/core':
         specifier: 1.0.2
         version: 1.0.2(patch_hash=8dc787a82cebafe8b23c8826f25f29aca64fc8b43a0a1878e0010782e4da96ed)(@opentelemetry/api@1.9.0)(@opentelemetry/sdk-trace-base@2.2.0(@opentelemetry/api@1.9.0))(openai@6.15.0(ws@8.19.0)(zod@4.3.4))
@@ -1076,6 +1070,9 @@ importers:
       ts-morph:
         specifier: ^27.0.2
         version: 27.0.2
+      tsconfig-paths:
+        specifier: ^4.2.0
+        version: 4.2.0
       tsx:
         specifier: ^4.20.3
         version: 4.21.0
@@ -2634,11 +2631,6 @@ packages:
     peerDependencies:
       hono: ^4
 
-  '@huggingface/hub@2.11.0':
-    resolution: {integrity: sha512-WS6QGaXYeBVFlaB4SOn6z4LGUpLB5kRZNL08uUni4izX353KxiwwZMK5+/AWX86MJh8SMZNa/JFcvFCcQsbszQ==}
-    engines: {node: '>=18'}
-    hasBin: true
-
   '@huggingface/jinja@0.1.3':
     resolution: {integrity: sha512-9KsiorsdIK8+7VmlamAT7Uh90zxAhC/SeKaKc80v58JhtPYuwaJpmR/ST7XAUxrHAFqHTCoTH5aJnJDwSL6xIQ==}
     engines: {node: '>=18'}
@@ -2650,9 +2642,6 @@ packages:
   '@huggingface/jinja@0.5.6':
     resolution: {integrity: sha512-MyMWyLnjqo+KRJYSH7oWNbsOn5onuIvfXYPcc0WOGxU0eHUV7oAYUoQTl2BMdu7ml+ea/bu11UM+EshbeHwtIA==}
     engines: {node: '>=18'}
-
-  '@huggingface/tasks@0.19.90':
-    resolution: {integrity: sha512-nfV9luJbvwGQ/5oKXkKhCV9h4X7mwh1YaGG3ORd6UMLDSwr1OFSSatcBX0O9OtBtmNK19aGSjbLFqqgcIR6+IA==}
 
   '@huggingface/transformers@3.8.1':
     resolution: {integrity: sha512-tsTk4zVjImqdqjS8/AOZg2yNLd1z9S5v+7oUPpXaasDRwEDhB+xnglK1k5cad26lL5/ZIaeREgWWy0bs9y9pPA==}
@@ -6417,12 +6406,6 @@ packages:
     resolution: {integrity: sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA==}
     engines: {node: '>= 14.16.0'}
 
-  chonkie@0.2.6:
-    resolution: {integrity: sha512-ZIXveVWmZxgkYefkgM6cMMTE+DiRLGr+DROAlB4KPKxnDkr+5DGO3tPRsIaINKWW9EpLJxOmYQMM0dag81PcsA==}
-
-  chonkie@0.3.0:
-    resolution: {integrity: sha512-Kfgccl8005r80G7nKp7xDRUC1uVSf5cSVd8z8FNP9eeCK1dj+T5/YPQ+kU8J9zJhYTbp+H8v23gecDP+kFz0iQ==}
-
   chownr@1.1.4:
     resolution: {integrity: sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg==}
 
@@ -8705,9 +8688,6 @@ packages:
   jsonrepair@3.13.1:
     resolution: {integrity: sha512-WJeiE0jGfxYmtLwBTEk8+y/mYcaleyLXWaqp5bJu0/ZTSeG0KQq/wWQ8pmnkKenEdN6pdnn6QtcoSUkbqDHWNw==}
     hasBin: true
-
-  jsonschema@1.5.0:
-    resolution: {integrity: sha512-K+A9hhqbn0f3pJX17Q/7H6yQfD/5OXgdrR5UE12gMXCiN9D5Xq2o5mddV2QEcX/bjla99ASsAAQUyMCCRWAEhw==}
 
   jsonwebtoken@9.0.3:
     resolution: {integrity: sha512-MT/xP0CrubFRNLNKvxJ2BYfy53Zkm++5bX9dtuPbqAeQpTVe0MQTFhao8+Cp//EmJp244xt6Drw/GVEGCUj40g==}
@@ -11346,6 +11326,10 @@ packages:
     resolution: {integrity: sha512-uCC2VHvQRYu+lMh4My/sFNmF2klFymLX1wHJeXnbEJERpV/ZsVuonzerjfrGpIGF7LBVa1O7i9kjiWvJiFck8g==}
     engines: {node: '>=0.10.0'}
 
+  strip-bom@3.0.0:
+    resolution: {integrity: sha512-vavAMRXOgBVNF6nyEEmL3DBK19iRpDcoIwW+swQ+CbGiu7lju6t+JklA1MHweoWtadgt4ISVUsXLyDq34ddcwA==}
+    engines: {node: '>=4'}
+
   strip-dirs@2.1.0:
     resolution: {integrity: sha512-JOCxOeKLm2CAS73y/U4ZeZPTkE+gNVCzKt7Eox84Iej1LT/2pTWYpZKJuxwQpvX1LiZb1xokNR7RLfuBAa7T3g==}
 
@@ -11525,9 +11509,6 @@ packages:
   tiktok-video-element@0.1.2:
     resolution: {integrity: sha512-w6TboLm236XJKKiIXIhCbYCnUxbixBbaAoty0etaEAZ/2kHkVIdfZdv2oouMU/HGMsWCHI/VjQ3wU3MJ+s192Q==}
 
-  tiktoken@1.0.22:
-    resolution: {integrity: sha512-PKvy1rVF1RibfF3JlXBSP0Jrcw2uq3yXdgcEXtKTYn3QJ/cBRBHDnrJ5jHky+MENZ6DIPwNUGWpkVx+7joCpNA==}
-
   tiny-async-pool@1.3.0:
     resolution: {integrity: sha512-01EAw5EDrcVrdgyCLgoSPvqznC0sVxDSVeiOz09FUpjh71G79VCqneOr+xvt7T1r76CF6ZZfPjHorN2+d+3mqA==}
 
@@ -11640,9 +11621,6 @@ packages:
     resolution: {integrity: sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==}
     hasBin: true
 
-  tree-sitter-wasms@0.1.13:
-    resolution: {integrity: sha512-wT+cR6DwaIz80/vho3AvSF0N4txuNx/5bcRKoXouOfClpxh/qqrF4URNLQXbbt8MaAxeksZcZd1j8gcGjc+QxQ==}
-
   trigram-utils@2.0.1:
     resolution: {integrity: sha512-nfWIXHEaB+HdyslAfMxSqWKDdmqY9I32jS7GnqpdWQnLH89r6A5sdk3fDVYqGAZ0CrT8ovAFSAo6HRiWcWNIGQ==}
 
@@ -11685,6 +11663,10 @@ packages:
 
   ts-pattern@5.9.0:
     resolution: {integrity: sha512-6s5V71mX8qBUmlgbrfL33xDUwO0fq48rxAu2LBE11WBeGdpCPOsXksQbZJHvHwhrd3QjUusd3mAOM5Gg0mFBLg==}
+
+  tsconfig-paths@4.2.0:
+    resolution: {integrity: sha512-NoZ4roiN7LnbKn9QqE1amc9DJfzvZXxF4xDavcOWt1BPkdx+m+0gJuPM+S0vCe7zTJMYUP0R8pO2XMr+Y8oLIg==}
+    engines: {node: '>=6'}
 
   tsdown@0.20.3:
     resolution: {integrity: sha512-qWOUXSbe4jN8JZEgrkc/uhJpC8VN2QpNu3eZkBWwNuTEjc/Ik1kcc54ycfcQ5QPRHeu9OQXaLfCI3o7pEJgB2w==}
@@ -12118,14 +12100,6 @@ packages:
   web-streams-polyfill@4.0.0-beta.3:
     resolution: {integrity: sha512-QW95TCTaHmsYfHDybGMwO5IJIM93I/6vTRk+daHTWFPhwh+C8Cg7j7XyKrwrj8Ib6vYXe0ocYNrmzY4xAAN6ug==}
     engines: {node: '>= 14'}
-
-  web-tree-sitter@0.25.10:
-    resolution: {integrity: sha512-Y09sF44/13XvgVKgO2cNDw5rGk6s26MgoZPXLESvMXeefBf7i6/73eFurre0IsTW6E14Y0ArIzhUMmjoc7xyzA==}
-    peerDependencies:
-      '@types/emscripten': ^1.40.0
-    peerDependenciesMeta:
-      '@types/emscripten':
-        optional: true
 
   webdav@5.9.0:
     resolution: {integrity: sha512-OMJ6wtK1WvCO++aOLoQgE96S8KT4e5aaClWHmHXfFU369r4eyELN569B7EqT4OOUb99mmO58GkyuiCv/Ag6J0Q==}
@@ -14963,21 +14937,14 @@ snapshots:
     dependencies:
       hono: 4.12.2
 
-  '@huggingface/hub@2.11.0':
-    dependencies:
-      '@huggingface/tasks': 0.19.90
-    optionalDependencies:
-      cli-progress: 3.12.0
-
   '@huggingface/jinja@0.1.3':
     optional: true
 
   '@huggingface/jinja@0.2.2':
     optional: true
 
-  '@huggingface/jinja@0.5.6': {}
-
-  '@huggingface/tasks@0.19.90': {}
+  '@huggingface/jinja@0.5.6':
+    optional: true
 
   '@huggingface/transformers@3.8.1':
     dependencies:
@@ -14985,6 +14952,7 @@ snapshots:
       onnxruntime-node: 1.21.0
       onnxruntime-web: 1.22.0-dev.20250409-89f8206ba4
       sharp: 0.34.3
+    optional: true
 
   '@humanfs/core@0.19.1': {}
 
@@ -15198,7 +15166,7 @@ snapshots:
       - openai
       - ws
 
-  '@langchain/community@1.1.1(e1974435f3d2f4a58ce0447c5c5a41d2)':
+  '@langchain/community@1.1.1(8783ccd167981b0da20b8ef426d4c87f)':
     dependencies:
       '@browserbasehq/stagehand': 1.14.0(@playwright/test@1.57.0)(deepmerge@4.3.1)(dotenv@16.6.1)(encoding@0.1.13)(openai@6.15.0(ws@8.19.0)(zod@4.3.4))(zod@4.3.4)
       '@ibm-cloud/watsonx-ai': 1.7.5
@@ -15225,7 +15193,6 @@ snapshots:
       '@smithy/util-utf8': 2.3.0
       cheerio: 1.1.2
       chromadb: 2.4.6(encoding@0.1.13)(ws@8.19.0)(zod@4.3.4)
-      cohere-ai: 7.20.0
       fast-xml-parser: 5.4.1
       google-auth-library: 9.15.1(encoding@0.1.13)
       html-to-text: 9.0.5
@@ -19004,7 +18971,8 @@ snapshots:
 
   boolbase@1.0.0: {}
 
-  boolean@3.2.0: {}
+  boolean@3.2.0:
+    optional: true
 
   bowser@2.13.1: {}
 
@@ -19298,45 +19266,6 @@ snapshots:
     dependencies:
       readdirp: 4.1.2
 
-  chonkie@0.2.6(encoding@0.1.13)(ws@8.19.0)(zod@4.3.4):
-    dependencies:
-      '@huggingface/hub': 2.11.0
-      '@huggingface/transformers': 3.8.1
-      jsonschema: 1.5.0
-    optionalDependencies:
-      chromadb: 2.4.6(encoding@0.1.13)(ws@8.19.0)(zod@4.3.4)
-      cohere-ai: 7.20.0
-      openai: '@cherrystudio/openai@6.15.0(ws@8.19.0)(zod@4.3.4)'
-      tree-sitter-wasms: 0.1.13
-      uuid: 11.1.0
-      web-tree-sitter: 0.25.10
-    transitivePeerDependencies:
-      - '@types/emscripten'
-      - aws-crt
-      - encoding
-      - ws
-      - zod
-
-  chonkie@0.3.0(encoding@0.1.13)(ws@8.19.0)(zod@4.3.4):
-    dependencies:
-      '@huggingface/hub': 2.11.0
-      '@huggingface/transformers': 3.8.1
-      chonkie: 0.2.6(encoding@0.1.13)(ws@8.19.0)(zod@4.3.4)
-      jsonschema: 1.5.0
-    optionalDependencies:
-      chromadb: 2.4.6(encoding@0.1.13)(ws@8.19.0)(zod@4.3.4)
-      cohere-ai: 7.20.0
-      openai: '@cherrystudio/openai@6.15.0(ws@8.19.0)(zod@4.3.4)'
-      tree-sitter-wasms: 0.1.13
-      uuid: 11.1.0
-      web-tree-sitter: 0.25.10
-    transitivePeerDependencies:
-      - '@types/emscripten'
-      - aws-crt
-      - encoding
-      - ws
-      - zod
-
   chownr@1.1.4: {}
 
   chownr@2.0.0: {}
@@ -19484,8 +19413,8 @@ snapshots:
       '@aws-crypto/sha256-js': 5.2.0
       '@aws-sdk/client-sagemaker': 3.1010.0
       '@aws-sdk/credential-providers': 3.1010.0
-      '@smithy/protocol-http': 5.3.10
-      '@smithy/signature-v4': 5.3.10
+      '@smithy/protocol-http': 5.3.12
+      '@smithy/signature-v4': 5.3.12
       convict: 6.2.4
       form-data: 4.0.4
       form-data-encoder: 4.1.0
@@ -20020,6 +19949,7 @@ snapshots:
       define-data-property: 1.1.4
       has-property-descriptors: 1.0.2
       object-keys: 1.1.1
+    optional: true
 
   defu@6.1.4: {}
 
@@ -20051,7 +19981,8 @@ snapshots:
 
   detect-node-es@1.1.0: {}
 
-  detect-node@2.1.0: {}
+  detect-node@2.1.0:
+    optional: true
 
   devlop@1.1.0:
     dependencies:
@@ -20398,7 +20329,8 @@ snapshots:
       has-tostringtag: 1.0.2
       hasown: 2.0.2
 
-  es6-error@4.1.1: {}
+  es6-error@4.1.1:
+    optional: true
 
   esbuild-code-inspector-plugin@0.20.17:
     dependencies:
@@ -20951,7 +20883,8 @@ snapshots:
   flatbuffers@1.12.0:
     optional: true
 
-  flatbuffers@25.9.23: {}
+  flatbuffers@25.9.23:
+    optional: true
 
   flatted@3.3.3: {}
 
@@ -21236,6 +21169,7 @@ snapshots:
       roarr: 2.15.4
       semver: 7.7.1
       serialize-error: 7.0.1
+    optional: true
 
   globals@14.0.0: {}
 
@@ -21245,6 +21179,7 @@ snapshots:
     dependencies:
       define-properties: 1.2.1
       gopd: 1.2.0
+    optional: true
 
   google-auth-library@10.5.0:
     dependencies:
@@ -21330,7 +21265,8 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  guid-typescript@1.0.9: {}
+  guid-typescript@1.0.9:
+    optional: true
 
   hachure-fill@0.5.2: {}
 
@@ -21922,7 +21858,8 @@ snapshots:
 
   json-stable-stringify-without-jsonify@1.0.1: {}
 
-  json-stringify-safe@5.0.1: {}
+  json-stringify-safe@5.0.1:
+    optional: true
 
   json2mq@0.2.0:
     dependencies:
@@ -21945,8 +21882,6 @@ snapshots:
   jsonpointer@5.0.1: {}
 
   jsonrepair@3.13.1: {}
-
-  jsonschema@1.5.0: {}
 
   jsonwebtoken@9.0.3:
     dependencies:
@@ -22348,6 +22283,7 @@ snapshots:
   matcher@3.0.0:
     dependencies:
       escape-string-regexp: 4.0.0
+    optional: true
 
   math-expression-evaluator@2.0.7: {}
 
@@ -23229,7 +23165,8 @@ snapshots:
 
   object-inspect@1.13.4: {}
 
-  object-keys@1.1.1: {}
+  object-keys@1.1.1:
+    optional: true
 
   obug@2.1.1: {}
 
@@ -23298,9 +23235,11 @@ snapshots:
   onnxruntime-common@1.14.0:
     optional: true
 
-  onnxruntime-common@1.21.0: {}
+  onnxruntime-common@1.21.0:
+    optional: true
 
-  onnxruntime-common@1.22.0-dev.20250409-89f8206ba4: {}
+  onnxruntime-common@1.22.0-dev.20250409-89f8206ba4:
+    optional: true
 
   onnxruntime-node@1.14.0:
     dependencies:
@@ -23312,6 +23251,7 @@ snapshots:
       global-agent: 3.0.0
       onnxruntime-common: 1.21.0
       tar: 7.5.9
+    optional: true
 
   onnxruntime-web@1.14.0:
     dependencies:
@@ -23331,6 +23271,7 @@ snapshots:
       onnxruntime-common: 1.22.0-dev.20250409-89f8206ba4
       platform: 1.3.6
       protobufjs: 7.5.4
+    optional: true
 
   open@8.4.2:
     dependencies:
@@ -23610,7 +23551,8 @@ snapshots:
     dependencies:
       find-up: 3.0.0
 
-  platform@1.3.6: {}
+  platform@1.3.6:
+    optional: true
 
   player.style@0.3.1(react@19.2.3):
     dependencies:
@@ -24713,6 +24655,7 @@ snapshots:
       json-stringify-safe: 5.0.1
       semver-compare: 1.0.0
       sprintf-js: 1.1.3
+    optional: true
 
   robust-predicates@3.0.2: {}
 
@@ -24889,7 +24832,8 @@ snapshots:
       node-addon-api: 8.5.0
       node-gyp-build: 4.8.4
 
-  semver-compare@1.0.0: {}
+  semver-compare@1.0.0:
+    optional: true
 
   semver@5.7.2: {}
 
@@ -24920,6 +24864,7 @@ snapshots:
   serialize-error@7.0.1:
     dependencies:
       type-fest: 0.13.1
+    optional: true
 
   serve-static@2.2.1:
     dependencies:
@@ -25123,7 +25068,8 @@ snapshots:
 
   sprintf-js@1.0.3: {}
 
-  sprintf-js@1.1.3: {}
+  sprintf-js@1.1.3:
+    optional: true
 
   ssri@12.0.0:
     dependencies:
@@ -25216,6 +25162,8 @@ snapshots:
       ansi-regex: 6.2.2
 
   strip-bom-string@1.0.0: {}
+
+  strip-bom@3.0.0: {}
 
   strip-dirs@2.1.0:
     dependencies:
@@ -25440,8 +25388,6 @@ snapshots:
 
   tiktok-video-element@0.1.2: {}
 
-  tiktoken@1.0.22: {}
-
   tiny-async-pool@1.3.0:
     dependencies:
       semver: 5.7.2
@@ -25538,9 +25484,6 @@ snapshots:
 
   tree-kill@1.2.2: {}
 
-  tree-sitter-wasms@0.1.13:
-    optional: true
-
   trigram-utils@2.0.1:
     dependencies:
       collapse-white-space: 2.1.0
@@ -25582,6 +25525,12 @@ snapshots:
       code-block-writer: 13.0.3
 
   ts-pattern@5.9.0: {}
+
+  tsconfig-paths@4.2.0:
+    dependencies:
+      json5: 2.2.3
+      minimist: 1.2.8
+      strip-bom: 3.0.0
 
   tsdown@0.20.3(@typescript/native-preview@7.0.0-dev.20260204.1)(typescript@5.8.3):
     dependencies:
@@ -25670,7 +25619,8 @@ snapshots:
     dependencies:
       prelude-ls: 1.2.1
 
-  type-fest@0.13.1: {}
+  type-fest@0.13.1:
+    optional: true
 
   type-fest@2.19.0: {}
 
@@ -26068,9 +26018,6 @@ snapshots:
   web-streams-polyfill@3.3.3: {}
 
   web-streams-polyfill@4.0.0-beta.3: {}
-
-  web-tree-sitter@0.25.10:
-    optional: true
 
   webdav@5.9.0:
     dependencies:

@@ -19,6 +19,7 @@ interface AdvancedSettingsPanelProps {
     handleChunkSizeChange: (value: number | null) => void
     handleChunkOverlapChange: (value: number | null) => void
     handleThresholdChange: (value: number | null) => void
+    handleChunkingStrategyChange: (value: string) => void
     handleDocPreprocessChange: (value: string) => void
     handleRerankModelChange: (value: string) => void
   }
@@ -36,12 +37,32 @@ const AdvancedSettingsPanel: React.FC<AdvancedSettingsPanelProps> = ({
     handleChunkSizeChange,
     handleChunkOverlapChange,
     handleThresholdChange,
+    handleChunkingStrategyChange,
     handleDocPreprocessChange,
     handleRerankModelChange
   } = handlers
 
+  const chunkingStrategyOptions = [
+    { label: t('knowledge.strategy.recursive'), value: 'recursive' },
+    { label: t('knowledge.strategy.structural'), value: 'structural' },
+    { label: t('knowledge.strategy.semantic'), value: 'semantic' }
+  ]
+
   return (
     <SettingsPanel>
+      <SettingsItem>
+        <div className="settings-label">
+          {t('knowledge.chunking_strategy')}
+          <InfoTooltip title={t('knowledge.chunking_strategy_tooltip')} placement="right" />
+        </div>
+        <Select
+          value={newBase.chunkingStrategy || 'recursive'}
+          style={{ width: '100%' }}
+          onChange={handleChunkingStrategyChange}
+          options={chunkingStrategyOptions}
+        />
+      </SettingsItem>
+
       <SettingsItem>
         <div className="settings-label">
           {t('settings.tool.preprocess.title')}

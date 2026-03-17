@@ -1,10 +1,23 @@
-import { PdfLegalLoader } from '../src/main/knowledge/embedjs/loader/pdfLegalLoader'
+import Module from 'module'
 import * as path from 'path'
+
+// 1. 彻底修复：在所有导入之前拦截并模拟别名模块
+const originalResolveFilename = (Module as any)._resolveFilename
+;(Module as any)._resolveFilename = function (request: string, ..._args: any[]) {
+  if (request === '@logger') {
+    const mockLoggerPath = path.join(__dirname, 'mock-logger.js')
+    return mockLoggerPath
+  }
+  return originalResolveFilename.apply(this, arguments)
+}
+
 import * as fs from 'fs'
+
+import { PdfLegalLoader } from '../src/main/knowledge/embedjs/loader/pdfLegalLoader'
 
 async function testPdf() {
   const pdfPath = 'c:\\Users\\11071\\Documents\\trae_projects\\260313-cherry-studio\\tests\\001.pdf'
-  
+
   if (!fs.existsSync(pdfPath)) {
     console.error(`错误: 文件不存在 -> ${pdfPath}`)
     return
@@ -27,8 +40,8 @@ async function testPdf() {
       console.log(chunk.pageContent)
       console.log('--- 元数据 ---')
       console.log(JSON.stringify(chunk.metadata, null, 2))
-      console.log('=' .repeat(40) + '\n')
-      
+      console.log('='.repeat(40) + '\n')
+
       // 如果分块太多，只展示前 10 个
       if (count >= 10) {
         console.log('... 后面还有更多分块，已停止预览 ...')

@@ -1,8 +1,11 @@
 import { BaseLoader } from '@cherrystudio/embedjs-interfaces'
+import type { ChunkingStrategy } from '@types'
 import md5 from 'md5'
 
 import { legalCleanString } from '../../utils/text'
+import { ChonkieRecursiveSplitter } from '../splitter/ChonkieRecursiveSplitter'
 import { LegalRecursiveCharacterTextSplitter } from '../splitter/LegalRecursiveCharacterTextSplitter'
+import { SemanticLegalSplitter } from '../splitter/SemanticLegalSplitter'
 
 /**
  * 专门为法律文档优化的 Markdown 加载器
@@ -12,25 +15,39 @@ import { LegalRecursiveCharacterTextSplitter } from '../splitter/LegalRecursiveC
 export class MarkdownLegalLoader extends BaseLoader<{ type: 'MarkdownLegalLoader' }> {
   private readonly text: string
   private readonly filePath: string
+  private readonly chunkingStrategy: ChunkingStrategy
+  private readonly embeddings: any
 
   constructor({
     text,
     filePath,
     chunkSize,
-    chunkOverlap
+    chunkOverlap,
+    chunkingStrategy,
+    embeddings
   }: {
     text: string
     filePath: string
     chunkSize?: number
     chunkOverlap?: number
+    chunkingStrategy?: ChunkingStrategy
+    embeddings?: any
   }) {
     super(`MarkdownLegalLoader_${md5(text + filePath)}`, { text, filePath }, chunkSize ?? 2000, chunkOverlap ?? 200)
     this.text = text
     this.filePath = filePath
+    this.chunkingStrategy = chunkingStrategy || 'structural'
+    this.embeddings = embeddings
   }
 
   override async *getUnfilteredChunks() {
     const cleanedText = legalCleanString(this.text)
+
+    // 如果选择的是递归或语义，则跳过结构化逻辑，直接交给 subChunk 处理全文
+    if (this.chunkingStrategy !== 'structural') {
+      yield* this.subChunk(cleanedText)
+      return
+    }
 
     // 1. 基于标题进行初步切分 (H1, H2, H3)
     // 识别如 #, ##, ### 等开头的标题
@@ -40,10 +57,6 @@ export class MarkdownLegalLoader extends BaseLoader<{ type: 'MarkdownLegalLoader
 
     // 如果没有 Markdown 标题，尝试使用法律条文章节作为标题 (第一章, 第一节)
     if (headers.length === 0) {
-      // 增强正则表达式：
-      // 1. 允许行首有空格 (?:\s*)
-      // 2. 识别第...章/节/条
-      // 3. 这里的 m 修饰符已经在 regex 定义中（通过 g 修饰符和 ^ 符号配合）
       const legalHeaderRegex = /^\s*(第[一二三四五六七八九十]+[章节])\s+.*$/gm
       const legalHeaders = cleanedText.match(legalHeaderRegex) || []
       const legalSplits = cleanedText.split(legalHeaderRegex)
@@ -81,10 +94,26 @@ export class MarkdownLegalLoader extends BaseLoader<{ type: 'MarkdownLegalLoader
   private async *subChunk(text: string, headerContext?: string) {
     if (!text.trim()) return
 
-    const chunker = new LegalRecursiveCharacterTextSplitter({
-      chunkSize: this.chunkSize,
-      chunkOverlap: this.chunkOverlap
-    })
+    // 根据策略选择分块器
+    let chunker: any
+    if (this.chunkingStrategy === 'semantic' && this.embeddings) {
+      chunker = new SemanticLegalSplitter({
+        embeddings: this.embeddings,
+        chunkSize: this.chunkSize,
+        chunkOverlap: this.chunkOverlap
+      })
+    } else if (this.chunkingStrategy === 'recursive') {
+      chunker = new ChonkieRecursiveSplitter({
+        chunkSize: this.chunkSize,
+        chunkOverlap: this.chunkOverlap
+      })
+    } else {
+      // 默认（结构化）使用法律递归分块作为二级切分
+      chunker = new LegalRecursiveCharacterTextSplitter({
+        chunkSize: this.chunkSize,
+        chunkOverlap: this.chunkOverlap
+      })
+    }
 
     const subChunks = await chunker.splitText(text)
 
@@ -96,7 +125,8 @@ export class MarkdownLegalLoader extends BaseLoader<{ type: 'MarkdownLegalLoader
         metadata: {
           type: 'MarkdownLegalLoader' as const,
           source: this.filePath,
-          header: headerContext
+          header: headerContext,
+          strategy: this.chunkingStrategy
         }
       }
     }

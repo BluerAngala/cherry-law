@@ -1,11 +1,14 @@
 import { BaseLoader } from '@cherrystudio/embedjs-interfaces'
 import { cleanString } from '@cherrystudio/embedjs-utils'
+import type { ChunkingStrategy } from '@types'
 import * as fs from 'fs'
 import md5 from 'md5'
 import pdf from 'pdf-parse'
 
 import { legalCleanString } from '../../utils/text'
+import { ChonkieRecursiveSplitter } from '../splitter/ChonkieRecursiveSplitter'
 import { LegalRecursiveCharacterTextSplitter } from '../splitter/LegalRecursiveCharacterTextSplitter'
+import { SemanticLegalSplitter } from '../splitter/SemanticLegalSplitter'
 
 /**
  * 专门为法律文档优化的 PDF 加载器
@@ -13,18 +16,26 @@ import { LegalRecursiveCharacterTextSplitter } from '../splitter/LegalRecursiveC
  */
 export class PdfLegalLoader extends BaseLoader<{ type: 'PdfLegalLoader' }> {
   private readonly filePath: string
+  private readonly chunkingStrategy: ChunkingStrategy
+  private readonly embeddings: any
 
   constructor({
     filePath,
     chunkSize,
-    chunkOverlap
+    chunkOverlap,
+    chunkingStrategy,
+    embeddings
   }: {
     filePath: string
     chunkSize?: number
     chunkOverlap?: number
+    chunkingStrategy?: ChunkingStrategy
+    embeddings?: any
   }) {
     super(`PdfLegalLoader_${md5(filePath)}`, { filePath }, chunkSize ?? 2000, chunkOverlap ?? 200)
     this.filePath = filePath
+    this.chunkingStrategy = chunkingStrategy || 'recursive'
+    this.embeddings = embeddings
   }
 
   override async *getUnfilteredChunks() {
@@ -36,11 +47,27 @@ export class PdfLegalLoader extends BaseLoader<{ type: 'PdfLegalLoader' }> {
     // 2. 应用法律文本清理
     const cleanedText = legalCleanString(cleanString(rawText))
 
-    // 3. 使用法律优化分块器
-    const chunker = new LegalRecursiveCharacterTextSplitter({
-      chunkSize: this.chunkSize,
-      chunkOverlap: this.chunkOverlap
-    })
+    // 3. 根据策略选择分块器
+    let chunker: any
+    if (this.chunkingStrategy === 'semantic' && this.embeddings) {
+      chunker = new SemanticLegalSplitter({
+        embeddings: this.embeddings,
+        chunkSize: this.chunkSize,
+        chunkOverlap: this.chunkOverlap
+      })
+    } else if (this.chunkingStrategy === 'recursive') {
+      // 默认使用 Chonkie 优化的递归分块
+      chunker = new ChonkieRecursiveSplitter({
+        chunkSize: this.chunkSize,
+        chunkOverlap: this.chunkOverlap
+      })
+    } else {
+      // 结构化回退到法律递归分块（PDF 暂时不支持真正的结构化，除非使用布局分析）
+      chunker = new LegalRecursiveCharacterTextSplitter({
+        chunkSize: this.chunkSize,
+        chunkOverlap: this.chunkOverlap
+      })
+    }
 
     const chunks = await chunker.splitText(cleanedText)
 
@@ -52,7 +79,8 @@ export class PdfLegalLoader extends BaseLoader<{ type: 'PdfLegalLoader' }> {
           type: 'PdfLegalLoader' as const,
           source: this.filePath,
           pageCount: data.numpages,
-          info: data.info
+          info: data.info,
+          strategy: this.chunkingStrategy
         }
       }
     }

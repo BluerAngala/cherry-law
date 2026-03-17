@@ -1721,6 +1721,8 @@
     "chunk_size_placeholder": "Προεπιλογή (δεν συνιστάται να το αλλάξετε)",
     "chunk_size_too_large": "Το μέγεθος μερισμού δεν μπορεί να ξεπεράσει το όριο πλάτους επιρροής του μοντέλου ({{max_context}})",
     "chunk_size_tooltip": "Διαχωρισμός των έγγραφων σε μεριδισμούς, με το μέγεθος κάθε μεριδισμού να μην ξεπεράζει το όριο πλάτους επιρροής του μοντέλου",
+    "chunking_strategy": "[to be translated]:Chunking Strategy",
+    "chunking_strategy_tooltip": "[to be translated]:Algorithm for splitting documents. Structural is best for legal docs, Semantic for deep understanding.",
     "clear_selection": "Καθαρισμός επιλογής",
     "delete": "Διαγραφή",
     "delete_confirm": "Είστε σίγουρος ότι θέλετε να διαγράψετε αυτή τη βάση γνώσεων;",
@@ -1809,6 +1811,11 @@
     "status_preprocess_completed": "Η προεπεξεργασία ολοκληρώθηκε",
     "status_preprocess_failed": "Η προεπεξεργασία απέτυχε",
     "status_processing": "Επεξεργασία",
+    "strategy": {
+      "recursive": "[to be translated]:Recursive (Chonkie Optimized)",
+      "semantic": "[to be translated]:Semantic (Embedding Aware)",
+      "structural": "[to be translated]:Structural (Legal Optimized)"
+    },
     "subtitle_file": "Υποτίτλων",
     "threshold": "Περιθώριο συνάφειας",
     "threshold_placeholder": "Δεν έχει ρυθμιστεί",

@@ -1721,6 +1721,8 @@
     "chunk_size_placeholder": "Implicit (nu se recomandă modificarea)",
     "chunk_size_too_large": "Dimensiunea fragmentului nu poate depăși limita de context a modelului ({{max_context}})",
     "chunk_size_tooltip": "Împarte documentele în fragmente; dimensiunea fiecărui fragment nu trebuie să depășească limita de context a modelului",
+    "chunking_strategy": "[to be translated]:Chunking Strategy",
+    "chunking_strategy_tooltip": "[to be translated]:Algorithm for splitting documents. Structural is best for legal docs, Semantic for deep understanding.",
     "clear_selection": "Șterge selecția",
     "delete": "Șterge",
     "delete_confirm": "Ești sigur că vrei să ștergi această bază de cunoștințe?",
@@ -1809,6 +1811,11 @@
     "status_preprocess_completed": "Preprocesare finalizată",
     "status_preprocess_failed": "Preprocesare eșuată",
     "status_processing": "În procesare",
+    "strategy": {
+      "recursive": "[to be translated]:Recursive (Chonkie Optimized)",
+      "semantic": "[to be translated]:Semantic (Embedding Aware)",
+      "structural": "[to be translated]:Structural (Legal Optimized)"
+    },
     "subtitle_file": "fișier subtitrare",
     "threshold": "Prag de potrivire",
     "threshold_placeholder": "Nesetat",

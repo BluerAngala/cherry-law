@@ -109,7 +109,9 @@ export async function addFileLoader(
         new PdfLegalLoader({
           filePath: filePath,
           chunkSize: base.chunkSize,
-          chunkOverlap: base.chunkOverlap
+          chunkOverlap: base.chunkOverlap,
+          chunkingStrategy: base.chunkingStrategy,
+          embeddings: (base as any).embeddings
         }) as any,
         forceReload
       )
@@ -121,7 +123,9 @@ export async function addFileLoader(
         new OfficeLegalLoader({
           filePath: filePath,
           chunkSize: base.chunkSize,
-          chunkOverlap: base.chunkOverlap
+          chunkOverlap: base.chunkOverlap,
+          chunkingStrategy: base.chunkingStrategy,
+          embeddings: (base as any).embeddings
         }) as any,
         forceReload
       )
@@ -134,7 +138,9 @@ export async function addFileLoader(
           text: await readTextFileWithAutoEncoding(filePath),
           filePath: filePath,
           chunkSize: base.chunkSize,
-          chunkOverlap: base.chunkOverlap
+          chunkOverlap: base.chunkOverlap,
+          chunkingStrategy: base.chunkingStrategy,
+          embeddings: (base as any).embeddings
         }) as any,
         forceReload
       )
@@ -192,7 +198,9 @@ export async function addFileLoader(
           text: await readTextFileWithAutoEncoding(filePath),
           sourceUrl: filePath,
           chunkSize: base.chunkSize,
-          chunkOverlap: base.chunkOverlap
+          chunkOverlap: base.chunkOverlap,
+          chunkingStrategy: base.chunkingStrategy,
+          embeddings: (base as any).embeddings
         }) as any,
         forceReload
       )

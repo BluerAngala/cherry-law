@@ -89,6 +89,7 @@ export const getKnowledgeBaseParams = (base: KnowledgeBase): KnowledgeBaseParams
     },
     chunkSize,
     chunkOverlap: base.chunkOverlap,
+    chunkingStrategy: base.chunkingStrategy || 'recursive',
     rerankApiClient: {
       model: base.rerankModel?.id || '',
       provider: rerankProvider.name.toLowerCase(),

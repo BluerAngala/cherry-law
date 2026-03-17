@@ -136,6 +136,7 @@ export type KnowledgeBaseParams = {
   dimensions?: number
   chunkSize?: number
   chunkOverlap?: number
+  chunkingStrategy?: ChunkingStrategy
   embedApiClient: ApiClient
   rerankApiClient?: ApiClient
   documentCount?: number
