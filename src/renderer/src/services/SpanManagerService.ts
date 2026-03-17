@@ -83,7 +83,9 @@ class SpanManagerService {
       await window.api.trace.cleanHistory(message.topicId, message.traceId)
 
       const topic = await window.electron.ipcRenderer.invoke(IpcChannel.TopicMessage_GetTopic, message.topicId)
-      _models = topic?.messages.filter((m: any) => m.role === 'assistant' && m.askId === message.id).map((m: any) => m.model)
+      _models = topic?.messages
+        .filter((m: any) => m.role === 'assistant' && m.askId === message.id)
+        .map((m: any) => m.model)
     } else {
       _models = [message.model]
       await window.api.trace.cleanHistory(message.topicId, message.traceId || '', message.model?.name)

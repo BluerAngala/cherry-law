@@ -21,35 +21,39 @@ export class DataItemService {
     const db = (await DatabaseManager.getInstance()).getDatabase()
     const result = await db.select().from(knowledgeNotesTable).where(eq(knowledgeNotesTable.id, id)).limit(1)
     if (result.length === 0) return undefined
-    
+
     const row = result[0]
     return {
       id: row.id,
       baseId: row.baseId,
       type: row.type as 'note',
       content: row.content,
-      createdAt: Number(row.created_at),
-      updatedAt: Number(row.updated_at)
+      created_at: Number(row.created_at),
+      updated_at: Number(row.updated_at)
     }
   }
 
   async putKnowledgeNote(note: KnowledgeNoteItem): Promise<void> {
     const db = (await DatabaseManager.getInstance()).getDatabase()
-    await db.insert(knowledgeNotesTable).values({
+    const values = {
       id: note.id,
       baseId: note.baseId,
       type: note.type,
       content: note.content,
-      created_at: String(note.createdAt),
-      updated_at: String(note.updatedAt)
-    }).onConflictDoUpdate({
-      target: knowledgeNotesTable.id,
-      set: {
-        baseId: note.baseId,
-        content: note.content,
-        updated_at: String(note.updatedAt)
-      }
-    })
+      created_at: String(note.created_at),
+      updated_at: String(note.updated_at)
+    }
+    await db
+      .insert(knowledgeNotesTable)
+      .values(values as any)
+      .onConflictDoUpdate({
+        target: knowledgeNotesTable.id,
+        set: {
+          baseId: note.baseId,
+          content: note.content,
+          updated_at: String(note.updated_at)
+        }
+      })
   }
 
   async deleteKnowledgeNote(id: string): Promise<void> {
@@ -61,7 +65,7 @@ export class DataItemService {
   async getAllQuickPhrases(): Promise<QuickPhrase[]> {
     const db = (await DatabaseManager.getInstance()).getDatabase()
     const rows = await db.select().from(quickPhrasesTable)
-    return rows.map(row => ({
+    return rows.map((row) => ({
       id: row.id,
       title: row.title,
       content: row.content,
@@ -73,22 +77,25 @@ export class DataItemService {
 
   async putQuickPhrase(phrase: QuickPhrase): Promise<void> {
     const db = (await DatabaseManager.getInstance()).getDatabase()
-    await db.insert(quickPhrasesTable).values({
-      id: phrase.id,
-      title: phrase.title,
-      content: phrase.content,
-      order: phrase.order,
-      created_at: phrase.createdAt,
-      updated_at: phrase.updatedAt
-    }).onConflictDoUpdate({
-      target: quickPhrasesTable.id,
-      set: {
+    await db
+      .insert(quickPhrasesTable)
+      .values({
+        id: phrase.id,
         title: phrase.title,
         content: phrase.content,
         order: phrase.order,
+        created_at: phrase.createdAt,
         updated_at: phrase.updatedAt
-      }
-    })
+      })
+      .onConflictDoUpdate({
+        target: quickPhrasesTable.id,
+        set: {
+          title: phrase.title,
+          content: phrase.content,
+          order: phrase.order,
+          updated_at: phrase.updatedAt
+        }
+      })
   }
 
   async deleteQuickPhrase(id: string): Promise<void> {

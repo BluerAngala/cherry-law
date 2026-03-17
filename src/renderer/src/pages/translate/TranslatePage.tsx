@@ -39,6 +39,7 @@ import {
 } from '@renderer/utils/translate'
 import { documentExts } from '@shared/config/constant'
 import { imageExts, MB, textExts } from '@shared/config/constant'
+import { IpcChannel } from '@shared/IpcChannel'
 import { Button, Flex, FloatButton, Popover, Tooltip, Typography } from 'antd'
 import type { TextAreaRef } from 'antd/es/input/TextArea'
 import TextArea from 'antd/es/input/TextArea'
@@ -51,8 +52,6 @@ import styled from 'styled-components'
 
 import TranslateHistoryList from './TranslateHistory'
 import TranslateSettings from './TranslateSettings'
-import { IpcChannel } from '@shared/IpcChannel'
-
 
 const logger = loggerService.withContext('TranslatePage')
 
@@ -377,7 +376,10 @@ const TranslatePage: FC = () => {
       sourceLang &&
         setSourceLanguage(sourceLang.value === 'auto' ? sourceLang.value : getLanguageByLangcode(sourceLang.value))
 
-      const bidirectionalPairSetting = await window.electron.ipcRenderer.invoke(IpcChannel.Config_Get, 'translate:bidirectional:pair')
+      const bidirectionalPairSetting = await window.electron.ipcRenderer.invoke(
+        IpcChannel.Config_Get,
+        'translate:bidirectional:pair'
+      )
       if (bidirectionalPairSetting) {
         const langPair = bidirectionalPairSetting.value
         let source: undefined | TranslateLanguage
@@ -400,16 +402,25 @@ const TranslatePage: FC = () => {
         }
       }
 
-      const bidirectionalSetting = await window.electron.ipcRenderer.invoke(IpcChannel.Config_Get, 'translate:bidirectional:enabled')
+      const bidirectionalSetting = await window.electron.ipcRenderer.invoke(
+        IpcChannel.Config_Get,
+        'translate:bidirectional:enabled'
+      )
       setIsBidirectional(bidirectionalSetting ? bidirectionalSetting.value : false)
 
       const scrollSyncSetting = await window.electron.ipcRenderer.invoke(IpcChannel.Config_Get, 'translate:scroll:sync')
       setIsScrollSyncEnabled(scrollSyncSetting ? scrollSyncSetting.value : false)
 
-      const markdownSetting = await window.electron.ipcRenderer.invoke(IpcChannel.Config_Get, 'translate:markdown:enabled')
+      const markdownSetting = await window.electron.ipcRenderer.invoke(
+        IpcChannel.Config_Get,
+        'translate:markdown:enabled'
+      )
       setEnableMarkdown(markdownSetting ? markdownSetting.value : false)
 
-      const autoDetectionMethodSetting = await window.electron.ipcRenderer.invoke(IpcChannel.Config_Get, 'translate:detect:method')
+      const autoDetectionMethodSetting = await window.electron.ipcRenderer.invoke(
+        IpcChannel.Config_Get,
+        'translate:detect:method'
+      )
 
       if (autoDetectionMethodSetting) {
         setAutoDetectionMethod(autoDetectionMethodSetting.value)

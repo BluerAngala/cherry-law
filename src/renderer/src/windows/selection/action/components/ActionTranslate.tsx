@@ -3,7 +3,6 @@ import { loggerService } from '@logger'
 import CopyButton from '@renderer/components/CopyButton'
 import LanguageSelect from '@renderer/components/LanguageSelect'
 import { LanguagesEnum, UNKNOWN } from '@renderer/config/translate'
-import db from '@renderer/databases'
 import { useTopicMessages } from '@renderer/hooks/useMessageOperations'
 import { useSettings } from '@renderer/hooks/useSettings'
 import useTranslate from '@renderer/hooks/useTranslate'
@@ -15,6 +14,7 @@ import { AssistantMessageStatus } from '@renderer/types/newMessage'
 import type { ActionItem } from '@renderer/types/selectionTypes'
 import { abortCompletion } from '@renderer/utils/abortController'
 import { detectLanguage } from '@renderer/utils/translate'
+import { IpcChannel } from '@shared/IpcChannel'
 import { Dropdown, Tooltip } from 'antd'
 import { ArrowRight, ChevronDown, CircleHelp, Settings2 } from 'lucide-react'
 import type { FC } from 'react'
@@ -73,16 +73,19 @@ const ActionTranslate: FC<Props> = ({ action, scrollToBottom }) => {
       return
     }
 
-    const biDirectionLangPair = await db.settings.get({ id: 'translate:bidirectional:pair' })
+    const biDirectionLangPair = await window.electron.ipcRenderer.invoke(
+      IpcChannel.Config_Get,
+      'translate:bidirectional:pair'
+    )
 
-    if (biDirectionLangPair && biDirectionLangPair.value[0]) {
-      const targetLang = getLanguageByLangcode(biDirectionLangPair.value[0])
+    if (biDirectionLangPair && biDirectionLangPair[0]) {
+      const targetLang = getLanguageByLangcode(biDirectionLangPair[0])
       setTargetLanguage(targetLang)
       targetLangRef.current = targetLang
     }
 
-    if (biDirectionLangPair && biDirectionLangPair.value[1]) {
-      const alterLang = getLanguageByLangcode(biDirectionLangPair.value[1])
+    if (biDirectionLangPair && biDirectionLangPair[1]) {
+      const alterLang = getLanguageByLangcode(biDirectionLangPair[1])
       setAlterLanguage(alterLang)
     }
   }, [getLanguageByLangcode, isLanguagesLoaded])
@@ -232,7 +235,7 @@ const ActionTranslate: FC<Props> = ({ action, scrollToBottom }) => {
       targetLangRef.current = newTargetLanguage
       setAlterLanguage(newAlterLanguage)
 
-      db.settings.put({
+      window.electron.ipcRenderer.invoke(IpcChannel.Config_Set, {
         id: 'translate:bidirectional:pair',
         value: [newTargetLanguage.langCode, newAlterLanguage.langCode]
       })
@@ -253,7 +256,10 @@ const ActionTranslate: FC<Props> = ({ action, scrollToBottom }) => {
         // New language is different from both, update target
         setTargetLanguage(newLang)
         targetLangRef.current = newLang
-        db.settings.put({ id: 'translate:bidirectional:pair', value: [newLang.langCode, alterLanguage.langCode] })
+        window.electron.ipcRenderer.invoke(IpcChannel.Config_Set, {
+          id: 'translate:bidirectional:pair',
+          value: [newLang.langCode, alterLanguage.langCode]
+        })
       }
     },
     [initialized, getLanguageByLangcode, targetLanguage.langCode, alterLanguage.langCode]

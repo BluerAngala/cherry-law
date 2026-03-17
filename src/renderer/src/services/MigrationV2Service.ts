@@ -26,7 +26,8 @@ export class MigrationV2Service {
         llmProviders: this.gatherLlmProviders(state),
         files: await this.gatherFiles(),
         knowledgeNotes: await this.gatherKnowledgeNotes(),
-        translateHistory: await this.gatherTranslateHistory()
+        translateHistory: await this.gatherTranslateHistory(),
+        translateLanguages: await this.gatherTranslateLanguages()
       }
 
       logger.info('Sending data to main process for LibSQL insertion...')
@@ -73,6 +74,11 @@ export class MigrationV2Service {
 
   private async gatherTranslateHistory() {
     // return await db.table('translate_history').toArray()
+    return []
+  }
+
+  private async gatherTranslateLanguages() {
+    // return await db.table('translate_languages').toArray()
     return []
   }
 }

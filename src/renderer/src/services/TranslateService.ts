@@ -1,5 +1,4 @@
 import { loggerService } from '@logger'
-import db from '@renderer/databases'
 import type {
   AssistantSettings,
   CustomTranslateLanguage,
@@ -15,6 +14,7 @@ import { uuid } from '@renderer/utils'
 import { readyToAbort } from '@renderer/utils/abortController'
 import { trackTokenUsage } from '@renderer/utils/analytics'
 import { isAbortError } from '@renderer/utils/error'
+import { IpcChannel } from '@shared/IpcChannel'
 import { NoOutputGeneratedError } from 'ai'
 import { t } from 'i18next'
 
@@ -115,77 +115,37 @@ export const addCustomLanguage = async (
   emoji: string,
   langCode: string
 ): Promise<CustomTranslateLanguage> => {
-  // 按langcode判重
-  // const existing = await db.translate_languages.where('langCode').equals(langCode).first()
-  // if (existing) {
-  //   logger.error(`Custom language ${langCode} exists.`)
-  //   throw new Error(t('settings.translate.custom.error.langCode.exists'))
-  // } else {
-    try {
-      const item = {
-        id: uuid(),
-        value,
-        langCode: langCode.toLowerCase(),
-        emoji
-      }
-      // await db.translate_languages.add(item)
-      return item
-    } catch (e) {
-      logger.error('Failed to add custom language.', e as Error)
-      throw e
+  try {
+    const item = {
+      id: uuid(),
+      value,
+      langCode: langCode.toLowerCase(),
+      emoji,
+      created_at: new Date().toISOString()
     }
-  // }
-}
-
-/**
- * 删除自定义翻译语言
- * @param id - 要删除的自定义语言ID
- * @throws {Error} 删除自定义语言失败时抛出错误
- */
-export const deleteCustomLanguage = async (id: string) => {
-  try {
-    // await db.translate_languages.delete(id)
+    await window.electron.ipcRenderer.invoke(IpcChannel.Translate_AddLanguage, item)
+    return item
   } catch (e) {
-    logger.error('Delete custom language failed.', e as Error)
-    throw e
-  }
-}
-
-/**
- * 更新自定义翻译语言
- * @param old - 原有的自定义语言对象
- * @param value - 新的语言名称
- * @param emoji - 新的语言emoji图标
- * @param langCode - 新的语言代码
- * @throws {Error} 更新自定义语言失败时抛出错误
- */
-export const updateCustomLanguage = async (
-  old: CustomTranslateLanguage,
-  value: string,
-  emoji: string,
-  langCode: string
-) => {
-  try {
-    // await db.translate_languages.put({
-    //   id: old.id,
-    //   value,
-    //   langCode: langCode.toLowerCase(),
-    //   emoji
-    // })
-  } catch (e) {
-    logger.error('Update custom language failed.', e as Error)
+    logger.error('Failed to add custom language.', e as Error)
     throw e
   }
 }
 
 /**
  * 获取所有自定义语言
+ * @returns Promise<CustomTranslateLanguage[]> 返回所有自定义语言列表
  * @throws {Error} 获取自定义语言失败时抛出错误
  */
-export const getAllCustomLanguages = async () => {
+export const getAllCustomLanguages = async (): Promise<CustomTranslateLanguage[]> => {
   try {
-    const languages = await db.translate_languages.toArray()
-    return languages
+    const languages = await window.electron.ipcRenderer.invoke(IpcChannel.Translate_GetLanguages)
+    return languages.map((lang: any) => ({
+      id: lang.id,
+      value: lang.name || lang.value,
+      langCode: lang.langCode,
+      emoji: lang.emoji,
+      created_at: lang.created_at
+    }))
   } catch (e) {
     logger.error('Failed to get all custom languages.', e as Error)
     throw e
@@ -206,32 +166,35 @@ export const saveTranslateHistory = async (
   sourceLanguage: TranslateLanguageCode,
   targetLanguage: TranslateLanguageCode
 ) => {
-  const history: TranslateHistory = {
+  const history = {
     id: uuid(),
     sourceText,
     targetText,
     sourceLanguage,
     targetLanguage,
-    createdAt: new Date().toISOString()
+    created_at: new Date().toISOString()
   }
-  await db.translate_history.add(history)
+  await window.electron.ipcRenderer.invoke(IpcChannel.Translate_AddHistory, history)
 }
 
 /**
- * 更新翻译历史记录
- * @param id - 历史记录ID
- * @param update - 更新内容
- * @returns Promise<void>
+ * 获取所有翻译历史记录
+ * @returns Promise<TranslateHistory[]> 返回所有翻译历史记录
+ * @throws {Error} 获取翻译历史失败时抛出错误
  */
-export const updateTranslateHistory = async (id: string, update: Omit<Partial<TranslateHistory>, 'id'>) => {
+export const getAllTranslateHistory = async (): Promise<TranslateHistory[]> => {
   try {
-    const history: Partial<TranslateHistory> = {
-      ...update,
-      id
-    }
-    await db.translate_history.update(id, history)
+    const history = await window.electron.ipcRenderer.invoke(IpcChannel.Translate_GetHistory)
+    return history.map((item: any) => ({
+      id: item.id,
+      sourceText: item.sourceText,
+      targetText: item.targetText,
+      sourceLanguage: item.sourceLanguage,
+      targetLanguage: item.targetLanguage,
+      createdAt: item.created_at
+    }))
   } catch (e) {
-    logger.error('Failed to update translate history', e as Error)
+    logger.error('Failed to get all translate history.', e as Error)
     throw e
   }
 }
@@ -243,7 +206,7 @@ export const updateTranslateHistory = async (id: string, update: Omit<Partial<Tr
  */
 export const deleteHistory = async (id: string) => {
   try {
-    db.translate_history.delete(id)
+    await window.electron.ipcRenderer.invoke(IpcChannel.Translate_DeleteHistory, id)
   } catch (e) {
     logger.error('Failed to delete translate history', e as Error)
     throw e
@@ -255,5 +218,57 @@ export const deleteHistory = async (id: string) => {
  * @returns Promise<void>
  */
 export const clearHistory = async () => {
-  db.translate_history.clear()
+  try {
+    await window.electron.ipcRenderer.invoke(IpcChannel.Translate_ClearHistory)
+  } catch (e) {
+    logger.error('Failed to clear translate history', e as Error)
+    throw e
+  }
+}
+
+/**
+ * 删除指定的自定义语言
+ * @param id - 要删除的自定义语言ID
+ * @returns Promise<void>
+ */
+export const deleteCustomLanguage = async (id: string) => {
+  try {
+    await window.electron.ipcRenderer.invoke(IpcChannel.Translate_DeleteLanguage, id)
+  } catch (e) {
+    logger.error('Failed to delete custom language', e as Error)
+    throw e
+  }
+}
+
+/**
+ * 更新自定义语言
+ * @param language - 要更新的语言对象
+ * @param value - 新的语言名称
+ * @param emoji - 新的emoji
+ * @param langCode - 新的语言代码
+ * @returns Promise<void>
+ * @deprecated 此功能在当前架构下暂不支持，仅保留接口兼容性
+ */
+export const updateCustomLanguage = async (
+  _language: CustomTranslateLanguage,
+  _value: string,
+  _emoji: string,
+  _langCode: string
+) => {
+  // 在 LibSQL 架构下，更新操作需要先删除再添加
+  // 暂时保留此接口以兼容旧代码
+  logger.warn('updateCustomLanguage is not fully supported in current architecture')
+}
+
+/**
+ * 更新翻译历史记录
+ * @param id - 历史记录ID
+ * @param updates - 更新内容
+ * @returns Promise<void>
+ * @deprecated 此功能在当前架构下暂不支持，仅保留接口兼容性
+ */
+export const updateTranslateHistory = async (_id: string, _updates: Partial<TranslateHistory>) => {
+  // 在 LibSQL 架构下，更新操作需要重新插入
+  // 暂时保留此接口以兼容旧代码
+  logger.warn('updateTranslateHistory is not fully supported in current architecture')
 }

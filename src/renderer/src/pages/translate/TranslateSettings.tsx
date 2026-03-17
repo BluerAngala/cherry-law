@@ -2,6 +2,7 @@ import LanguageSelect from '@renderer/components/LanguageSelect'
 import { HStack } from '@renderer/components/Layout'
 import useTranslate from '@renderer/hooks/useTranslate'
 import type { AutoDetectionMethod, Model, TranslateLanguage } from '@renderer/types'
+import { IpcChannel } from '@shared/IpcChannel'
 import { Button, Flex, Modal, Radio, Space, Switch, Tooltip } from 'antd'
 import { HelpCircle } from 'lucide-react'
 import type { FC } from 'react'
@@ -9,8 +10,6 @@ import { memo, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import TranslateSettingsPopup from '../settings/TranslateSettingsPopup/TranslateSettingsPopup'
-import { IpcChannel } from '@shared/IpcChannel'
-
 
 // TODO: Just don't send so many props. Migrate them to redux.
 const TranslateSettings: FC<{
@@ -72,7 +71,10 @@ const TranslateSettings: FC<{
               checked={enableMarkdown}
               onChange={(checked) => {
                 setEnableMarkdown(checked)
-                window.electron.ipcRenderer.invoke(IpcChannel.Config_Set, { id: 'translate:markdown:enabled', value: checked })
+                window.electron.ipcRenderer.invoke(IpcChannel.Config_Set, {
+                  id: 'translate:markdown:enabled',
+                  value: checked
+                })
               }}
             />
           </Flex>
@@ -92,7 +94,10 @@ const TranslateSettings: FC<{
               checked={isScrollSyncEnabled}
               onChange={(checked) => {
                 setIsScrollSyncEnabled(checked)
-                window.electron.ipcRenderer.invoke(IpcChannel.Config_Set, { id: 'translate:scroll:sync', value: checked })
+                window.electron.ipcRenderer.invoke(IpcChannel.Config_Set, {
+                  id: 'translate:scroll:sync',
+                  value: checked
+                })
               }}
             />
           </Flex>

@@ -94,6 +94,7 @@ import {
 import storeSyncService from './services/StoreSyncService'
 import { themeService } from './services/ThemeService'
 import { topicMessageService } from './services/TopicMessageService'
+import { translateService } from './services/TranslateService'
 import VertexAIService from './services/VertexAIService'
 import { setOpenLinkExternal } from './services/WebviewService'
 import { windowService } from './services/WindowService'
@@ -987,6 +988,9 @@ export async function registerIpc(mainWindow: BrowserWindow, app: Electron.App) 
 
   // Migration V2
   migrationV2Service.registerIpcHandler()
+
+  // Translate Service
+  translateService.registerIpcHandlers()
 
   // LLM Providers V2
   ipcMain.handle(IpcChannel.LlmProvider_GetProviders, () => llmProviderService.getProviders())

@@ -494,5 +494,14 @@ export enum IpcChannel {
   SpeechGlobal_ShowRecordingUI = 'speech-global:show-recording-ui',
   SpeechGlobal_HideRecordingUI = 'speech-global:hide-recording-ui',
   SpeechGlobal_DeliverText = 'speech-global:deliver-text',
-  SpeechGlobal_DeliveryResult = 'speech-global:delivery-result'
+  SpeechGlobal_DeliveryResult = 'speech-global:delivery-result',
+
+  // Translate
+  Translate_GetHistory = 'translate:get-history',
+  Translate_AddHistory = 'translate:add-history',
+  Translate_DeleteHistory = 'translate:delete-history',
+  Translate_ClearHistory = 'translate:clear-history',
+  Translate_GetLanguages = 'translate:get-languages',
+  Translate_AddLanguage = 'translate:add-language',
+  Translate_DeleteLanguage = 'translate:delete-language'
 }

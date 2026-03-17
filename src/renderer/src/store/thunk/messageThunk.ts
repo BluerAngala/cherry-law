@@ -1783,10 +1783,10 @@ export const removeBlocksThunk =
       } else {
         // For Dexie topics: use transaction for atomicity
         const finalMessagesToSave = selectMessagesForTopic(getState(), topicId)
-      await window.electron.ipcRenderer.invoke(IpcChannel.TopicMessage_PutTopic, topicId, finalMessagesToSave)
-      if (blockIdsToRemove.length > 0) {
-        await window.electron.ipcRenderer.invoke(IpcChannel.TopicMessage_DeleteMessageBlocks, blockIdsToRemove)
-      }
+        await window.electron.ipcRenderer.invoke(IpcChannel.TopicMessage_PutTopic, topicId, finalMessagesToSave)
+        if (blockIdsToRemove.length > 0) {
+          await window.electron.ipcRenderer.invoke(IpcChannel.TopicMessage_DeleteMessageBlocks, blockIdsToRemove)
+        }
       }
 
       dispatch(updateTopicUpdatedAt({ topicId }))

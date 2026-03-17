@@ -170,6 +170,22 @@ export class MigrationV2Service {
       }
     }
 
+    // 6. Migrate Translate Languages
+    if (data.translateLanguages?.length) {
+      logger.info(`Migrating ${data.translateLanguages.length} translate languages...`)
+      for (const item of data.translateLanguages) {
+        await db
+          .insert(schema.translateLanguagesTable)
+          .values({
+            id: item.id,
+            langCode: item.langCode,
+            name: item.value || item.name,
+            created_at: item.created_at || new Date().toISOString()
+          })
+          .onConflictDoNothing()
+      }
+    }
+
     logger.info('Migration V2 completed successfully.')
     this.notifyProgress(100)
   }

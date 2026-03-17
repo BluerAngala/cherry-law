@@ -444,9 +444,7 @@
       "indexes": {
         "idx_message_blocks_message_id": {
           "name": "idx_message_blocks_message_id",
-          "columns": [
-            "message_id"
-          ],
+          "columns": ["message_id"],
           "isUnique": false
         }
       },
@@ -817,9 +815,7 @@
       "indexes": {
         "translate_languages_lang_code_unique": {
           "name": "translate_languages_lang_code_unique",
-          "columns": [
-            "lang_code"
-          ],
+          "columns": ["lang_code"],
           "isUnique": true
         }
       },

@@ -2,7 +2,12 @@ import { DeleteOutlined, StarFilled, StarOutlined } from '@ant-design/icons'
 import { HStack } from '@renderer/components/Layout'
 import { DynamicVirtualList } from '@renderer/components/VirtualList'
 import useTranslate from '@renderer/hooks/useTranslate'
-import { clearHistory, deleteHistory, updateTranslateHistory } from '@renderer/services/TranslateService'
+import {
+  clearHistory,
+  deleteHistory,
+  getAllTranslateHistory,
+  updateTranslateHistory
+} from '@renderer/services/TranslateService'
 import type { TranslateHistory, TranslateLanguage } from '@renderer/types'
 import { useQuery } from '@tanstack/react-query'
 import { Button, Drawer, Empty, Flex, Input, Popconfirm } from 'antd'
@@ -36,8 +41,7 @@ const TranslateHistoryList: FC<TranslateHistoryProps> = ({ isOpen, onHistoryItem
   const { data: _translateHistory = [] } = useQuery({
     queryKey: ['translate_history'],
     queryFn: async () => {
-      // NOTE: IPC channel should be added for translate history, returning empty for now
-      return []
+      return await getAllTranslateHistory()
     }
   })
   const [search, setSearch] = useState('')

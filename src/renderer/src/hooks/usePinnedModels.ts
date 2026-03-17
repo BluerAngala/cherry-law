@@ -25,7 +25,10 @@ export const usePinnedModels = () => {
 
       // Update storage if there were invalid models
       if (validPinnedModels.length !== savedPinnedModels.length) {
-        await window.electron.ipcRenderer.invoke(IpcChannel.Config_Set, { id: 'pinned:models', value: validPinnedModels })
+        await window.electron.ipcRenderer.invoke(IpcChannel.Config_Set, {
+          id: 'pinned:models',
+          value: validPinnedModels
+        })
       }
 
       setPinnedModels(sortBy(validPinnedModels))

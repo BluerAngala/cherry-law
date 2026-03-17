@@ -243,7 +243,7 @@ export class DexieMessageDataSource implements MessageDataSource {
       // Remove messages from topic
       const remainingMessages = topic.messages.filter((m) => !messageIds.includes(m.id))
       await window.electron.ipcRenderer.invoke(IpcChannel.TopicMessage_PutTopic, topicId, remainingMessages)
-      
+
       store.dispatch(updateTopicUpdatedAt({ topicId }))
     } catch (error) {
       logger.error(`Failed to delete messages from topic ${topicId}:`, error as Error)

@@ -3,6 +3,7 @@ import CollapsibleSearchBar from '@renderer/components/CollapsibleSearchBar'
 import Scrollbar from '@renderer/components/Scrollbar'
 import { useMCPServers } from '@renderer/hooks/useMCPServers'
 import type { MCPServer } from '@renderer/types'
+import { IpcChannel } from '@shared/IpcChannel'
 import { Button, Divider, Flex, Input, Space } from 'antd'
 import Link from 'antd/es/typography/Link'
 import { Check, Plus, SquareArrowOutUpRight } from 'lucide-react'
@@ -12,8 +13,6 @@ import styled from 'styled-components'
 
 import { SettingHelpLink, SettingHelpTextRow, SettingSubtitle } from '..'
 import { getProviderDisplayName, type ProviderConfig } from './providers/config'
-import { IpcChannel } from '@shared/IpcChannel'
-
 
 const logger = loggerService.withContext('McpProviderSettings')
 

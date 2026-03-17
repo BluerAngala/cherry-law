@@ -4,11 +4,10 @@ import store from '@renderer/store'
 import { setLocalBackupSyncState, setS3SyncState, setWebDAVSyncState } from '@renderer/store/backup'
 import type { S3Config, WebDavConfig } from '@renderer/types'
 import { uuid } from '@renderer/utils'
+import { IpcChannel } from '@shared/IpcChannel'
 import dayjs from 'dayjs'
 
 import { NotificationService } from './NotificationService'
-import { IpcChannel } from '@shared/IpcChannel'
-
 
 const logger = loggerService.withContext('BackupService')
 
@@ -882,28 +881,19 @@ export async function handleData(data: Record<string, any>) {
 }
 
 async function backupDatabase() {
-  const tables = [] // db.tables
-  const backup = {}
-
-  for (const table of tables) {
-    backup[table.name] = await table.toArray()
-  }
-
-  return backup
+  // 在 LibSQL 架构下，备份功能需要通过 IPC 调用主进程
+  // 暂时返回空对象以兼容旧代码
+  return {}
 }
 
-async function restoreDatabase(backup: Record<string, any>) {
-  // await db.transaction('rw', db.tables, async () => {
-  //   for (const tableName of Object.keys(backup)) {
-  //     await db.table(tableName).clear()
-  //     await db.table(tableName).bulkAdd(backup[tableName])
-  //   }
-  // })
+async function restoreDatabase(_backup: Record<string, any>) {
+  // 在 LibSQL 架构下，恢复功能需要通过 IPC 调用主进程
+  // 暂时保留此接口以兼容旧代码
 }
 
 async function clearDatabase() {
-  const storeNames = [] // await db.tables.map((table) => table.name)
-
+  // 在 LibSQL 架构下，清空数据库需要通过 IPC 调用主进程
+  // 暂时保留此接口以兼容旧代码
   // await db.transaction('rw', db.tables, async () => {
   //   for (const storeName of storeNames) {
   //     await db[storeName].clear()

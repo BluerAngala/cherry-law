@@ -2,7 +2,6 @@ import { loggerService } from '@logger'
 import { convertToBase64 } from '@renderer/utils'
 import { IpcChannel } from '@shared/IpcChannel'
 
-
 const logger = loggerService.withContext('ImageStorage')
 
 const IMAGE_PREFIX = 'image://'
@@ -12,25 +11,25 @@ export default class ImageStorage {
     const id = IMAGE_PREFIX + key
     try {
       if (typeof value === 'string') {
-          // string（emoji）
-          const existing = await window.electron.ipcRenderer.invoke(IpcChannel.Config_Get, id)
-          if (existing) {
-            window.electron.ipcRenderer.invoke(IpcChannel.Config_Set, { id, value })
-            return
-          }
-          await window.electron.ipcRenderer.invoke(IpcChannel.Config_Set, { id, value })
-        } else {
+        // string（emoji）
+        const existing = await window.electron.ipcRenderer.invoke(IpcChannel.Config_Get, id)
+        if (existing) {
+          window.electron.ipcRenderer.invoke(IpcChannel.Config_Set, { id, value })
+          return
+        }
+        await window.electron.ipcRenderer.invoke(IpcChannel.Config_Set, { id, value })
+      } else {
         // file image
         const base64Image = await convertToBase64(value)
-          if (typeof base64Image === 'string') {
-            const existing = await window.electron.ipcRenderer.invoke(IpcChannel.Config_Get, id)
-            if (existing) {
-              window.electron.ipcRenderer.invoke(IpcChannel.Config_Set, { id, value: base64Image })
-              return
-            }
-            await window.electron.ipcRenderer.invoke(IpcChannel.Config_Set, { id, value: base64Image })
+        if (typeof base64Image === 'string') {
+          const existing = await window.electron.ipcRenderer.invoke(IpcChannel.Config_Get, id)
+          if (existing) {
+            window.electron.ipcRenderer.invoke(IpcChannel.Config_Set, { id, value: base64Image })
+            return
           }
+          await window.electron.ipcRenderer.invoke(IpcChannel.Config_Set, { id, value: base64Image })
         }
+      }
     } catch (error) {
       logger.error('Error storing the image', error as Error)
     }
