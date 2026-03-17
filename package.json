@@ -1,5 +1,4 @@
 {
-  "$schema": "http://json.schemastore.org/package.json",
   "name": "CherryLaw",
   "version": "1.0.0",
   "private": true,
