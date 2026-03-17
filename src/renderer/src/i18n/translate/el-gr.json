@@ -1343,6 +1343,7 @@
     "browse": "Περιήγηση",
     "cancel": "Άκυρο",
     "chat": "Συζήτηση",
+    "citation_index": "[to be translated]:Citation Index",
     "clear": "Καθαρισμός",
     "clear_all": "Εκκαθάριση Όλων",
     "click_to_replace": "Κάντε κλικ για αντικατάσταση",
@@ -1442,6 +1443,7 @@
         "label": "Ταξινόμηση κατά Πινγίν"
       }
     },
+    "source": "[to be translated]:Source",
     "stop": "σταματήστε",
     "subscribe": "Εγγραφείτε",
     "success": "Επιτυχία",

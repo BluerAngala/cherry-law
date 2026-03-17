@@ -1343,6 +1343,7 @@
     "browse": "参照",
     "cancel": "キャンセル",
     "chat": "チャット",
+    "citation_index": "[to be translated]:Citation Index",
     "clear": "クリア",
     "clear_all": "すべてクリア",
     "click_to_replace": "クリックして置換",
@@ -1442,6 +1443,7 @@
         "label": "ピンインでソート"
       }
     },
+    "source": "[to be translated]:Source",
     "stop": "停止",
     "subscribe": "購読",
     "success": "成功",

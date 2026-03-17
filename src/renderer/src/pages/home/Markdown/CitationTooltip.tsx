@@ -1,5 +1,6 @@
 import Favicon from '@renderer/components/Icons/FallbackFavicon'
 import MarqueeText from '@renderer/components/MarqueeText'
+import CitationDetailPopup from '@renderer/components/Popups/CitationDetailPopup'
 import { Tooltip } from 'antd'
 import React, { memo, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
@@ -8,7 +9,8 @@ import * as z from 'zod'
 export const CitationSchema = z.object({
   url: z.url(),
   title: z.string().optional(),
-  content: z.string().optional()
+  content: z.string().optional(),
+  number: z.number().optional()
 })
 
 interface CitationTooltipProps {
@@ -29,14 +31,24 @@ const CitationTooltip: React.FC<CitationTooltipProps> = ({ children, citation })
     return citation.title?.trim() || hostname
   }, [citation.title, hostname])
 
+  const [open, setOpen] = React.useState(false)
+
   const handleClick = useCallback(() => {
     window.open(citation.url, '_blank', 'noopener,noreferrer')
   }, [citation.url])
 
+  const handleDoubleClick = useCallback(() => {
+    // 只有当有内容时才允许双击展开
+    if (citation.content?.trim()) {
+      CitationDetailPopup.show(citation as any)
+      setOpen(false) // 关闭悬浮卡片
+    }
+  }, [citation])
+
   // 自定义悬浮卡片内容
   const tooltipContent = useMemo(
     () => (
-      <div style={{ userSelect: 'text' }}>
+      <div style={{ userSelect: 'text' }} onDoubleClick={handleDoubleClick}>
         <TooltipHeader role="button" aria-label={`Open ${sourceTitle} in new tab`} onClick={handleClick}>
           <Favicon hostname={hostname} alt={sourceTitle} />
           <TooltipTitle role="heading" aria-level={3} title={sourceTitle}>
@@ -44,20 +56,25 @@ const CitationTooltip: React.FC<CitationTooltipProps> = ({ children, citation })
           </TooltipTitle>
         </TooltipHeader>
         {citation.content?.trim() && (
-          <TooltipBody role="article" aria-label="Citation content">
-            {citation.content}
-          </TooltipBody>
+          <TooltipBody
+            role="article"
+            aria-label="Citation content"
+            dangerouslySetInnerHTML={{ __html: citation.content }}
+            title="Double click to expand"
+          />
         )}
         <TooltipFooter role="button" aria-label={`Visit ${hostname}`} onClick={handleClick}>
           {hostname}
         </TooltipFooter>
       </div>
     ),
-    [citation.content, hostname, handleClick, sourceTitle]
+    [citation.content, hostname, handleClick, handleDoubleClick, sourceTitle]
   )
 
   return (
     <Tooltip
+      open={open}
+      onOpenChange={setOpen}
       arrow={false}
       overlay={tooltipContent}
       placement="top"

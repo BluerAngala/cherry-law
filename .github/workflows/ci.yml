@@ -95,6 +95,9 @@ jobs:
       - name: i18n Check
         run: pnpm i18n:check
 
+      - name: i18n Ally Audit
+        run: pnpm i18n:ally:strict
+
       - name: Hardcoded Strings Check
         run: pnpm i18n:hardcoded:strict
 

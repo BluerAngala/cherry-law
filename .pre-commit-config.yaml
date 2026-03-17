@@ -24,6 +24,13 @@ repos:
         files: '\.(json|yml|yaml|css|html)$'
         pass_filenames: true
 
+      - id: i18n-ally-audit
+        name: i18n Ally Audit
+        language: system
+        entry: pnpm.cmd i18n:ally:fix
+        files: 'src/renderer/src/i18n/.*\.json$|src/renderer/src/.*\.tsx?$'
+        pass_filenames: false
+
       - id: post-checkout-install
         name: pnpm install after checkout
         language: system

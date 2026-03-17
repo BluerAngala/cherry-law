@@ -1343,6 +1343,7 @@
     "browse": "Navegar",
     "cancel": "Cancelar",
     "chat": "Bate-papo",
+    "citation_index": "[to be translated]:Citation Index",
     "clear": "Limpar",
     "clear_all": "Limpar Tudo",
     "click_to_replace": "Clique para substituir",
@@ -1442,6 +1443,7 @@
         "label": "Ordenar por Pinyin"
       }
     },
+    "source": "[to be translated]:Source",
     "stop": "Parar",
     "subscribe": "Subscrever",
     "success": "Sucesso",

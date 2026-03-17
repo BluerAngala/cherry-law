@@ -1343,6 +1343,7 @@
     "browse": "Обзор",
     "cancel": "Отмена",
     "chat": "Чат",
+    "citation_index": "[to be translated]:Citation Index",
     "clear": "Очистить",
     "clear_all": "Очистить всё",
     "click_to_replace": "Щёлкните для замены",
@@ -1442,6 +1443,7 @@
         "label": "Сортировать по пиньинь"
       }
     },
+    "source": "[to be translated]:Source",
     "stop": "остановить",
     "subscribe": "Подписаться",
     "success": "Успешно",

@@ -1343,6 +1343,7 @@
     "browse": "Durchsuchen",
     "cancel": "Abbrechen",
     "chat": "Chat",
+    "citation_index": "[to be translated]:Citation Index",
     "clear": "Löschen",
     "clear_all": "Alles löschen",
     "click_to_replace": "Klicken zum Ersetzen",
@@ -1442,6 +1443,7 @@
         "label": "Nach Pinyin sortieren"
       }
     },
+    "source": "[to be translated]:Source",
     "stop": "Stoppen",
     "subscribe": "Abonnieren",
     "success": "Erfolgreich",

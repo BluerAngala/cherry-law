@@ -1343,6 +1343,7 @@
     "browse": "Răsfoiește",
     "cancel": "Anulează",
     "chat": "Chat",
+    "citation_index": "[to be translated]:Citation Index",
     "clear": "Golește",
     "clear_all": "Șterge tot",
     "click_to_replace": "Faceți clic pentru a înlocui",
@@ -1442,6 +1443,7 @@
         "label": "Sortează după Pinyin"
       }
     },
+    "source": "[to be translated]:Source",
     "stop": "Oprește",
     "subscribe": "Abonează-te",
     "success": "Succes",

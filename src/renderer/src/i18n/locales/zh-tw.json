@@ -1343,6 +1343,7 @@
     "browse": "瀏覽",
     "cancel": "取消",
     "chat": "聊天",
+    "citation_index": "[to be translated]:Citation Index",
     "clear": "清除",
     "clear_all": "全部清除",
     "click_to_replace": "點擊以替換",
@@ -1442,6 +1443,7 @@
         "label": "依拼音排序"
       }
     },
+    "source": "[to be translated]:Source",
     "stop": "停止",
     "subscribe": "訂閱",
     "success": "成功",
@@ -1723,6 +1725,7 @@
     "chunk_size_tooltip": "將檔案切割分段，每段大小不得超過模型的上下文上限",
     "chunking_strategy": "[to be translated]:Chunking Strategy",
     "chunking_strategy_tooltip": "[to be translated]:Algorithm for splitting documents. Structural is best for legal docs, Semantic for deep understanding.",
+    "citation_index": "",
     "clear_selection": "清除選擇",
     "delete": "刪除",
     "delete_confirm": "確定要刪除此知識庫嗎？",

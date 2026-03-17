@@ -168,6 +168,68 @@ export function normalizeCitationMarks(
 }
 
 /**
+ * 提取并高亮最相关的上下文
+ * 使用 Bi-gram (二元语法) 算法计算句子与查询的相似度
+ */
+function highlightRelevantContext(text: string, query: string): string {
+  if (!text || !query) return text
+
+  // 1. 将文本拆分为句子
+  const sentenceRegex = /[^。！？.!\n]+[。！？.!\n]*/g
+  const sentences = text.match(sentenceRegex) || [text]
+
+  if (sentences.length <= 1) return text
+
+  // 2. 提取查询的 Bigrams
+  const getBigrams = (str: string) => {
+    const cleanStr = str.replace(/\s+/g, '')
+    const bigrams = new Set<string>()
+    for (let i = 0; i < cleanStr.length - 1; i++) {
+      bigrams.add(cleanStr.slice(i, i + 2))
+    }
+    return bigrams
+  }
+
+  const queryBigrams = getBigrams(query)
+  if (queryBigrams.size === 0) return text.substring(0, 500) + (text.length > 500 ? '...' : '')
+
+  let maxScore = -1
+  let bestIndex = -1
+
+  // 3. 计算每个句子的得分
+  sentences.forEach((sentence, index) => {
+    let score = 0
+    const sentenceBigrams = getBigrams(sentence)
+
+    for (const bg of queryBigrams) {
+      if (sentenceBigrams.has(bg)) {
+        score++
+      }
+    }
+
+    // 对稍长一点的句子给予微小奖励，避免选中过短的无意义片段
+    score = score * (Math.min(sentence.length, 50) / 50)
+
+    if (score > maxScore) {
+      maxScore = score
+      bestIndex = index
+    }
+  })
+
+  // 4. 高亮最高分句子，并截取上下文
+  if (bestIndex !== -1 && maxScore > 0.1) {
+    const escapedSentences = sentences.map((s) => encodeHTML(s))
+    escapedSentences[bestIndex] = `<mark>${escapedSentences[bestIndex].trim()}</mark>`
+    // 只保留最相关句子及其前后各1-2句作为上下文，实现"精量"返回
+    const start = Math.max(0, bestIndex - 2)
+    const end = Math.min(escapedSentences.length, bestIndex + 3)
+    return escapedSentences.slice(start, end).join(' ')
+  }
+
+  return encodeHTML(text.substring(0, 500) + (text.length > 500 ? '...' : ''))
+}
+
+/**
  * 把文本内容中的 [cite:N] 标记转换为用于渲染的标签
  * @param content 原始文本内容
  * @param citationMap 引用映射表
@@ -175,12 +237,20 @@ export function normalizeCitationMarks(
  */
 export function mapCitationMarksToTags(content: string, citationMap: Map<number, Citation>): string {
   // 统一替换所有 [cite:N] 标记
-  return content.replace(/\[cite:(\d+)\]/g, (match, num) => {
+  return content.replace(/\[cite:(\d+)\]/g, (match, num, offset, fullString) => {
     const citationNum = parseInt(num, 10)
     const citation = citationMap.get(citationNum)
 
     if (citation) {
-      return generateCitationTag(citation)
+      // 获取上下文（前后各 100 字符）作为查询
+      const start = Math.max(0, offset - 100)
+      const end = Math.min(fullString.length, offset + match.length + 100)
+      const context = fullString.substring(start, end)
+
+      // 使用上下文动态提取并高亮相关内容
+      const highlightedContent = highlightRelevantContext(citation.content || '', context)
+
+      return generateCitationTag(citation, highlightedContent)
     }
 
     // 如果没找到对应的引用数据，保持原样（应该不会发生）
@@ -191,14 +261,15 @@ export function mapCitationMarksToTags(content: string, citationMap: Map<number,
 /**
  * 生成单个用于渲染的引用标签
  * @param citation 引用数据
+ * @param customContent 自定义显示内容（可选）
  * @returns 渲染后的引用标签
  */
-export function generateCitationTag(citation: Citation): string {
+export function generateCitationTag(citation: Citation, customContent?: string): string {
   const supData = {
     id: citation.number,
     url: citation.url,
     title: citation.title || citation.hostname || '',
-    content: citation.content?.substring(0, 200)
+    content: customContent || citation.content?.substring(0, 200)
   }
   const citationJson = encodeHTML(JSON.stringify(supData))
 

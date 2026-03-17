@@ -1343,6 +1343,7 @@
     "browse": "浏览",
     "cancel": "取消",
     "chat": "聊天",
+    "citation_index": "引用索引",
     "clear": "清除",
     "clear_all": "清除全部",
     "click_to_replace": "点击替换",
@@ -1442,6 +1443,7 @@
         "label": "按拼音排序"
       }
     },
+    "source": "来源",
     "stop": "停止",
     "subscribe": "订阅",
     "success": "成功",
@@ -1723,6 +1725,7 @@
     "chunk_size_tooltip": "将文档切割分段，每段的大小，不能超过模型上下文限制",
     "chunking_strategy": "分块策略",
     "chunking_strategy_tooltip": "选择文档切分为小块的算法。结构化适合法律条文，语义适合长文理解。",
+    "citation_index": "引用索引",
     "clear_selection": "清除选择",
     "delete": "删除",
     "delete_confirm": "确定要删除此知识库吗？",

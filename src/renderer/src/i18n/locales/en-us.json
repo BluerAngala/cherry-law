@@ -1343,6 +1343,7 @@
     "browse": "Browse",
     "cancel": "Cancel",
     "chat": "Chat",
+    "citation_index": "Citation Index",
     "clear": "Clear",
     "clear_all": "Clear All",
     "click_to_replace": "Click to replace",
@@ -1442,6 +1443,7 @@
         "label": "Sort by Pinyin"
       }
     },
+    "source": "Source",
     "stop": "Stop",
     "subscribe": "Subscribe",
     "success": "Success",
@@ -1723,6 +1725,7 @@
     "chunk_size_tooltip": "Split documents into chunks, each chunk size, not exceeding model context limit",
     "chunking_strategy": "Chunking Strategy",
     "chunking_strategy_tooltip": "Algorithm for splitting documents. Structural is best for legal docs, Semantic for deep understanding.",
+    "citation_index": "",
     "clear_selection": "Clear selection",
     "delete": "Delete",
     "delete_confirm": "Are you sure you want to delete this knowledge base?",
