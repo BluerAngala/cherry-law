@@ -32,7 +32,8 @@ const STATIC_PROVIDER_MAPPING: Record<string, ProviderId> = {
   'openai-response': 'openai', // OpenAI Responses -> openai
   grok: 'xai', // Grok -> xai
   copilot: 'github-copilot-openai-compatible',
-  tokenflux: 'openrouter' // TokenFlux -> openrouter (fully compatible)
+  tokenflux: 'openrouter', // TokenFlux -> openrouter (fully compatible)
+  silicon: 'openai-compatible' // SiliconFlow -> openai-compatible
 }
 
 /**

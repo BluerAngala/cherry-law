@@ -18,10 +18,10 @@ Cherry Law 是基于 [Cherry Studio](https://github.com/CherryHQ/cherry-studio) 
 
 ## 🗓️ 版本规划
 
-### v1.0.0 - 语音助手版 (当前)
+### v1.0.0 - 语音助手版 (暂缓)
 
 **状态**: 🚧 开发中  
-**目标日期**: 2025 Q2
+**目标日期**: 2026 Q2
 
 #### 核心功能
 
@@ -45,26 +45,25 @@ Cherry Law 是基于 [Cherry Studio](https://github.com/CherryHQ/cherry-studio) 
 - [ ] **多语言语音支持** - 中英文混合识别
 - [ ] **语音质量优化** - 降噪、回声消除
 
-#### 法律场景特化
-
-- [ ] 法律文书模板库
-- [ ] 法律条款智能检索
-- [ ] 案例分析与比对
-- [ ] 合同审查辅助
-
 ---
 
 ### v1.1.0 - 业务场景重构版 (OpenCode Agent)
 
 **状态**: 🚧 开发中  
-**目标日期**: 2025 Q3
+**目标日期**: 2026 Q3
 
 #### 架构与引擎演进
+
 - [x] **底层大模型引擎架构梳理**
   - [x] 确立向 Vercel AI SDK 架构 (`packages/aiCore`) 演进的整体方向
   - [x] 基于适配器模式保留对现有前端 Chunk 的兼容支持
   - [x] 清理旧版冗余提供商，仅保留 OpenAI、Anthropic、SiliconFlow 及内部内置提供商，极大地精简了底层架构
-- [ ] **逐步弃用 LegacyAiProvider** - 将保留的 Provider 完全迁移至 ModernAiProvider
+- [ ] **核心 Provider 迁移 (Phase 1: OpenAI)**
+  - [ ] 优化 OpenAI 供应商在 `ModernAiProvider` 中的适配逻辑
+  - [ ] 迁移 `models()` 获取列表方法至新架构
+  - [ ] 迁移 `getEmbeddingDimensions()` 获取嵌入维度方法至新架构
+  - [ ] 验证流式响应、工具调用 (Tool Call) 与 Token 计费的一致性
+- [ ] **逐步弃用 LegacyAiProvider** - 完成 Anthropic 与 SiliconFlow 迁移后完全移除旧版代码
 - [ ] **OpenCode Agent 架构重构** - 替换现有 Agent 实现逻辑
   - [ ] 基于 `@opencode-ai/sdk` 重构 Agent 核心
   - [ ] 统一 Agent 生命周期管理
@@ -77,31 +76,12 @@ Cherry Law 是基于 [Cherry Studio](https://github.com/CherryHQ/cherry-studio) 
 - [ ] **智能内容选择增强** - 精准上下文理解
 - [ ] **深度研究模式** - 多源信息自动整合
 
-#### 法律业务场景
-
-- [ ] **法律咨询场景**
-  - [ ] 智能问答工作流
-  - [ ] 法规自动引用
-  - [ ] 相似案例推荐
-- [ ] **合同审查场景**
-  - [ ] 风险点自动识别
-  - [ ] 条款完整性检查
-  - [ ] 修改建议生成
-- [ ] **案件分析场景**
-  - [ ] 证据链梳理
-  - [ ] 争议焦点提取
-  - [ ] 胜诉率评估
-- [ ] **文书起草场景**
-  - [ ] 模板智能填充
-  - [ ] 格式自动校验
-  - [ ] 法条自动引用
-
 ---
 
 ### v1.2.0 - 法律生态版 (MCP + Skills)
 
 **状态**: 📋 规划中  
-**目标日期**: 2025 Q4
+**目标日期**: 2026 Q4
 
 #### 核心功能
 
@@ -143,7 +123,7 @@ Cherry Law 是基于 [Cherry Studio](https://github.com/CherryHQ/cherry-studio) 
 ### v2.0.0 - 生态扩展版
 
 **状态**: 📋 规划中  
-**目标日期**: 2026 Q1-Q2
+**目标日期**: 2027 Q1-Q2
 
 #### 核心功能
 
@@ -238,10 +218,11 @@ Cherry Law 是基于 [Cherry Studio](https://github.com/CherryHQ/cherry-studio) 
 
 ### 进行中 (In Progress)
 
+- [ ] AI Core 运行时性能优化
+- [ ] AI agent 助手开发性能优化
+- [ ] MCP 服务稳定性提升
 - [ ] 法律文书模板库设计
 - [ ] 法律条款检索引擎优化
-- [ ] AI Core 运行时性能优化
-- [ ] MCP 服务稳定性提升
 
 ### 待开始 (Todo)
 
@@ -287,11 +268,11 @@ Cherry Law 是基于 [Cherry Studio](https://github.com/CherryHQ/cherry-studio) 
 
 | 里程碑        | 计划日期   | 实际日期 | 状态 |
 | ------------- | ---------- | -------- | ---- |
-| v1.0.0 Beta   | 2025-04-15 | -        | 🚧   |
-| v1.0.0 正式版 | 2025-05-30 | -        | 📋   |
-| v1.1.0        | 2025-08-30 | -        | 📋   |
-| v1.2.0        | 2025-11-30 | -        | 📋   |
-| v2.0.0        | 2026-03-30 | -        | 📋   |
+| v1.0.0 Beta   | 2026-04-15 | -        | 🚧   |
+| v1.0.0 正式版 | 2026-05-30 | -        | 📋   |
+| v1.1.0        | 2026-08-30 | -        | 📋   |
+| v1.2.0        | 2026-11-30 | -        | 📋   |
+| v2.0.0        | 2027-03-30 | -        | 📋   |
 
 ---
 
@@ -308,7 +289,7 @@ Cherry Law 是基于 [Cherry Studio](https://github.com/CherryHQ/cherry-studio) 
 
 | 日期       | 版本   | 更新内容       |
 | ---------- | ------ | -------------- |
-| 2025-03-15 | v0.1.0 | 初始路线图发布 |
+| 2026-03-17 | v0.1.0 | 初始路线图发布 |
 
 ---
 

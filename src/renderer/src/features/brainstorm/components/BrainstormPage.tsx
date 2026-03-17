@@ -270,7 +270,7 @@ export function BrainstormPage() {
                             </Text>
                             <Input
                               size="large"
-                              placeholder="给这次讨论起个名字，例如：2024 年度营销方案取舍"
+                              placeholder="给这次讨论起个名字，例如：2026 年度营销方案取舍"
                               value={title}
                               onChange={(e) => setTitle(e.target.value)}
                               className="h-12 rounded-xl border-gray-200 bg-white px-4 shadow-sm hover:border-green-400 focus:border-green-500"

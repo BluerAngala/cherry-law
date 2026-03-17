@@ -64,7 +64,7 @@
 
 ```json
 {
-  "lastUpdated": "2025-01-05T00:00:00Z",
+  "lastUpdated": "2026-03-17T00:00:00Z",
   "versions": {
     "1.6.7": {
       "minCompatibleVersion": "1.0.0",

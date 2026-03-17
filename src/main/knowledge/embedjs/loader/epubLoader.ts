@@ -37,7 +37,7 @@ interface EpubMetadata {
   language?: string
   /** 主题或分类（例如："Fantasy"、"Fiction"） */
   subject?: string
-  /** 创建日期（例如："2024-02-14"） */
+  /** 创建日期（例如："2026-03-17"） */
   date?: string
   /** 书籍描述或简介 */
   description?: string
