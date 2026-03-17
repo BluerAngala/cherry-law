@@ -23,7 +23,7 @@ import { windowService } from './WindowService'
 type StoreValue = any
 
 const logger = loggerService.withContext('ReduxService')
-const STORE_READY_TIMEOUT = 10000
+const STORE_READY_TIMEOUT = 30000
 
 export class ReduxService {
   private isReady = false

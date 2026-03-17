@@ -67,6 +67,14 @@ const PreprocessProviderSettings: FC<Props> = ({ provider: _provider }) => {
   //   updateProvider({ options: newOptions })
   // }
 
+  if (preprocessProvider.id === 'auto') {
+    return (
+      <SettingHelpText>
+        <SettingHelpTextRow>{t('settings.tool.preprocess.auto.description')}</SettingHelpTextRow>
+      </SettingHelpText>
+    )
+  }
+
   return (
     <>
       <SettingTitle>
@@ -139,15 +147,15 @@ const PreprocessProviderSettings: FC<Props> = ({ provider: _provider }) => {
             />
           </Flex>
           {preprocessProvider.id === 'paddleocr' && (
-            <SettingHelpTextRow className="!flex-col">
-              <div className="!flex !gap-3">
+            <SettingHelpTextRow className="flex-col!">
+              <div className="flex! gap-3!">
                 <SettingHelpLink
-                  className="!inline-block"
+                  className="inline-block!"
                   target="_blank"
                   href="https://aistudio.baidu.com/paddleocr/task">
                   {t('settings.tool.preprocess.paddleocr.api_url_label')}
                 </SettingHelpLink>
-                <SettingHelpLink className="!inline-block" target="_blank" href="https://aistudio.baidu.com/paddleocr">
+                <SettingHelpLink className="inline-block!" target="_blank" href="https://aistudio.baidu.com/paddleocr">
                   {t('settings.tool.preprocess.paddleocr.paddleocr_url_label')}
                 </SettingHelpLink>
               </div>

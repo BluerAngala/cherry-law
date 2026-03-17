@@ -1,7 +1,6 @@
 import { loggerService } from '@logger'
 import { getIpCountry } from '@main/utils/ipService'
 import { loadOcrImage } from '@main/utils/ocr'
-import { MB } from '@shared/config/constant'
 import type { ImageFileMetadata, OcrResult, OcrTesseractConfig, SupportedOcrFile } from '@types'
 import { isImageFileMetadata } from '@types'
 import { app } from 'electron'
@@ -17,10 +16,9 @@ import { OcrBaseService } from './OcrBaseService'
 const logger = loggerService.withContext('TesseractService')
 
 // config
-const MB_SIZE_THRESHOLD = 50
 const defaultLangs = ['chi_sim', 'chi_tra', 'eng'] satisfies LanguageCode[]
 enum TesseractLangsDownloadUrl {
-  CN = 'https://gitcode.com/beyondkmp/tessdata-best/releases/download/1.0.0/'
+  CN = 'https://github.com/naptha/tessdata/raw/gh-pages/4.0.0_best/'
 }
 
 export class TesseractService extends OcrBaseService {
@@ -71,12 +69,12 @@ export class TesseractService extends OcrBaseService {
   }
 
   private async imageOcr(file: ImageFileMetadata, options?: OcrTesseractConfig): Promise<OcrResult> {
-    const worker = await this.getWorker(options)
-    const stat = await fs.promises.stat(file.path)
-    if (stat.size > MB_SIZE_THRESHOLD * MB) {
-      throw new Error(`This image is too large (max ${MB_SIZE_THRESHOLD}MB)`)
-    }
     const buffer = await loadOcrImage(file)
+    return this.recognizeBuffer(buffer, options)
+  }
+
+  public recognizeBuffer = async (buffer: Buffer, options?: OcrTesseractConfig): Promise<OcrResult> => {
+    const worker = await this.getWorker(options)
     const result = await worker.recognize(buffer)
     return { text: result.data.text }
   }
@@ -89,8 +87,18 @@ export class TesseractService extends OcrBaseService {
   }
 
   private async _getLangPath(): Promise<string> {
+    const builtinPath = this._getBuiltinLangPath()
+    if (fs.existsSync(builtinPath)) {
+      return builtinPath
+    }
     const country = await getIpCountry()
     return country.toLowerCase() === 'cn' ? TesseractLangsDownloadUrl.CN : ''
+  }
+
+  private _getBuiltinLangPath(): string {
+    return app.isPackaged
+      ? path.join(process.resourcesPath, 'tessdata')
+      : path.join(app.getAppPath(), 'resources', 'tessdata')
   }
 
   private async _getCacheDir(): Promise<string> {

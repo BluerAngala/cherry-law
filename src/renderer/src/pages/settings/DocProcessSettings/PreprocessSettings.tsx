@@ -3,18 +3,40 @@ import { useDefaultPreprocessProvider, usePreprocessProviders } from '@renderer/
 import type { PreprocessProvider } from '@renderer/types'
 import { Select } from 'antd'
 import type { FC } from 'react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { SettingDivider, SettingGroup, SettingRow, SettingRowTitle, SettingTitle } from '..'
 import PreprocessProviderSettings from './PreprocessProviderSettings'
 
 const PreprocessSettings: FC = () => {
-  const { preprocessProviders } = usePreprocessProviders()
+  const { preprocessProviders, updatePreprocessProviders } = usePreprocessProviders()
   const { provider: defaultProvider, setDefaultPreprocessProvider } = useDefaultPreprocessProvider()
   const { t } = useTranslation()
   const [selectedProvider, setSelectedProvider] = useState<PreprocessProvider | undefined>(defaultProvider)
   const { theme: themeMode } = useTheme()
+
+  // 确保 Auto 选项存在（针对旧用户）
+  useEffect(() => {
+    const hasAuto = preprocessProviders.some((p) => p.id === 'auto')
+    if (!hasAuto) {
+      const newProviders = [
+        {
+          id: 'auto',
+          name: 'Auto',
+          apiKey: '',
+          apiHost: ''
+        },
+        ...preprocessProviders
+      ] as PreprocessProvider[]
+      updatePreprocessProviders(newProviders)
+    }
+  }, [preprocessProviders, updatePreprocessProviders])
+
+  // 当 defaultProvider 改变时同步 selectedProvider
+  useEffect(() => {
+    setSelectedProvider(defaultProvider)
+  }, [defaultProvider])
 
   function updateSelectedPreprocessProvider(providerId: string) {
     const provider = preprocessProviders.find((p) => p.id === providerId)

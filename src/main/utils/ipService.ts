@@ -23,7 +23,7 @@ export async function getIpCountry(): Promise<string> {
     logger.info(`Detected user IP address country: ${country}`)
     return country
   } catch (error) {
-    logger.error('Failed to get IP address information:', error as Error)
+    logger.debug('Failed to get IP address information:', error as Error)
     return 'CN'
   }
 }

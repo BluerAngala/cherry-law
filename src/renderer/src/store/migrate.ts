@@ -3263,6 +3263,54 @@ const migrateConfig = {
       logger.error('migrate 200 error', error as Error)
       return state
     }
+  },
+  '201': (state: RootState) => {
+    try {
+      if (state.preprocess) {
+        const hasAuto = state.preprocess.providers.some((p) => p.id === 'auto')
+        if (!hasAuto) {
+          state.preprocess.providers = [
+            {
+              id: 'auto',
+              name: 'Auto',
+              apiKey: '',
+              apiHost: ''
+            },
+            ...state.preprocess.providers
+          ]
+        }
+        state.preprocess.defaultProvider = 'auto'
+      }
+      return state
+    } catch (error) {
+      logger.error('migrate 201 error', error as Error)
+      return state
+    }
+  },
+  '202': (state: RootState) => {
+    try {
+      // 迁移现有知识库：如果使用的是 mineru 且没有 API Key，强制切换到 auto
+      if (state.knowledge && state.knowledge.bases) {
+        const mineruProvider = state.preprocess?.providers.find((p) => p.id === 'mineru')
+        const hasMineruKey = mineruProvider?.apiKey && mineruProvider.apiKey.length > 0
+
+        state.knowledge.bases.forEach((base) => {
+          if (base.preprocessProvider?.provider.id === 'mineru' && !hasMineruKey) {
+            const autoProvider = state.preprocess?.providers.find((p) => p.id === 'auto')
+            if (autoProvider) {
+              base.preprocessProvider = {
+                type: 'preprocess',
+                provider: autoProvider
+              }
+            }
+          }
+        })
+      }
+      return state
+    } catch (error) {
+      logger.error('migrate 202 error', error as Error)
+      return state
+    }
   }
 }
 

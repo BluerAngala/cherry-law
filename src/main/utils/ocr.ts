@@ -1,7 +1,7 @@
 import type { ImageFileMetadata } from '@types'
 import { readFile } from 'fs/promises'
 
-const preprocessImage = async (buffer: Buffer): Promise<Buffer> => {
+export const preprocessImage = async (buffer: Buffer): Promise<Buffer> => {
   // Delayed loading: The Sharp module is only loaded when the OCR functionality is actually needed, not at app startup
   const sharp = (await import('sharp')).default
   return sharp(buffer)

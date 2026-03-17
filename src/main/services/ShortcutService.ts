@@ -311,7 +311,7 @@ export function registerShortcuts(window: BrowserWindow) {
 
         globalShortcut.register(accelerator, () => handler(window))
       } catch (error) {
-        logger.warn(`Failed to register shortcut ${shortcut.key}`)
+        logger.debug(`Failed to register shortcut ${shortcut.key}`)
       }
     })
   }
@@ -352,7 +352,7 @@ export function registerShortcuts(window: BrowserWindow) {
         handler && globalShortcut.register(accelerator, () => handler(window))
       }
     } catch (error) {
-      logger.warn('Failed to unregister shortcuts')
+      logger.debug('Failed to unregister shortcuts')
     }
   }
 

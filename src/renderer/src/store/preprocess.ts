@@ -26,6 +26,12 @@ export interface PreprocessState {
 const initialState: PreprocessState = {
   providers: [
     {
+      id: 'auto',
+      name: 'Auto',
+      apiKey: '',
+      apiHost: ''
+    },
+    {
       id: 'mineru',
       name: 'MinerU',
       apiKey: '',
@@ -57,7 +63,7 @@ const initialState: PreprocessState = {
       apiHost: ''
     }
   ],
-  defaultProvider: 'mineru'
+  defaultProvider: 'auto'
 }
 
 export const defaultPreprocessProviders = initialState.providers
