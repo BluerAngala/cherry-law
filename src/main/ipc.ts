@@ -64,6 +64,7 @@ import { localTransferService } from './services/LocalTransferService'
 import mcpService from './services/MCPService'
 import MemoryService from './services/memory/MemoryService'
 import { migrationV2Service } from './services/MigrationV2Service'
+import { modelService } from './services/ModelService'
 import { openTraceWindow, setTraceWindowTitle } from './services/NodeTraceService'
 import NotificationService from './services/NotificationService'
 import * as NutstoreService from './services/NutstoreService'
@@ -997,6 +998,12 @@ export async function registerIpc(mainWindow: BrowserWindow, app: Electron.App) 
   ipcMain.handle(IpcChannel.LlmProvider_UpdateProvider, (_, id, data) => llmProviderService.updateProvider(id, data))
   ipcMain.handle(IpcChannel.LlmProvider_AddProvider, (_, provider) => llmProviderService.addProvider(provider))
   ipcMain.handle(IpcChannel.LlmProvider_RemoveProvider, (_, id) => llmProviderService.removeProvider(id))
+
+  // Model Service V2
+  ipcMain.handle(IpcChannel.Model_ListModels, (_, provider) => modelService.listModels(provider))
+  ipcMain.handle(IpcChannel.Model_GetEmbeddingDimensions, (_, provider, model) =>
+    modelService.getEmbeddingDimensions(provider, model)
+  )
 
   // File Metadata V2
   ipcMain.handle(IpcChannel.FileMetadata_GetFiles, () => fileMetadataService.getFiles())

@@ -306,6 +306,10 @@ export enum IpcChannel {
   LlmProvider_AddProvider = 'llm-provider:add-provider',
   LlmProvider_RemoveProvider = 'llm-provider:remove-provider',
 
+  // Model Service (V2)
+  Model_ListModels = 'model:list-models',
+  Model_GetEmbeddingDimensions = 'model:get-embedding-dimensions',
+
   // File Metadata (V2)
   FileMetadata_GetFiles = 'file-metadata:get-files',
   FileMetadata_GetFile = 'file-metadata:get-file',

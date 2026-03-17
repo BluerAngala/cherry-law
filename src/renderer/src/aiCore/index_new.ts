@@ -483,12 +483,12 @@ export default class ModernAiProvider {
       const gatewayModels = (await gateway.getAvailableModels()).models
       return normalizeGatewayModels(this.actualProvider, gatewayModels)
     }
-    const sdkModels = await this.legacyProvider.models()
+    const sdkModels = await window.api.model.listModels(this.actualProvider)
     return normalizeSdkModels(this.actualProvider, sdkModels)
   }
 
   public async getEmbeddingDimensions(model: Model): Promise<number> {
-    return this.legacyProvider.getEmbeddingDimensions(model)
+    return window.api.model.getEmbeddingDimensions(this.actualProvider, model)
   }
 
   public async generateImage(params: GenerateImageParams): Promise<string[]> {

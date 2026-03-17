@@ -40,6 +40,7 @@ import {
 import { ConversationService } from './ConversationService'
 import { injectUserMessageWithKnowledgeSearchPrompt } from './KnowledgeService'
 import type { BlockManager } from './messageStreaming'
+import { normalizeSdkModels } from './models/ModelAdapter'
 import type { StreamProcessorCallbacks } from './StreamProcessingService'
 // import { processKnowledgeSearch } from './KnowledgeService'
 // import {
@@ -635,18 +636,19 @@ export function getRotatedApiKey(provider: Provider): string {
 }
 
 export async function fetchModels(provider: Provider): Promise<Model[]> {
-  // Apply API key rotation
-  // NOTE: Shallow copy is intentional. Provider objects are not mutated by downstream code.
-  // Nested properties (if any) are never modified after creation.
   const providerWithRotatedKey = {
     ...provider,
     apiKey: getRotatedApiKey(provider)
   }
 
-  const AI = new AiProviderNew(providerWithRotatedKey)
-
   try {
-    return await AI.models()
+    if (provider.id === 'gateway') {
+      const AI = new AiProviderNew(providerWithRotatedKey)
+      return await AI.models()
+    }
+
+    const sdkModels = await window.api.model.listModels(providerWithRotatedKey)
+    return normalizeSdkModels(provider, sdkModels)
   } catch (error) {
     logger.error('Failed to fetch models from provider', {
       providerId: provider.id,
@@ -690,17 +692,16 @@ export function checkApiProvider(provider: Provider): void {
 export async function checkApi(provider: Provider, model: Model, timeout = 15000): Promise<void> {
   checkApiProvider(provider)
 
-  const ai = new AiProviderNew(model, provider)
-
   const assistant = getDefaultAssistant()
   assistant.model = model
-  assistant.prompt = 'test' // 避免部分 provider 空系统提示词会报错
+  assistant.prompt = 'test'
 
   if (isEmbeddingModel(model)) {
     logger.silly("it's a embedding model")
     const timerPromise = new Promise((_, reject) => setTimeout(() => reject('Timeout'), timeout))
-    await Promise.race([ai.getEmbeddingDimensions(model), timerPromise])
+    await Promise.race([window.api.model.getEmbeddingDimensions(provider, model), timerPromise])
   } else {
+    const ai = new AiProviderNew(model, provider)
     const abortId = uuid()
     const signal = readyToAbort(abortId)
     let streamError: ResponseError | undefined
