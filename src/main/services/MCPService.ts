@@ -503,9 +503,12 @@ class McpService {
               removeEnvProxy(loginShellEnv)
             }
 
+            const isWindows = os.platform() === 'win32'
+            const isBatchFile = isWindows && (cmd.toLowerCase().endsWith('.cmd') || cmd.toLowerCase().endsWith('.bat'))
+
             const transportOptions: StdioServerParameters = {
-              command: cmd,
-              args,
+              command: isBatchFile ? 'cmd.exe' : cmd,
+              args: isBatchFile ? ['/c', cmd, ...args] : args,
               env: {
                 ...loginShellEnv,
                 ...server.env

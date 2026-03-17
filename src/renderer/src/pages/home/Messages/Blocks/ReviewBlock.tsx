@@ -2,8 +2,6 @@ import {
   AuditOutlined,
   CheckCircleFilled,
   CloseCircleFilled,
-  DownOutlined,
-  EyeOutlined,
   LikeFilled,
   LikeOutlined,
   LoadingOutlined,
@@ -196,12 +194,14 @@ const ReviewBlock: React.FC<ReviewBlockProps> = ({ block, message }) => {
   }
 
   // 关闭审查块
-  const handleDismiss = () => {
+  const handleDismiss = (e: React.MouseEvent) => {
+    e.stopPropagation()
     removeReviewBlock(message.id)
   }
 
   // 切换折叠状态
-  const toggleFold = () => {
+  const toggleFold = (e: React.MouseEvent) => {
+    e.stopPropagation()
     const newExpanded = !isExpanded
     setIsExpanded(newExpanded)
     updateReviewBlockFolded(block.id, !newExpanded)
@@ -246,22 +246,17 @@ const ReviewBlock: React.FC<ReviewBlockProps> = ({ block, message }) => {
         <Progress
           type="circle"
           percent={overallScore}
-          size={40}
+          size={52}
           strokeColor={scoreLevel.color}
           format={(percent) => <CollapsedScore style={{ color: scoreLevel.color }}>{percent}</CollapsedScore>}
         />
-        <ScoreTag color={scoreLevel.color} size="small">
-          {scoreLevel.label}
-        </ScoreTag>
+        <ScoreTag color={scoreLevel.color}>{scoreLevel.label}</ScoreTag>
         {passed ? (
-          <CheckCircleFilled style={{ color: '#52c41a', fontSize: 16 }} />
+          <CheckCircleFilled style={{ color: '#52c41a', fontSize: 20 }} />
         ) : (
-          <CloseCircleFilled style={{ color: '#ff4d4f', fontSize: 16 }} />
+          <CloseCircleFilled style={{ color: '#ff4d4f', fontSize: 20 }} />
         )}
       </ScoreSummary>
-      <ExpandHint>
-        <EyeOutlined /> 查看详情
-      </ExpandHint>
     </CollapsedContent>
   )
 
@@ -415,34 +410,15 @@ const ReviewBlock: React.FC<ReviewBlockProps> = ({ block, message }) => {
     <ReviewContainer $passed={passed} $isFolded={!isExpanded}>
       <ReviewHeader>
         <ReviewTitle onClick={toggleFold} style={{ cursor: 'pointer' }}>
-          <AuditOutlined style={{ color: scoreLevel.color }} />
+          <AuditOutlined />
           AI 质量审查
-          {passed ? (
-            <CheckCircleFilled style={{ color: '#52c41a', marginLeft: 8 }} />
-          ) : (
-            <CloseCircleFilled style={{ color: '#ff4d4f', marginLeft: 8 }} />
-          )}
         </ReviewTitle>
-        {!isExpanded && (
-          <ScoreTag color={scoreLevel.color} size="small">
-            {scoreLevel.label}
-          </ScoreTag>
-        )}
         {reviewModel && isExpanded && (
           <ModelInfo>
             由 {reviewModel} 审查 {reviewTime && `(${Math.round(reviewTime / 1000)}s)`}
           </ModelInfo>
         )}
         <HeaderActions>
-          {isExpanded ? (
-            <Tooltip title="收起">
-              <FoldButton onClick={toggleFold} size="small" type="text" icon={<UpOutlined />} />
-            </Tooltip>
-          ) : (
-            <Tooltip title="展开">
-              <FoldButton onClick={toggleFold} size="small" type="text" icon={<DownOutlined />} />
-            </Tooltip>
-          )}
           <Tooltip title="关闭">
             <DismissButton onClick={handleDismiss} size="small" type="text" icon={<CloseCircleFilled />} />
           </Tooltip>
@@ -489,13 +465,6 @@ const HeaderActions = styled.div`
   margin-left: auto;
 `
 
-const FoldButton = styled(Button)`
-  color: var(--color-text-3);
-  &:hover {
-    color: var(--color-text);
-  }
-`
-
 const DismissButton = styled(Button)`
   color: var(--color-text-3);
   &:hover {
@@ -504,8 +473,10 @@ const DismissButton = styled(Button)`
 `
 
 const ScoreTag = styled(Tag)<{ size?: string }>`
-  font-size: ${(props) => (props.size === 'small' ? '11px' : '12px')};
-  font-weight: 500;
+  font-size: ${(props) => (props.size === 'small' ? '12px' : '14px')};
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 6px;
 `
 
 const ModelInfo = styled.span`
@@ -517,10 +488,10 @@ const ModelInfo = styled.span`
 const CollapsedContent = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-top: 8px;
+  justify-content: center;
+  margin-top: 12px;
   cursor: pointer;
-  padding: 4px;
+  padding: 12px;
   border-radius: 8px;
   transition: background 0.2s ease;
 
@@ -532,32 +503,25 @@ const CollapsedContent = styled.div`
 const ScoreSummary = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 20px;
 `
 
 const CollapsedScore = styled.span`
-  font-size: 14px;
+  font-size: 16px;
   font-weight: bold;
-`
-
-const ExpandHint = styled.span`
-  font-size: 12px;
-  color: var(--color-text-3);
-  display: flex;
-  align-items: center;
-  gap: 4px;
 `
 
 // 展开状态样式
 const ScoreSection = styled.div`
   display: flex;
-  gap: 24px;
-  margin: 16px 0;
+  gap: 32px;
+  margin: 24px 0;
   align-items: center;
+  justify-content: center;
 
-  @media (max-width: 480px) {
+  @media (max-width: 600px) {
     flex-direction: column;
-    align-items: flex-start;
+    gap: 24px;
   }
 `
 

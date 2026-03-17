@@ -126,13 +126,17 @@ export async function findCommandInShellEnv(
 
         if (code === 0 && output.trim()) {
           const paths = output.trim().split(/\r?\n/)
-          // Only accept .exe files on Windows - .cmd/.bat files cannot be executed
-          // with spawn({ shell: false }) which is used by MCP SDK's StdioClientTransport
-          const exePath = paths.find((p) => p.toLowerCase().endsWith('.exe'))
-          if (exePath) {
-            safeResolve(exePath)
+          // Only accept .exe, .cmd, or .bat files on Windows
+          const validPath = paths.find((p) => {
+            const lower = p.toLowerCase()
+            return lower.endsWith('.exe') || lower.endsWith('.cmd') || lower.endsWith('.bat')
+          })
+          if (validPath) {
+            safeResolve(validPath)
           } else {
-            logger.debug(`Command '${command}' found but not as .exe (${paths[0]}), treating as not found`)
+            logger.debug(
+              `Command '${command}' found but not as a valid executable (${paths[0]}), treating as not found`
+            )
             safeResolve(null)
           }
         } else {

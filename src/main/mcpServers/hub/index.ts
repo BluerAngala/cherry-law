@@ -244,15 +244,27 @@ export class HubServer {
     // Ensure mapping is warm
     await this.fetchTools()
 
-    const result = await callMcpTool(input.name, input.params ?? {})
+    try {
+      const result = await callMcpTool(input.name, input.params ?? {})
 
-    return {
-      content: [
-        {
-          type: 'text',
-          text: formatAsText(result)
-        }
-      ]
+      return {
+        content: [
+          {
+            type: 'text',
+            text: formatAsText(result)
+          }
+        ]
+      }
+    } catch (error) {
+      return {
+        isError: true,
+        content: [
+          {
+            type: 'text',
+            text: `Error invoking tool ${input.name}: ${error instanceof Error ? error.message : String(error)}`
+          }
+        ]
+      }
     }
   }
 
