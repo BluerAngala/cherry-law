@@ -237,6 +237,78 @@ export const searchKnowledgeBase = async (
   }
 }
 
+/**
+ * 提取并高亮最相关的上下文
+ * 使用 Bi-gram (二元语法) 算法计算句子与查询的相似度
+ */
+function highlightRelevantContext(text: string, query: string): string {
+  if (!text || !query) return text
+
+  // 1. 将文本拆分为句子
+  const sentenceRegex = /[^。！？.!\n]+[。！？.!\n]*/g
+  const sentences = text.match(sentenceRegex) || [text]
+
+  if (sentences.length <= 1) return text
+
+  // 2. 提取查询的 Bigrams
+  const getBigrams = (str: string) => {
+    const cleanStr = str.replace(/\s+/g, '')
+    const bigrams = new Set<string>()
+    for (let i = 0; i < cleanStr.length - 1; i++) {
+      bigrams.add(cleanStr.slice(i, i + 2))
+    }
+    return bigrams
+  }
+
+  const queryBigrams = getBigrams(query)
+  if (queryBigrams.size === 0) return text.substring(0, 500) + (text.length > 500 ? '...' : '')
+
+  let maxScore = -1
+  let bestIndex = -1
+
+  // 3. 计算每个句子的得分
+  sentences.forEach((sentence, index) => {
+    let score = 0
+    const sentenceBigrams = getBigrams(sentence)
+
+    for (const bg of queryBigrams) {
+      if (sentenceBigrams.has(bg)) {
+        score++
+      }
+    }
+
+    // 对稍长一点的句子给予微小奖励，避免选中过短的无意义片段
+    score = score * (Math.min(sentence.length, 50) / 50)
+
+    if (score > maxScore) {
+      maxScore = score
+      bestIndex = index
+    }
+  })
+
+  // 辅助函数：转义HTML
+  const escapeHtml = (unsafe: string) => {
+    return unsafe
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;')
+  }
+
+  // 4. 高亮最高分句子，并截取上下文
+  if (bestIndex !== -1 && maxScore > 0.1) {
+    const escapedSentences = sentences.map((s) => escapeHtml(s))
+    escapedSentences[bestIndex] = `<mark>${escapedSentences[bestIndex].trim()}</mark>`
+    // 只保留最相关句子及其前后各1-2句作为上下文，实现"精量"返回
+    const start = Math.max(0, bestIndex - 2)
+    const end = Math.min(escapedSentences.length, bestIndex + 3)
+    return escapedSentences.slice(start, end).join(' ')
+  }
+
+  return escapeHtml(text.substring(0, 500) + (text.length > 500 ? '...' : ''))
+}
+
 export const processKnowledgeSearch = async (
   extractResults: ExtractResults,
   knowledgeBaseIds: string[] | undefined,
@@ -296,7 +368,7 @@ export const processKnowledgeSearch = async (
         async (item, index) =>
           ({
             id: index + 1,
-            content: item.pageContent,
+            content: highlightRelevantContext(item.pageContent, rewrite || questions.join(' ')),
             sourceUrl: await getKnowledgeSourceUrl(item),
             metadata: item.metadata,
             type: 'file'

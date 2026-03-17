@@ -30,7 +30,7 @@ export class OfficeLegalLoader extends BaseLoader<{ type: 'OfficeLegalLoader' }>
     chunkingStrategy?: ChunkingStrategy
     embeddings?: any
   }) {
-    super(`OfficeLegalLoader_${md5(filePath)}`, { filePath }, chunkSize ?? 2000, chunkOverlap ?? 200)
+    super(`OfficeLegalLoader_${md5(filePath)}`, { filePath }, chunkSize ?? 500, chunkOverlap ?? 50)
     this.filePath = filePath
     this.chunkingStrategy = chunkingStrategy || 'recursive'
     this.embeddings = embeddings

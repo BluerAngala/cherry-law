@@ -33,7 +33,7 @@ export class MarkdownLegalLoader extends BaseLoader<{ type: 'MarkdownLegalLoader
     chunkingStrategy?: ChunkingStrategy
     embeddings?: any
   }) {
-    super(`MarkdownLegalLoader_${md5(text + filePath)}`, { text, filePath }, chunkSize ?? 2000, chunkOverlap ?? 200)
+    super(`MarkdownLegalLoader_${md5(text + filePath)}`, { text, filePath }, chunkSize ?? 500, chunkOverlap ?? 50)
     this.text = text
     this.filePath = filePath
     this.chunkingStrategy = chunkingStrategy || 'structural'

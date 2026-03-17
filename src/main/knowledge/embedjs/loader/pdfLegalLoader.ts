@@ -35,7 +35,7 @@ export class PdfLegalLoader extends BaseLoader<{ type: 'PdfLegalLoader' }> {
     chunkingStrategy?: ChunkingStrategy
     embeddings?: any
   }) {
-    super(`PdfLegalLoader_${md5(filePath)}`, { filePath }, chunkSize ?? 2000, chunkOverlap ?? 200)
+    super(`PdfLegalLoader_${md5(filePath)}`, { filePath }, chunkSize ?? 500, chunkOverlap ?? 50)
     this.filePath = filePath
     this.chunkingStrategy = chunkingStrategy || 'recursive'
     this.embeddings = embeddings
