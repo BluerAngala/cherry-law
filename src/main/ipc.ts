@@ -53,13 +53,16 @@ import CopilotService from './services/CopilotService'
 import DxtService from './services/DxtService'
 import { ExportService } from './services/ExportService'
 import { externalAppsService } from './services/ExternalAppsService'
+import { fileMetadataService } from './services/FileMetadataService'
 import { fileStorage as fileManager } from './services/FileStorage'
 import FileService from './services/FileSystemService'
 import KnowledgeService from './services/KnowledgeService'
 import { lanTransferClientService } from './services/lanTransfer'
+import { llmProviderService } from './services/LlmProviderService'
 import { localTransferService } from './services/LocalTransferService'
 import mcpService from './services/MCPService'
 import MemoryService from './services/memory/MemoryService'
+import { migrationV2Service } from './services/MigrationV2Service'
 import { openTraceWindow, setTraceWindowTitle } from './services/NodeTraceService'
 import NotificationService from './services/NotificationService'
 import * as NutstoreService from './services/NutstoreService'
@@ -71,10 +74,7 @@ import powerMonitorService from './services/PowerMonitorService'
 import { proxyManager } from './services/ProxyManager'
 import { pythonService } from './services/PythonService'
 import { FileServiceManager } from './services/remotefile/FileServiceManager'
-import { migrationV2Service } from './services/MigrationV2Service'
- import { llmProviderService } from './services/LlmProviderService'
- import { fileMetadataService } from './services/FileMetadataService'
- import { searchService } from './services/SearchService'
+import { searchService } from './services/SearchService'
 import { SelectionService } from './services/SelectionService'
 import { registerShortcuts, unregisterAllShortcuts } from './services/ShortcutService'
 import {
@@ -994,7 +994,9 @@ export async function registerIpc(mainWindow: BrowserWindow, app: Electron.App) 
 
   // File Metadata V2
   ipcMain.handle(IpcChannel.FileMetadata_GetFiles, () => fileMetadataService.getFiles())
+  ipcMain.handle(IpcChannel.FileMetadata_GetFile, (_, id) => fileMetadataService.getFile(id))
   ipcMain.handle(IpcChannel.FileMetadata_AddFile, (_, file) => fileMetadataService.addFile(file))
+  ipcMain.handle(IpcChannel.FileMetadata_UpdateFile, (_, file) => fileMetadataService.updateFile(file))
   ipcMain.handle(IpcChannel.FileMetadata_DeleteFile, (_, id) => fileMetadataService.deleteFile(id))
   ipcMain.handle(IpcChannel.FileMetadata_UpdateCount, (_, id, count) => fileMetadataService.updateFileCount(id, count))
 

@@ -1,10 +1,10 @@
-import { loggerService } from '@logger'
+import type { FileMetadata, FileType } from '@types'
+import { eq } from 'drizzle-orm'
+
 import { DatabaseManager } from './agents/database/DatabaseManager'
 import { filesTable } from './agents/database/schema'
-import { eq } from 'drizzle-orm'
-import type { FileMetadata } from '@types'
 
-const logger = loggerService.withContext('FileMetadataService')
+const DEFAULT_FILE_TYPE: FileType = 'other'
 
 export class FileMetadataService {
   private static instance: FileMetadataService
@@ -21,35 +21,57 @@ export class FileMetadataService {
   async getFiles(): Promise<FileMetadata[]> {
     const db = (await DatabaseManager.getInstance()).getDatabase()
     const rows = await db.select().from(filesTable).orderBy(filesTable.created_at)
-    
-    return rows.map(row => ({
+
+    return rows.map((row) => ({
       id: row.id,
       name: row.name,
       origin_name: row.origin_name || '',
       path: row.path,
       size: row.size,
       ext: row.ext || '',
-      type: row.type || '',
+      type: (row.type as FileType) || DEFAULT_FILE_TYPE,
       count: row.count || 0,
       created_at: row.created_at
     }))
   }
 
+  async getFile(id: string): Promise<FileMetadata | undefined> {
+    const db = (await DatabaseManager.getInstance()).getDatabase()
+    const result = await db.select().from(filesTable).where(eq(filesTable.id, id)).limit(1)
+    if (result.length === 0) return undefined
+
+    const row = result[0]
+    return {
+      id: row.id,
+      name: row.name,
+      origin_name: row.origin_name || '',
+      path: row.path,
+      size: row.size,
+      ext: row.ext || '',
+      type: (row.type as FileType) || DEFAULT_FILE_TYPE,
+      count: row.count || 0,
+      created_at: row.created_at
+    }
+  }
+
   async addFile(file: FileMetadata): Promise<void> {
     const db = (await DatabaseManager.getInstance()).getDatabase()
-    
-    await db.insert(filesTable).values({
-      id: file.id,
-      name: file.name,
-      origin_name: file.origin_name,
-      path: file.path,
-      size: file.size,
-      ext: file.ext,
-      type: file.type,
-      count: file.count,
-      created_at: file.created_at || new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    }).onConflictDoNothing()
+
+    await db
+      .insert(filesTable)
+      .values({
+        id: file.id,
+        name: file.name,
+        origin_name: file.origin_name,
+        path: file.path,
+        size: file.size,
+        ext: file.ext,
+        type: file.type,
+        count: file.count,
+        created_at: file.created_at || new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      })
+      .onConflictDoNothing()
   }
 
   async deleteFile(id: string): Promise<void> {
@@ -59,9 +81,24 @@ export class FileMetadataService {
 
   async updateFileCount(id: string, count: number): Promise<void> {
     const db = (await DatabaseManager.getInstance()).getDatabase()
-    await db.update(filesTable)
-      .set({ count, updated_at: new Date().toISOString() })
-      .where(eq(filesTable.id, id))
+    await db.update(filesTable).set({ count, updated_at: new Date().toISOString() }).where(eq(filesTable.id, id))
+  }
+
+  async updateFile(file: FileMetadata): Promise<void> {
+    const db = (await DatabaseManager.getInstance()).getDatabase()
+    await db
+      .update(filesTable)
+      .set({
+        name: file.name,
+        origin_name: file.origin_name,
+        path: file.path,
+        size: file.size,
+        ext: file.ext,
+        type: file.type,
+        count: file.count,
+        updated_at: new Date().toISOString()
+      })
+      .where(eq(filesTable.id, file.id))
   }
 }
 

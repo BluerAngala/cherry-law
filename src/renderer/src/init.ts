@@ -1,10 +1,10 @@
 import KeyvStorage from '@kangfenmao/keyv-storage'
 
 import { startAutoSync } from './services/BackupService'
+import { migrationV2Service } from './services/MigrationV2Service'
 import { startNutstoreAutoSync } from './services/NutstoreService'
 import storeSyncService from './services/StoreSyncService'
 import { webTraceService } from './services/WebTraceService'
-import { migrationV2Service } from './services/MigrationV2Service'
 import store from './store'
 
 function initMigrationV2() {

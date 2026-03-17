@@ -13,8 +13,6 @@ import { BrainstormPage, BrainstormProvider } from './features/brainstorm'
 import NavigationHandler from './handler/NavigationHandler'
 import { useModelAvailability } from './hooks/useModelAvailability'
 import { useNavbarPosition } from './hooks/useSettings'
-import { cleanupProviders } from './store/llm'
-import { useAppDispatch } from './store'
 import CodeToolsPage from './pages/code/CodeToolsPage'
 import FilesPage from './pages/files/FilesPage'
 import HomePage from './pages/home/HomePage'
@@ -28,6 +26,8 @@ import PaintingsRoutePage from './pages/paintings/PaintingsRoutePage'
 import SettingsPage from './pages/settings/SettingsPage'
 import AssistantPresetsPage from './pages/store/assistants/presets/AssistantPresetsPage'
 import TranslatePage from './pages/translate/TranslatePage'
+import { useAppDispatch } from './store'
+import { cleanupProviders } from './store/llm'
 
 const Router: FC = () => {
   const { navbarPosition } = useNavbarPosition()

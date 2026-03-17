@@ -1,9 +1,9 @@
 import { loggerService } from '@logger'
-import db from '@renderer/databases'
 import i18n from '@renderer/i18n'
 import store from '@renderer/store'
 import type { FileMetadata } from '@renderer/types'
 import { getFileDirectory } from '@renderer/utils'
+import { IpcChannel } from '@shared/IpcChannel'
 import dayjs from 'dayjs'
 
 const logger = loggerService.withContext('FileManager')
@@ -14,18 +14,15 @@ class FileManager {
   }
 
   static async addFile(file: FileMetadata): Promise<FileMetadata> {
-    const fileRecord = await db.files.get(file.id)
+    const fileRecord = await window.electron.ipcRenderer.invoke(IpcChannel.FileMetadata_GetFile, file.id)
 
     if (fileRecord) {
       const newCount = fileRecord.count + 1
-      await db.files.update(fileRecord.id, { ...fileRecord, count: newCount })
       await window.electron.ipcRenderer.invoke(IpcChannel.FileMetadata_UpdateCount, fileRecord.id, newCount)
-      return fileRecord
+      return { ...fileRecord, count: newCount }
     }
 
-    await db.files.add(file)
     await window.electron.ipcRenderer.invoke(IpcChannel.FileMetadata_AddFile, file)
-
     return file
   }
 
@@ -47,14 +44,15 @@ class FileManager {
     logger.info(`Adding base64 file: ${JSON.stringify(file)}`)
 
     const base64File = await window.api.file.base64File(file.id + file.ext)
-    const fileRecord = await db.files.get(base64File.id)
+    const fileRecord = await window.electron.ipcRenderer.invoke(IpcChannel.FileMetadata_GetFile, base64File.id)
 
     if (fileRecord) {
-      await db.files.update(fileRecord.id, { ...fileRecord, count: fileRecord.count + 1 })
-      return fileRecord
+      const newCount = fileRecord.count + 1
+      await window.electron.ipcRenderer.invoke(IpcChannel.FileMetadata_UpdateCount, fileRecord.id, newCount)
+      return { ...fileRecord, count: newCount }
     }
 
-    await db.files.add(base64File)
+    await window.electron.ipcRenderer.invoke(IpcChannel.FileMetadata_AddFile, base64File)
 
     return base64File
   }
@@ -64,14 +62,15 @@ class FileManager {
 
     const uploadFile = await window.api.file.upload(file)
     logger.info('Uploaded file:', uploadFile)
-    const fileRecord = await db.files.get(uploadFile.id)
+    const fileRecord = await window.electron.ipcRenderer.invoke(IpcChannel.FileMetadata_GetFile, uploadFile.id)
 
     if (fileRecord) {
-      await db.files.update(fileRecord.id, { ...fileRecord, count: fileRecord.count + 1 })
-      return fileRecord
+      const newCount = fileRecord.count + 1
+      await window.electron.ipcRenderer.invoke(IpcChannel.FileMetadata_UpdateCount, fileRecord.id, newCount)
+      return { ...fileRecord, count: newCount }
     }
 
-    await db.files.add(uploadFile)
+    await window.electron.ipcRenderer.invoke(IpcChannel.FileMetadata_AddFile, uploadFile)
 
     return uploadFile
   }
@@ -81,7 +80,7 @@ class FileManager {
   }
 
   static async getFile(id: string): Promise<FileMetadata | undefined> {
-    const file = await db.files.get(id)
+    const file = await window.electron.ipcRenderer.invoke(IpcChannel.FileMetadata_GetFile, id)
 
     if (file) {
       const filesPath = store.getState().runtime.filesPath
@@ -108,13 +107,11 @@ class FileManager {
     if (!force) {
       if (file.count > 1) {
         const newCount = file.count - 1
-        await db.files.update(id, { ...file, count: newCount })
         await window.electron.ipcRenderer.invoke(IpcChannel.FileMetadata_UpdateCount, id, newCount)
         return
       }
     }
 
-    await db.files.delete(id)
     await window.electron.ipcRenderer.invoke(IpcChannel.FileMetadata_DeleteFile, id)
 
     try {
@@ -129,7 +126,7 @@ class FileManager {
   }
 
   static async allFiles(): Promise<FileMetadata[]> {
-    return db.files.toArray()
+    return await window.electron.ipcRenderer.invoke(IpcChannel.FileMetadata_GetFiles)
   }
 
   static isDangerFile(file: FileMetadata) {
@@ -152,7 +149,7 @@ class FileManager {
       file.origin_name = file.origin_name + file.ext
     }
 
-    await db.files.update(file.id, file)
+    await window.electron.ipcRenderer.invoke(IpcChannel.FileMetadata_UpdateFile, file)
   }
 
   static formatFileName(file: FileMetadata) {

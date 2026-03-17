@@ -3,17 +3,16 @@ import { loggerService } from '@logger'
 import { Navbar, NavbarCenter } from '@renderer/components/app/Navbar'
 import { DeleteIcon, EditIcon } from '@renderer/components/Icons'
 import ListItem from '@renderer/components/ListItem'
-import db from '@renderer/databases'
 import { getFileFieldLabel } from '@renderer/i18n/label'
 import { handleDelete, handleRename, sortFiles, tempFilesSort } from '@renderer/services/FileAction'
 import FileManager from '@renderer/services/FileManager'
 import store from '@renderer/store'
-import type { FileMetadata, FileType } from '@renderer/types'
+import type { FileType } from '@renderer/types'
 import { FILE_TYPE } from '@renderer/types'
 import { formatFileSize } from '@renderer/utils'
+import { useQuery } from '@tanstack/react-query'
 import { Button, Checkbox, Dropdown, Empty, Flex, Popconfirm } from 'antd'
 import dayjs from 'dayjs'
-import { useLiveQuery } from 'dexie-react-hooks'
 import {
   ArrowDownNarrowWide,
   ArrowUpWideNarrow,
@@ -45,12 +44,19 @@ const FilesPage: FC = () => {
     setSelectedFileIds([])
   }, [fileType])
 
-  const files = useLiveQuery<FileMetadata[]>(async () => {
-    if (fileType === 'all') {
-      return db.files.orderBy('count').toArray().then(tempFilesSort)
+  const { data: allFiles = [] } = useQuery({
+    queryKey: ['files'],
+    queryFn: () => FileManager.allFiles(),
+    refetchInterval: 5000 // Poll occasionally since we don't have IPC push events for all file changes yet
+  })
+
+  const files = (() => {
+    let filtered = allFiles
+    if (fileType !== 'all') {
+      filtered = filtered.filter((f) => f.type === fileType)
     }
-    return db.files.where('type').equals(fileType).sortBy('count').then(tempFilesSort)
-  }, [fileType])
+    return tempFilesSort(filtered.sort((a, b) => (a.count || 0) - (b.count || 0)))
+  })()
 
   const sortedFiles = files ? sortFiles(files, sortField, sortOrder) : []
 

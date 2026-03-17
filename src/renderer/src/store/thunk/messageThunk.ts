@@ -1683,7 +1683,7 @@ export const cloneMessagesToNewTopicThunk =
       }
 
       // 5. Update Database (Atomic Transaction)
-      await db.transaction('rw', db.topics, db.message_blocks, db.files, async () => {
+      await db.transaction('rw', db.topics, db.message_blocks, async () => {
         // Update the NEW topic with the cloned messages
         // Assumes topic entry was added by caller, so we UPDATE.
         await db.topics.put({ id: newTopic.id, messages: clonedMessages })
@@ -1692,12 +1692,13 @@ export const cloneMessagesToNewTopicThunk =
         if (clonedBlocks.length > 0) {
           await bulkAddBlocks(clonedBlocks)
         }
-        // Update file counts
-        const uniqueFiles = [...new Map(filesToUpdateCount.map((f) => [f.id, f])).values()]
-        for (const file of uniqueFiles) {
-          await updateFileCount(file.id, 1, false)
-        }
       })
+
+      // Update file counts (outside of Dexie transaction since it uses IPC now)
+      const uniqueFiles = [...new Map(filesToUpdateCount.map((f) => [f.id, f])).values()]
+      for (const file of uniqueFiles) {
+        await updateFileCount(file.id, 1, false)
+      }
 
       // --- Update Redux State ---
       dispatch(newMessagesActions.messagesReceived({ topicId: newTopic.id, messages: clonedMessages }))

@@ -55,8 +55,12 @@ Cherry Law 是基于 [Cherry Studio](https://github.com/CherryHQ/cherry-studio) 
 
 #### 核心架构演进 (P0)
 
-- [x] **统一数据层迁移 (Breaking Change)**
-  - [x] 废弃渲染进程 Dexie (IndexedDB) 和 Redux-Persist 存储方案
+- [ ] **统一数据层迁移 (Breaking Change)**
+  - [x] 配置与大模型提供商 (`SettingService`, `LlmProviderService`) 迁移
+  - [x] 文件元数据 (`FileManager`, `db.files`) 脱离 Dexie 迁移至 IPC
+  - [ ] 会话与消息记录 (`DexieMessageDataSource`) 核心迁移
+  - [ ] 知识库与词条 (`Knowledge`, `QuickPhrase`) 迁移
+  - [ ] 全面废弃渲染进程 Dexie (IndexedDB) 和 Redux-Persist
   - [x] 全面转向主进程 **LibSQL + Drizzle ORM** 架构
   - [x] 实现主进程到渲染进程的标准化数据同步流 (StoreSyncService)
 - [x] **底层大模型引擎重构 (aiCore)**

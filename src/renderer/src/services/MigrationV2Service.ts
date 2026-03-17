@@ -1,7 +1,8 @@
-import { IpcChannel } from '@shared/IpcChannel'
-import type { RootState } from '../store'
-import db from '../databases'
 import { loggerService } from '@logger'
+import { IpcChannel } from '@shared/IpcChannel'
+
+import db from '../databases'
+import type { RootState } from '../store'
 
 const logger = loggerService.withContext('MigrationV2Service')
 
@@ -20,7 +21,7 @@ export class MigrationV2Service {
   public async startMigration(state: RootState): Promise<boolean> {
     try {
       logger.info('Gathering data for Phase 0 migration...')
-      
+
       const migrationData = {
         settings: this.gatherSettings(state),
         llmProviders: this.gatherLlmProviders(state),
@@ -31,7 +32,7 @@ export class MigrationV2Service {
 
       logger.info('Sending data to main process for LibSQL insertion...')
       const result = await window.electron.ipcRenderer.invoke(IpcChannel.MigrationV2_Start, migrationData)
-      
+
       if (result.success) {
         logger.info('Migration Phase 0 completed successfully.')
         return true
@@ -49,11 +50,11 @@ export class MigrationV2Service {
     // Map Redux settings to setting rows
     const settings: any[] = []
     const settingsSlice = state.settings
-    
+
     Object.entries(settingsSlice).forEach(([key, value]) => {
       settings.push({ id: `app:${key}`, value })
     })
-    
+
     return settings
   }
 

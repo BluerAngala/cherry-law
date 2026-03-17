@@ -308,7 +308,9 @@ export enum IpcChannel {
 
   // File Metadata (V2)
   FileMetadata_GetFiles = 'file-metadata:get-files',
+  FileMetadata_GetFile = 'file-metadata:get-file',
   FileMetadata_AddFile = 'file-metadata:add-file',
+  FileMetadata_UpdateFile = 'file-metadata:update-file',
   FileMetadata_DeleteFile = 'file-metadata:delete-file',
   FileMetadata_UpdateCount = 'file-metadata:update-count',
 

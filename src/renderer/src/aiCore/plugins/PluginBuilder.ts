@@ -1,5 +1,5 @@
 import type { AiPlugin } from '@cherrystudio/ai-core'
-import { createPromptToolUsePlugin, webSearchPlugin, lawPlugin } from '@cherrystudio/ai-core/built-in/plugins'
+import { createPromptToolUsePlugin, lawPlugin, webSearchPlugin } from '@cherrystudio/ai-core/built-in/plugins'
 import { loggerService } from '@logger'
 import { isGemini3Model, isQwen35Model, isSupportedThinkingTokenQwenModel } from '@renderer/config/models'
 import { getEnableDeveloperMode } from '@renderer/hooks/useSettings'

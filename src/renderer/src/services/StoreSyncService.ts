@@ -140,7 +140,7 @@ export class StoreSyncService {
             }
           })
         }
-        
+
         // Sync providers
         if (initialState.llm?.providers) {
           window.store.dispatch({

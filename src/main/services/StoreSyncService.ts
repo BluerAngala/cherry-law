@@ -17,8 +17,9 @@
 import { IpcChannel } from '@shared/IpcChannel'
 import type { StoreSyncAction } from '@types'
 import { BrowserWindow, ipcMain } from 'electron'
-import { settingService } from './SettingService'
+
 import { llmProviderService } from './LlmProviderService'
+import { settingService } from './SettingService'
 
 /**
  * StoreSyncService class manages Redux store synchronization between multiple windows in the main process
@@ -107,7 +108,7 @@ export class StoreSyncService {
     ipcMain.handle(IpcChannel.StoreSync_GetInitialState, async () => {
       const settings = await settingService.getAllSettings()
       const providers = await llmProviderService.getProviders()
-      
+
       return {
         settings,
         llm: { providers }

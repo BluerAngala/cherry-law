@@ -673,9 +673,7 @@
       "indexes": {
         "translate_languages_lang_code_unique": {
           "name": "translate_languages_lang_code_unique",
-          "columns": [
-            "lang_code"
-          ],
+          "columns": ["lang_code"],
           "isUnique": true
         }
       },
