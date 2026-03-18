@@ -13,3 +13,5 @@ export type AiSdkConfig = {
   providerId: string
   options: ProviderSettingsMap[keyof ProviderSettingsMap]
 }
+
+export * from './completions'

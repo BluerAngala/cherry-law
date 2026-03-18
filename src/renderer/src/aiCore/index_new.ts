@@ -20,7 +20,6 @@ import { buildClaudeCodeSystemModelMessage } from '@shared/anthropic'
 import { gateway, type LanguageModel, type Provider as AiSdkProvider } from 'ai'
 
 import AiSdkToChunkAdapter from './chunk/AiSdkToChunkAdapter'
-import type { CompletionsResult } from './legacy/middleware/schemas'
 import { buildPlugins } from './plugins/PluginBuilder'
 import { createAiSdkProvider } from './provider/factory'
 import {
@@ -31,6 +30,7 @@ import {
   providerToAiSdkConfig
 } from './provider/providerConfig'
 import type { AiSdkConfig } from './types'
+import type { CompletionsResult } from './types/completions'
 import type { AiSdkMiddlewareConfig } from './types/middlewareConfig'
 
 const logger = loggerService.withContext('ModernAiProvider')
