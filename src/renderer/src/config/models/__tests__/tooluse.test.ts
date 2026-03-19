@@ -123,7 +123,7 @@ describe('isFunctionCallingModel', () => {
 
   it('returns true when identified as deepseek hybrid inference model', () => {
     deepSeekHybridMock.mockReturnValueOnce(true)
-    expect(isFunctionCallingModel(createModel({ id: 'deepseek-v3-1', provider: 'custom' }))).toBe(true)
+    expect(isFunctionCallingModel(createModel({ id: 'deepseek-v3-1', provider: 'deepseek' }))).toBe(true)
   })
 
   it('returns false for deepseek hybrid models behind restricted system providers', () => {
@@ -138,7 +138,7 @@ describe('isFunctionCallingModel', () => {
 
   it('supports kimi models through kimi-k2 regex match', () => {
     expect(isFunctionCallingModel(createModel({ id: 'kimi-k2-0711-preview', provider: 'moonshot' }))).toBe(true)
-    expect(isFunctionCallingModel(createModel({ id: 'kimi-k2', provider: 'kimi' }))).toBe(true)
+    expect(isFunctionCallingModel(createModel({ id: 'kimi-k2', provider: 'moonshot' }))).toBe(true)
   })
 
   it('supports deepseek models through deepseek regex match', () => {
@@ -202,6 +202,71 @@ describe('isFunctionCallingModel', () => {
         provider: 'doubao',
         group: 'Doubao-Seed-2.0'
       }
+      expect(isFunctionCallingModel(model)).toBe(true)
+    })
+  })
+
+  describe('Provider without Function Calling support', () => {
+    it('returns false for silicon provider even if model name matches qwen', () => {
+      const model = createModel({
+        id: 'qwen-3-8b',
+        name: 'Qwen3-8B',
+        provider: 'silicon'
+      })
+      expect(isFunctionCallingModel(model)).toBe(false)
+    })
+
+    it('returns false for silicon provider with deepseek model', () => {
+      const model = createModel({
+        id: 'deepseek-chat',
+        name: 'DeepSeek Chat',
+        provider: 'silicon'
+      })
+      expect(isFunctionCallingModel(model)).toBe(false)
+    })
+
+    it('returns false for ocoolai provider', () => {
+      const model = createModel({
+        id: 'gpt-4o',
+        name: 'GPT-4o',
+        provider: 'ocoolai'
+      })
+      expect(isFunctionCallingModel(model)).toBe(false)
+    })
+
+    it('returns false for custom provider (non-system provider)', () => {
+      const model = createModel({
+        id: 'gpt-4o',
+        name: 'GPT-4o',
+        provider: 'my-custom-provider'
+      })
+      expect(isFunctionCallingModel(model)).toBe(false)
+    })
+
+    it('returns true for openai provider with gpt-4o', () => {
+      const model = createModel({
+        id: 'gpt-4o',
+        name: 'GPT-4o',
+        provider: 'openai'
+      })
+      expect(isFunctionCallingModel(model)).toBe(true)
+    })
+
+    it('returns true for anthropic provider with claude model', () => {
+      const model = createModel({
+        id: 'claude-3-sonnet',
+        name: 'Claude 3 Sonnet',
+        provider: 'anthropic'
+      })
+      expect(isFunctionCallingModel(model)).toBe(true)
+    })
+
+    it('returns true for dashscope provider with qwen model', () => {
+      const model = createModel({
+        id: 'qwen-plus',
+        name: 'Qwen Plus',
+        provider: 'dashscope'
+      })
       expect(isFunctionCallingModel(model)).toBe(true)
     })
   })
