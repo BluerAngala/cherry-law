@@ -21,7 +21,7 @@ const extendMessagesTimeout: express.RequestHandler = (req, res, next) => {
   next()
 }
 
-const app = express()
+const app: express.Express = express()
 app.use(
   express.json({
     limit: '50mb'
@@ -144,7 +144,7 @@ setupOpenAPIDocumentation(app)
 app.use('/:provider/v1/messages', authMiddleware, extendMessagesTimeout, messagesProviderRoutes)
 
 // API v1 routes with auth
-const apiRouter = express.Router()
+const apiRouter: express.Router = express.Router()
 apiRouter.use(authMiddleware)
 // Mount routes
 apiRouter.use('/chat', chatRoutes)

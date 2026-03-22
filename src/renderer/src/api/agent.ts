@@ -112,10 +112,9 @@ export class AgentApiClient {
       const fullUrl = queryString ? `${url}?${queryString}` : url
 
       const response = await this.axios.get(fullUrl)
-      console.log('[AgentApiClient] listAgents response:', JSON.stringify(response.data, null, 2))
       const result = ListAgentsResponseSchema.safeParse(response.data)
       if (!result.success) {
-        console.error('[AgentApiClient] Validation error:', result.error)
+        logger.error('listAgents response validation failed', result.error)
         throw new Error(`Not a valid Agents array: ${result.error.message}`)
       }
       return result.data
@@ -204,9 +203,7 @@ export class AgentApiClient {
     const url = this.getSessionPaths(agentId).withId(sessionId)
     try {
       const response = await this.axios.get(url)
-      // const data = GetAgentSessionResponseSchema.parse(response.data)
-      // TODO: enable validation
-      const data = response.data
+      const data = GetAgentSessionResponseSchema.parse(response.data)
       if (sessionId !== data.id) {
         throw new Error('Session ID mismatch in response')
       }

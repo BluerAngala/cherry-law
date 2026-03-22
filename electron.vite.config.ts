@@ -1,12 +1,14 @@
 import react from '@vitejs/plugin-react-swc'
 import { CodeInspectorPlugin } from 'code-inspector-plugin'
+import { createRequire } from 'node:module'
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'electron-vite'
-import { resolve } from 'path'
+import { dirname, resolve } from 'path'
 import { visualizer } from 'rollup-plugin-visualizer'
 
-// assert not supported by biome
-// import pkg from './package.json' assert { type: 'json' }
-import pkg from './package.json'
+const require = createRequire(import.meta.url)
+const pkg = require('./package.json')
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 const visualizerPlugin = (type: 'renderer' | 'main') => {
   return process.env[`VISUALIZER_${type.toUpperCase()}`] ? [visualizer({ open: true })] : []

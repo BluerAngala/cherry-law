@@ -5,7 +5,15 @@ import fs from 'fs/promises'
 import os from 'os'
 import path from 'path'
 
-export const logger = loggerService.withContext('MCP:FileSystemServer')
+export interface LoggerLike {
+  silly: (message: string, meta?: unknown) => void
+  debug: (message: string, meta?: unknown) => void
+  info: (message: string, meta?: unknown) => void
+  warn: (message: string, meta?: unknown) => void
+  error: (message: string, meta?: unknown) => void
+}
+
+export const logger = loggerService.withContext('MCP:FileSystemServer') as unknown as LoggerLike
 
 // Constants
 export const MAX_LINE_LENGTH = 2000

@@ -1,3 +1,4 @@
+import { loggerService } from '@logger'
 import { titleBarOverlayDark, titleBarOverlayLight } from '@main/config'
 import { isMac } from '@main/constant'
 import { randomUUID } from 'crypto'
@@ -6,7 +7,9 @@ import TurndownService from 'turndown'
 
 import { SESSION_KEY_DEFAULT, SESSION_KEY_PRIVATE, TAB_BAR_HEIGHT } from './constants'
 import { TAB_BAR_HTML } from './tabbar-html'
-import { logger, type TabInfo, userAgent, type WindowInfo } from './types'
+import { type TabInfo, userAgent, type WindowInfo } from './types'
+
+const logger = loggerService.withContext('MCPBrowserCDP')
 
 /**
  * Controller for managing browser windows via Chrome DevTools Protocol (CDP).

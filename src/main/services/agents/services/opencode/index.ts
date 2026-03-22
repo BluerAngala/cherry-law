@@ -363,7 +363,9 @@ export class OpenCodeService implements AgentServiceInterface {
       processStream()
     } catch (error) {
       logger.error('Failed to invoke OpenCode', error as Error)
-      aiStream.emit('data', { type: 'error', error: error as Error })
+      setImmediate(() => {
+        aiStream.emit('data', { type: 'error', error: error as Error })
+      })
     }
 
     return aiStream

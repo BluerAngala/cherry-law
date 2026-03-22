@@ -1,5 +1,5 @@
 import { loggerService } from '@logger'
-import type { GetAgentSessionResponse } from '@types'
+import type { AgentPersistedMessage, GetAgentSessionResponse } from '@types'
 import { EventEmitter } from 'events'
 
 import type {
@@ -17,10 +17,6 @@ class AiCoreAgentStream extends EventEmitter implements AgentStream {
   declare once: (event: 'data', listener: (data: AgentStreamEvent) => void) => this
 }
 
-/**
- * 基于 AI Core 的 Agent 服务
- * 直接使用项目内置的 AI 能力，不依赖外部 OpenCode 服务
- */
 export class AiCoreAgentService implements AgentServiceInterface {
   private static instance: AiCoreAgentService | null = null
 
@@ -31,9 +27,6 @@ export class AiCoreAgentService implements AgentServiceInterface {
     return AiCoreAgentService.instance
   }
 
-  /**
-   * 调用 Agent 进行对话
-   */
   async invoke(
     prompt: string,
     session: GetAgentSessionResponse,
@@ -50,55 +43,57 @@ export class AiCoreAgentService implements AgentServiceInterface {
         promptLength: prompt.length
       })
 
-      // 动态导入 AI Core
       const { OpenAI } = await import('@cherrystudio/ai-core')
       const { validateModelId } = await import('@main/apiServer/utils')
 
-      // 验证模型
       const modelValidation = await validateModelId(session.model)
       if (!modelValidation.valid) {
-        throw new Error(`模型验证失败: ${modelValidation.error?.message || '未知错误'}`)
+        throw new Error(`Model validation failed: ${modelValidation.error?.message || 'Unknown error'}`)
       }
 
       const provider = modelValidation.provider!
       const modelId = modelValidation.modelId!
-
-      // 创建 OpenAI 客户端
       const client = new OpenAI({
         baseURL: provider.apiHost,
         apiKey: provider.apiKey
       })
 
-      // 构建消息历史
       const messages = await this.buildMessageHistory(session.id, prompt)
-
-      // 开始流式对话
       this.streamChat(client, modelId, messages, session, aiStream, abortController)
     } catch (error) {
       logger.error('Failed to invoke AI Core agent', error as Error)
-      aiStream.emit('data', {
-        type: 'error',
-        error: error instanceof Error ? error : new Error(String(error))
+      setImmediate(() => {
+        aiStream.emit('data', {
+          type: 'error',
+          error: error instanceof Error ? error : new Error(String(error))
+        })
       })
     }
 
     return aiStream
   }
 
-  /**
-   * 构建消息历史
-   */
-  private async buildMessageHistory(sessionId: string, currentPrompt: string): Promise<any[]> {
-    // 获取历史消息
+  private async buildMessageHistory(
+    sessionId: string,
+    currentPrompt: string
+  ): Promise<Array<{ role: 'user' | 'assistant'; content: string }>> {
     const { sessionMessageService } = await import('../index')
     const { messages } = await sessionMessageService.listSessionMessages(sessionId, { limit: 20 })
 
-    const historyMessages = messages.map((msg) => ({
-      role: msg.role === 'user' ? 'user' : 'assistant',
-      content: typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content)
-    }))
+    const historyMessages = messages
+      .map((message) => {
+        const content = this.extractMessageText(message.content)
+        if (!content) {
+          return null
+        }
 
-    // 添加当前消息
+        return {
+          role: message.role === 'user' ? 'user' : 'assistant',
+          content
+        }
+      })
+      .filter((message): message is { role: 'user' | 'assistant'; content: string } => message !== null)
+
     historyMessages.push({
       role: 'user',
       content: currentPrompt
@@ -107,13 +102,41 @@ export class AiCoreAgentService implements AgentServiceInterface {
     return historyMessages
   }
 
-  /**
-   * 执行流式对话
-   */
+  private extractMessageText(content: unknown): string {
+    if (typeof content === 'string') {
+      return content
+    }
+
+    const persistedMessage = content as AgentPersistedMessage | undefined
+    if (persistedMessage?.blocks && Array.isArray(persistedMessage.blocks)) {
+      const text = persistedMessage.blocks
+        .filter((block): block is AgentPersistedMessage['blocks'][number] & { content: string } => {
+          return block?.type === 'main_text' && typeof (block as { content?: unknown }).content === 'string'
+        })
+        .map((block) => block.content)
+        .join('\n')
+        .trim()
+
+      if (text) {
+        return text
+      }
+    }
+
+    if (persistedMessage?.message) {
+      return JSON.stringify(persistedMessage.message)
+    }
+
+    if (content == null) {
+      return ''
+    }
+
+    return JSON.stringify(content)
+  }
+
   private async streamChat(
     client: any,
     modelId: string,
-    messages: any[],
+    messages: Array<{ role: 'user' | 'assistant'; content: string }>,
     session: GetAgentSessionResponse,
     aiStream: AiCoreAgentStream,
     abortController: AbortController

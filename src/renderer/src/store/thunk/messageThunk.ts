@@ -322,6 +322,8 @@ const createAgentMessageStream = async (
   apiServer: ApiServerConfig,
   agentSession: AgentSessionContext,
   content: string,
+  userMessageId: string,
+  assistantMessageId: string,
   signal: AbortSignal
 ): Promise<ReadableStream<TextStreamPart<Record<string, any>>>> => {
   if (!apiServer.enabled) {
@@ -341,6 +343,8 @@ const createAgentMessageStream = async (
     },
     body: JSON.stringify({
       content,
+      userMessageId,
+      assistantMessageId,
       ...(agentSession.effort ? { effort: agentSession.effort } : {}),
       ...(agentSession.thinking ? { thinking: agentSession.thinking } : {})
     }),
@@ -584,6 +588,8 @@ const fetchAndProcessAgentResponseImpl = async (
       state.settings.apiServer,
       agentSession,
       userContent,
+      userMessageId,
+      assistantMessage.id,
       abortController.signal
     )
 

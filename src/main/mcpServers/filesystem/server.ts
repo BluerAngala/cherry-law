@@ -1,3 +1,4 @@
+import { loggerService } from '@logger'
 import { Server } from '@modelcontextprotocol/sdk/server/index.js'
 import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js'
 import { app } from 'electron'
@@ -20,7 +21,8 @@ import {
   readToolDefinition,
   writeToolDefinition
 } from './tools'
-import { logger } from './types'
+
+const logger = loggerService.withContext('MCP:FileSystemServer')
 
 export class FileSystemServer {
   public server: Server

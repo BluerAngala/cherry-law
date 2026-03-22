@@ -52,10 +52,13 @@ const modelValidationErrorBody = (error: AgentModelValidationError) => ({
  */
 export const createAgent = async (req: Request, res: Response): Promise<Response> => {
   try {
-    logger.debug('Creating agent')
-    logger.debug('Agent payload', { body: req.body })
+    const { validatedBody } = req as ValidationRequest
+    const agentPayload = validatedBody ?? req.body
 
-    const agent = await agentService.createAgent(req.body)
+    logger.debug('Creating agent')
+    logger.debug('Agent payload', { body: agentPayload })
+
+    const agent = await agentService.createAgent(agentPayload)
 
     try {
       logger.info('Agent created', { agentId: agent.id })

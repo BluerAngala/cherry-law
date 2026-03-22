@@ -19,7 +19,8 @@ const modelValidationErrorBody = (error: AgentModelValidationError) => ({
 export const createSession = async (req: Request, res: Response): Promise<Response> => {
   const { agentId } = req.params
   try {
-    const sessionData = req.body
+    const { validatedBody } = req as ValidationRequest
+    const sessionData = validatedBody ?? req.body
 
     logger.debug('Creating new session', { agentId })
     logger.debug('Session payload', { sessionData })

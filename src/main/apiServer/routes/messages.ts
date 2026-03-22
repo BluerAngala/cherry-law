@@ -9,8 +9,8 @@ import { getProviderById, validateModelId } from '../utils'
 
 const logger = loggerService.withContext('ApiServerMessagesRoutes')
 
-const router = express.Router()
-const providerRouter = express.Router({ mergeParams: true })
+const router: express.Router = express.Router()
+const providerRouter: express.Router = express.Router({ mergeParams: true })
 
 // Helper function for basic request validation
 async function validateRequestBody(req: Request): Promise<{ valid: boolean; error?: any }> {

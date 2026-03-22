@@ -1,10 +1,13 @@
 import { isDev, isWin } from '@main/constant'
 import { app } from 'electron'
+import path from 'node:path'
 
 import { getDataPath } from './utils'
 
 if (isDev) {
-  app.setPath('userData', app.getPath('userData') + 'Dev')
+  const devDataPath = path.join(app.getPath('temp'), 'cherry-law-dev')
+  app.setPath('userData', devDataPath)
+  app.setPath('crashDumps', path.join(devDataPath, 'Crashpad'))
 }
 
 export const DATA_PATH = getDataPath()

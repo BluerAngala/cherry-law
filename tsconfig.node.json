@@ -8,6 +8,8 @@
     "src/preload/**/*",
     "src/renderer/src/services/traceApi.ts",
     "src/renderer/src/types/*",
+    "packages/aiCore/**/*",
+    "packages/ai-sdk-provider/**/*",
     "packages/mcp-trace/**/*",
     "packages/shared/**/*"
   ],

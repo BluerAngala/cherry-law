@@ -1,19 +1,25 @@
+import { randomUUID } from 'node:crypto'
+
 import { loggerService } from '@logger'
 import type {
+  AgentPersistedMessage,
   AgentSessionMessageEntity,
   CreateSessionMessageRequest,
   GetAgentSessionResponse,
-  ListOptions
+  ListOptions,
+  Message
 } from '@types'
 import type { TextStreamPart } from 'ai'
 import { and, desc, eq, not } from 'drizzle-orm'
 
 import { BaseService } from '../BaseService'
+import { agentMessageRepository } from '../database'
 import { sessionMessagesTable } from '../database/schema'
 import type { AgentStreamEvent } from '../interfaces/AgentStreamInterface'
-import AiCoreAgentService from './AiCoreAgentService'
+import { resolveAgentRuntime } from './AgentRuntimeResolver'
 
 const logger = loggerService.withContext('SessionMessageService')
+const AGENT_SESSION_TOPIC_PREFIX = 'agent-session:'
 
 type SessionStreamResult = {
   stream: ReadableStream<TextStreamPart<Record<string, any>>>
@@ -42,13 +48,54 @@ function serializeError(error: unknown): { message: string; name?: string; stack
   }
 }
 
+function toSerializedError(error: unknown) {
+  const serialized = serializeError(error)
+  return {
+    name: serialized.name ?? null,
+    message: serialized.message ?? null,
+    stack: serialized.stack ?? null
+  }
+}
+
+function normalizeBlockContent(content: unknown): string | object | undefined {
+  if (content === undefined) {
+    return undefined
+  }
+
+  if (typeof content === 'string') {
+    return content
+  }
+
+  if (content && typeof content === 'object') {
+    return content as object
+  }
+
+  return JSON.stringify(content)
+}
+
 class TextStreamAccumulator {
   private textBuffer = ''
   private totalText = ''
   private readonly toolCalls = new Map<string, { toolName?: string; input?: unknown }>()
   private readonly toolResults = new Map<string, unknown>()
+  private agentSessionId = ''
+
+  private captureAgentSessionId(part: TextStreamPart<Record<string, any>>): void {
+    const providerMetadata = (part as TextStreamPart<Record<string, any>> & { providerMetadata?: Record<string, any> })
+      .providerMetadata
+    const rawValue = (part as TextStreamPart<Record<string, any>> & { rawValue?: Record<string, any> }).rawValue
+
+    const candidate =
+      providerMetadata?.anthropic?.session_id ?? providerMetadata?.raw?.session_id ?? rawValue?.session_id ?? ''
+
+    if (typeof candidate === 'string' && candidate.trim()) {
+      this.agentSessionId = candidate.trim()
+    }
+  }
 
   add(part: TextStreamPart<Record<string, any>>): void {
+    this.captureAgentSessionId(part)
+
     switch (part.type) {
       case 'text-start':
         this.textBuffer = ''
@@ -56,10 +103,16 @@ class TextStreamAccumulator {
       case 'text-delta':
         if (part.text) {
           this.textBuffer += part.text
+          this.totalText += part.text
         }
         break
       case 'text-end': {
-        const blockText = (part.providerMetadata?.text?.value as string | undefined) ?? this.textBuffer
+        const providerTextValue = (
+          part as TextStreamPart<Record<string, any>> & {
+            providerMetadata?: { text?: { value?: string } }
+          }
+        ).providerMetadata?.text?.value
+        const blockText = !this.textBuffer && typeof providerTextValue === 'string' ? providerTextValue : ''
         if (blockText) {
           this.totalText += blockText
         }
@@ -91,11 +144,58 @@ class TextStreamAccumulator {
         break
     }
   }
+
+  getText(): string {
+    return this.totalText
+  }
+
+  getAgentSessionId(): string {
+    return this.agentSessionId
+  }
+
+  hasContent(): boolean {
+    return Boolean(this.totalText || this.toolCalls.size || this.toolResults.size)
+  }
+
+  buildToolBlocks(
+    messageId: string,
+    createdAt: string,
+    status: 'success' | 'paused' | 'error'
+  ): AgentPersistedMessage['blocks'] {
+    const blocks: AgentPersistedMessage['blocks'] = []
+
+    for (const [toolId, toolCall] of this.toolCalls.entries()) {
+      const toolResult = this.toolResults.get(toolId)
+      const blockStatus = toolResult !== undefined ? 'success' : status === 'error' ? 'error' : status
+
+      blocks.push({
+        id: randomUUID(),
+        messageId,
+        type: 'tool' as AgentPersistedMessage['blocks'][number]['type'],
+        createdAt,
+        updatedAt: createdAt,
+        status: blockStatus as AgentPersistedMessage['blocks'][number]['status'],
+        toolId,
+        toolName: toolCall.toolName,
+        arguments:
+          toolCall.input && typeof toolCall.input === 'object' && !Array.isArray(toolCall.input)
+            ? (toolCall.input as Record<string, any>)
+            : undefined,
+        content: normalizeBlockContent(toolResult),
+        ...(status === 'error' && toolResult === undefined
+          ? {
+              error: toSerializedError(new Error('Tool execution did not finish successfully'))
+            }
+          : {})
+      } as AgentPersistedMessage['blocks'][number])
+    }
+
+    return blocks
+  }
 }
 
 export class SessionMessageService extends BaseService {
   private static instance: SessionMessageService | null = null
-  private agentService: AiCoreAgentService = AiCoreAgentService.getInstance()
 
   static getInstance(): SessionMessageService {
     if (!SessionMessageService.instance) {
@@ -161,15 +261,45 @@ export class SessionMessageService extends BaseService {
     req: CreateSessionMessageRequest,
     abortController: AbortController
   ): Promise<SessionStreamResult> {
-    const agentSessionId = await this.getLastAgentSessionId(session.id)
-    logger.debug('Session Message stream message data:', { message: req, session_id: agentSessionId })
+    const lastAgentSessionId = await this.getLastAgentSessionId(session.id)
+    logger.debug('Session Message stream message data:', { message: req, session_id: lastAgentSessionId })
 
-    const agentStream = await this.agentService.invoke(req.content, session, abortController, agentSessionId, {
-      effort: req.effort,
-      thinking: req.thinking
+    const userMessagePayload = this.buildUserMessagePayload(session, req.content, req.userMessageId)
+    const userMessage = await agentMessageRepository.persistUserMessage({
+      sessionId: session.id,
+      agentSessionId: lastAgentSessionId,
+      payload: userMessagePayload
     })
-
     const accumulator = new TextStreamAccumulator()
+    const agentService = await resolveAgentRuntime(session)
+
+    let agentStream
+    try {
+      agentStream = await agentService.invoke(req.content, session, abortController, lastAgentSessionId, {
+        effort: req.effort,
+        thinking: req.thinking
+      })
+    } catch (invokeError) {
+      const assistantPayload = this.buildAssistantMessagePayload(
+        session,
+        userMessagePayload.message.id,
+        accumulator,
+        req.assistantMessageId,
+        lastAgentSessionId || session.id,
+        'error',
+        invokeError
+      )
+
+      if (assistantPayload) {
+        await agentMessageRepository.persistAssistantMessage({
+          sessionId: session.id,
+          agentSessionId: lastAgentSessionId || session.id,
+          payload: assistantPayload
+        })
+      }
+
+      throw invokeError
+    }
 
     let resolveCompletion!: (value: {
       userMessage?: AgentSessionMessageEntity
@@ -185,18 +315,63 @@ export class SessionMessageService extends BaseService {
       rejectCompletion = reject
     })
 
-    let finished = false
+    let streamClosed = false
+    let completionSettled = false
 
     const cleanup = () => {
-      if (finished) return
-      finished = true
       agentStream.removeAllListeners()
+    }
+
+    const finalizeCompletion = async (status: 'success' | 'paused' | 'error', error?: unknown): Promise<void> => {
+      if (completionSettled) {
+        return
+      }
+
+      completionSettled = true
+      cleanup()
+
+      try {
+        const agentSessionIdToPersist = accumulator.getAgentSessionId() || lastAgentSessionId || session.id
+        const assistantPayload = this.buildAssistantMessagePayload(
+          session,
+          userMessagePayload.message.id,
+          accumulator,
+          req.assistantMessageId,
+          agentSessionIdToPersist,
+          status,
+          error
+        )
+
+        const assistantMessage = assistantPayload
+          ? await agentMessageRepository.persistAssistantMessage({
+              sessionId: session.id,
+              agentSessionId: agentSessionIdToPersist,
+              payload: assistantPayload
+            })
+          : undefined
+
+        if (status === 'error') {
+          rejectCompletion(serializeError(error))
+          return
+        }
+
+        resolveCompletion({
+          userMessage,
+          assistantMessage
+        })
+      } catch (persistError) {
+        logger.error('Failed to persist agent session exchange', {
+          sessionId: session.id,
+          error: persistError
+        })
+        rejectCompletion(serializeError(persistError))
+      }
     }
 
     const stream = new ReadableStream<TextStreamPart<Record<string, any>>>({
       start: (controller) => {
         agentStream.on('data', async (event: AgentStreamEvent) => {
-          if (finished) return
+          if (streamClosed) return
           try {
             switch (event.type) {
               case 'chunk': {
@@ -214,44 +389,44 @@ export class SessionMessageService extends BaseService {
               case 'error': {
                 const stderrMessage = (event as any)?.data?.stderr as string | undefined
                 const underlyingError = event.error ?? (stderrMessage ? new Error(stderrMessage) : undefined)
-                cleanup()
                 const streamError = underlyingError ?? new Error('Stream error')
+                streamClosed = true
                 controller.error(streamError)
-                rejectCompletion(serializeError(streamError))
+                await finalizeCompletion('error', streamError)
                 break
               }
 
               case 'complete': {
-                cleanup()
+                streamClosed = true
                 controller.close()
-                resolveCompletion({})
+                await finalizeCompletion('success')
                 break
               }
 
               case 'cancelled': {
-                cleanup()
+                streamClosed = true
                 controller.close()
-                resolveCompletion({})
+                await finalizeCompletion('paused')
                 break
               }
 
               default:
-                logger.warn('Unknown event type from Claude Code service:', {
+                logger.warn('Unknown event type from agent runtime:', {
                   type: event.type
                 })
                 break
             }
           } catch (error) {
-            cleanup()
+            streamClosed = true
             controller.error(error)
-            rejectCompletion(serializeError(error))
+            await finalizeCompletion('error', error)
           }
         })
       },
       cancel: (reason) => {
-        cleanup()
+        streamClosed = true
         abortController.abort(typeof reason === 'string' ? reason : 'stream cancelled')
-        resolveCompletion({})
+        void finalizeCompletion('paused')
       }
     })
 
@@ -303,6 +478,106 @@ export class SessionMessageService extends BaseService {
     }
 
     return deserialized
+  }
+
+  private buildUserMessagePayload(
+    session: GetAgentSessionResponse,
+    content: string,
+    messageId: string = randomUUID()
+  ): AgentPersistedMessage {
+    const createdAt = new Date().toISOString()
+    const blockId = randomUUID()
+    const topicId = this.buildTopicId(session.id)
+
+    return {
+      message: {
+        id: messageId,
+        role: 'user',
+        assistantId: session.agent_id,
+        topicId,
+        createdAt,
+        status: 'success' as Message['status'],
+        blocks: [blockId]
+      } satisfies Message,
+      blocks: [
+        {
+          id: blockId,
+          messageId,
+          type: 'main_text' as AgentPersistedMessage['blocks'][number]['type'],
+          createdAt,
+          updatedAt: createdAt,
+          status: 'success' as AgentPersistedMessage['blocks'][number]['status'],
+          content
+        } as AgentPersistedMessage['blocks'][number]
+      ]
+    }
+  }
+
+  private buildAssistantMessagePayload(
+    session: GetAgentSessionResponse,
+    askId: string,
+    accumulator: TextStreamAccumulator,
+    messageId: string | undefined,
+    agentSessionId: string,
+    status: 'success' | 'paused' | 'error',
+    error?: unknown
+  ): AgentPersistedMessage | undefined {
+    if (!accumulator.hasContent() && !error) {
+      return undefined
+    }
+
+    const createdAt = new Date().toISOString()
+    const persistedMessageId = messageId ?? randomUUID()
+    const topicId = this.buildTopicId(session.id)
+    const blocks: AgentPersistedMessage['blocks'] = []
+    const text = accumulator.getText()
+
+    if (text) {
+      const mainTextBlockId = randomUUID()
+      blocks.push({
+        id: mainTextBlockId,
+        messageId: persistedMessageId,
+        type: 'main_text' as AgentPersistedMessage['blocks'][number]['type'],
+        createdAt,
+        updatedAt: createdAt,
+        status: (status === 'error' ? 'error' : status) as AgentPersistedMessage['blocks'][number]['status'],
+        content: text
+      } as AgentPersistedMessage['blocks'][number])
+    }
+
+    blocks.push(...accumulator.buildToolBlocks(persistedMessageId, createdAt, status))
+
+    if (error) {
+      blocks.push({
+        id: randomUUID(),
+        messageId: persistedMessageId,
+        type: 'error' as AgentPersistedMessage['blocks'][number]['type'],
+        createdAt,
+        updatedAt: createdAt,
+        status: 'error' as AgentPersistedMessage['blocks'][number]['status'],
+        error: toSerializedError(error)
+      } as AgentPersistedMessage['blocks'][number])
+    }
+
+    return {
+      message: {
+        id: persistedMessageId,
+        role: 'assistant',
+        assistantId: session.agent_id,
+        topicId,
+        createdAt,
+        status: status as Message['status'],
+        askId,
+        modelId: session.model,
+        blocks: blocks.map((block) => block.id),
+        agentSessionId
+      } satisfies Message,
+      blocks
+    }
+  }
+
+  private buildTopicId(sessionId: string): string {
+    return `${AGENT_SESSION_TOPIC_PREFIX}${sessionId}`
   }
 }
 

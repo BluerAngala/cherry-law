@@ -17,7 +17,7 @@ import {
 } from './validators'
 
 // Create main agents router
-const agentsRouter = express.Router()
+const agentsRouter: express.Router = express.Router()
 
 /**
  * @swagger
@@ -30,7 +30,7 @@ const agentsRouter = express.Router()
  *
  *     AgentType:
  *       type: string
- *       enum: [opencode]
+ *       enum: [opencode, cherry]
  *       description: Type of agent
  *
  *     AgentConfiguration:
@@ -272,6 +272,36 @@ const agentsRouter = express.Router()
  *           type: string
  *           minLength: 1
  *           description: Message content
+ *         effort:
+ *           type: string
+ *           enum: [low, medium, high, max]
+ *           description: Optional reasoning effort
+ *         thinking:
+ *           oneOf:
+ *             - type: object
+ *               properties:
+ *                 type:
+ *                   type: string
+ *                   enum: [enabled]
+ *                 budgetTokens:
+ *                   type: integer
+ *             - type: object
+ *               properties:
+ *                 type:
+ *                   type: string
+ *                   enum: [disabled]
+ *             - type: object
+ *               properties:
+ *                 type:
+ *                   type: string
+ *                   enum: [adaptive]
+ *           description: Optional thinking configuration
+ *         userMessageId:
+ *           type: string
+ *           description: Optional client-side persisted user message ID
+ *         assistantMessageId:
+ *           type: string
+ *           description: Optional client-side persisted assistant message ID
  *       required:
  *         - content
  *
@@ -962,4 +992,4 @@ agentsRouter.use(
 )
 
 // Export main router and convenience router
-export const agentsRoutes = agentsRouter
+export const agentsRoutes: express.Router = agentsRouter

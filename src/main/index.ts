@@ -47,13 +47,15 @@ const logger = loggerService.withContext('MainEntry')
 // Disable Electron Security Warnings
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
 
-// enable local crash reports
-crashReporter.start({
-  companyName: 'CherryHQ',
-  productName: 'CherryStudio',
-  submitURL: '',
-  uploadToServer: false
-})
+if (!isDev) {
+  // enable local crash reports
+  crashReporter.start({
+    companyName: 'CherryHQ',
+    productName: 'CherryStudio',
+    submitURL: '',
+    uploadToServer: false
+  })
+}
 
 /**
  * Disable hardware acceleration if setting is enabled

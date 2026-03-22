@@ -87,24 +87,26 @@ class ClaudeCodeService implements AgentServiceInterface {
     thinkingOptions?: AgentThinkingOptions
   ): Promise<AgentStream> {
     const aiStream = new ClaudeCodeStream()
+    const emitInvokeError = (error: Error) => {
+      setImmediate(() => {
+        aiStream.emit('data', {
+          type: 'error',
+          error
+        })
+      })
+    }
 
     // Validate session accessible paths and make sure it exists as a directory
     const cwd = session.accessible_paths[0]
     if (!cwd) {
-      aiStream.emit('data', {
-        type: 'error',
-        error: new Error('No accessible paths defined for the agent session')
-      })
+      emitInvokeError(new Error('No accessible paths defined for the agent session'))
       return aiStream
     }
 
     // Validate model info
     const modelInfo = await validateModelId(session.model)
     if (!modelInfo.valid) {
-      aiStream.emit('data', {
-        type: 'error',
-        error: new Error(`Invalid model ID '${session.model}': ${JSON.stringify(modelInfo.error)}`)
-      })
+      emitInvokeError(new Error(`Invalid model ID '${session.model}': ${JSON.stringify(modelInfo.error)}`))
       return aiStream
     }
     if (
@@ -116,10 +118,9 @@ class ClaudeCodeService implements AgentServiceInterface {
         modelInfo
       })
 
-      aiStream.emit('data', {
-        type: 'error',
-        error: new Error(`Invalid provider type '${modelInfo.provider?.type}'. Expected 'anthropic' provider type.`)
-      })
+      emitInvokeError(
+        new Error(`Invalid provider type '${modelInfo.provider?.type}'. Expected 'anthropic' provider type.`)
+      )
       return aiStream
     }
 

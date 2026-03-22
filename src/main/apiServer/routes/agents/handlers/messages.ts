@@ -8,6 +8,8 @@ import {
 import { agentService, sessionMessageService, sessionService } from '@main/services/agents'
 import type { Request, Response } from 'express'
 
+import type { ValidationRequest } from '../validators/zodValidator'
+
 const logger = loggerService.withContext('ApiServerMessagesHandlers')
 
 // Helper function to verify agent and session exist and belong together
@@ -37,7 +39,8 @@ export const createMessage = async (req: Request, res: Response): Promise<void> 
 
     const session = await verifyAgentAndSession(agentId, sessionId)
 
-    const messageData = req.body
+    const { validatedBody } = req as ValidationRequest
+    const messageData = validatedBody ?? req.body
 
     logger.info('Creating streaming message', { agentId, sessionId })
     logger.debug('Streaming message payload', { messageData })
@@ -63,6 +66,8 @@ export const createMessage = async (req: Request, res: Response): Promise<void> 
     // Track stream lifecycle so we keep the SSE connection open until persistence finishes
     let responseEnded = false
     let streamFinished = false
+    let completionFinished = false
+    let completionError: unknown = undefined
 
     const cleanup = () => {
       dispose()
@@ -73,17 +78,39 @@ export const createMessage = async (req: Request, res: Response): Promise<void> 
         return
       }
 
-      if (!streamFinished) {
+      if (!streamFinished || !completionFinished) {
         return
       }
 
       responseEnded = true
       cleanup()
-      try {
-        // res.write('data: {"type":"finish"}\n\n')
-        res.write('data: [DONE]\n\n')
-      } catch (writeError) {
-        logger.error('Error writing final sentinel to SSE stream', { error: writeError as Error })
+
+      if (completionError) {
+        logger.error('Agent message persistence failed after stream completion', {
+          agentId,
+          sessionId,
+          error: completionError
+        })
+        try {
+          res.write(
+            `data: ${JSON.stringify({
+              type: 'error',
+              error: {
+                message: (completionError as { message?: string })?.message || 'Failed to persist agent message',
+                type: 'persistence_error',
+                code: 'agent_message_persistence_failed'
+              }
+            })}\n\n`
+          )
+        } catch (writeError) {
+          logger.error('Error writing persistence error to SSE stream', { error: writeError as Error })
+        }
+      } else {
+        try {
+          res.write('data: [DONE]\n\n')
+        } catch (writeError) {
+          logger.error('Error writing final sentinel to SSE stream', { error: writeError as Error })
+        }
       }
       res.end()
     }
@@ -200,29 +227,15 @@ export const createMessage = async (req: Request, res: Response): Promise<void> 
 
     completion
       .then(() => {
-        streamFinished = true
+        completionFinished = true
         finalizeResponse()
       })
       .catch((error) => {
+        completionError = error
+        completionFinished = true
         if (responseEnded) return
         logger.error('Streaming message error', { agentId, sessionId, error })
-        try {
-          res.write(
-            `data: ${JSON.stringify({
-              type: 'error',
-              error: {
-                message: (error as { message?: string })?.message || 'Stream processing error',
-                type: 'stream_error',
-                code: 'stream_processing_failed'
-              }
-            })}\n\n`
-          )
-        } catch (writeError) {
-          logger.error('Error writing completion error to SSE stream', { error: writeError })
-        }
-        responseEnded = true
-        cleanup()
-        res.end()
+        finalizeResponse()
       })
     // Clear timeout when response ends
     res.on('close', cleanup)
